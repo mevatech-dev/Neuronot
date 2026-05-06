@@ -6,6 +6,7 @@ import Animated from 'react-native-reanimated';
 import { NeuroMascot } from '@/components/brand/NeuroMascot';
 import { LoadingDots } from '@/components/feedback/LoadingDots';
 import { Skeleton } from '@/components/feedback/Skeleton';
+import { TrendsSection } from '@/features/insights/TrendsSection';
 import { useFadeIn } from '@/hooks/useFadeIn';
 import { useHapticPress } from '@/hooks/useHapticPress';
 import { ApiError } from '@/services/api/client';
@@ -146,6 +147,11 @@ export default function InsightsScreen() {
             </View>
           }
           renderItem={({ item }) => <InsightCard item={item} />}
+          ListFooterComponent={
+            <View style={{ marginTop: theme.space[6] }}>
+              <TrendsSection />
+            </View>
+          }
         />
       </Animated.View>
     </SafeAreaView>

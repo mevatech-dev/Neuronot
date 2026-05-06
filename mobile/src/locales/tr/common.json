@@ -48,5 +48,38 @@
     "focus_avg": "Odak (ort.)",
     "energy_avg": "Enerji (ort.)",
     "unavailable": "Özet henüz hazır değil"
+  },
+  "trends": {
+    "title": "Trendler",
+    "days_zero": "0 gün",
+    "days_one": "{{count}} gün",
+    "days_other": "{{count}} gün",
+    "metrics": {
+      "focus": "Odak",
+      "energy": "Enerji",
+      "stress": "Stres",
+      "forgetfulness": "Unutkanlık",
+      "sleep_quality": "Uyku"
+    }
+  },
+  "profile_edit": {
+    "title": "Profili düzenle",
+    "saved": "Profil güncellendi",
+    "focus_problem": "En çok zorlandığın",
+    "intensity": "Seni ne kadar etkiliyor",
+    "intensity_low": "Az",
+    "intensity_high": "Çok",
+    "sleep": "Ortalama uyku (saat)",
+    "caffeine": "Günlük kafein",
+    "reminder_enabled": "Günlük hatırlatıcı",
+    "reminder_hour": "Hatırlatma saati",
+    "options": {
+      "focus": "Odak",
+      "energy": "Enerji",
+      "headache": "Baş ağrısı",
+      "sleep": "Uyku",
+      "forgetfulness": "Unutkanlık"
+    },
+    "open": "Profili düzenle"
   }
 }

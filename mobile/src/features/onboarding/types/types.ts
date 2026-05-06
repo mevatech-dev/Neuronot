@@ -13,4 +13,6 @@ export type OnboardingState = {
   intensityLevel?: number;
   avgSleepHours?: number;
   caffeineDaily?: boolean;
+  reminderEnabled?: boolean;
+  reminderHour?: number;
 };

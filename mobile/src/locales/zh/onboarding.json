@@ -7,10 +7,10 @@
   "finish": "开始",
   "progress": "第 {{current}} / {{total}} 步",
   "step1": {
-    "title": "你最困扰的是什么？",
+    "title": "你最常被哪一项困扰？",
     "options": {
       "focus": "专注",
-      "energy": "精力",
+      "energy": "活力",
       "headache": "头痛",
       "sleep": "睡眠",
       "forgetfulness": "健忘"
@@ -19,11 +19,31 @@
   "step2": {
     "title": "它对你的影响有多大？",
     "scale_low": "几乎没有",
-    "scale_high": "很多"
+    "scale_high": "非常多"
   },
   "step3": {
-    "title": "关于你的一天",
-    "sleep_label": "平均睡眠（小时）",
-    "caffeine_label": "每天摄入咖啡因？"
+    "title": "睡眠如何？",
+    "sleep_label": "平均睡眠 (小时)",
+    "sleep_hint": "不确定？想想典型的一天。"
+  },
+  "welcome": {
+    "title": "你好，我是 Neuro",
+    "body": "我会陪着你观察自己的模式。一分钟内设置好你的资料吗？",
+    "cta": "开始"
+  },
+  "step4": {
+    "title": "每天摄入咖啡因吗？",
+    "caffeine_label": "是的，每天",
+    "hint": "咖啡因不会改变你的记录，它只是帮助理解模式。"
+  },
+  "step5": {
+    "title": "每天要个温柔提醒？",
+    "reminder_label": "每日提醒",
+    "hour_label": "大约几点？"
+  },
+  "ready": {
+    "title": "完成",
+    "body": "你的资料已准备好。深呼吸，准备好时添加第一条记录。",
+    "cta": "进入"
   }
 }

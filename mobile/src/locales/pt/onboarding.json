@@ -7,23 +7,43 @@
   "finish": "Get started",
   "progress": "Step {{current}} of {{total}}",
   "step1": {
-    "title": "What do you struggle with most?",
+    "title": "Com o que tens mais dificuldade?",
     "options": {
-      "focus": "Foco",
+      "focus": "Concentração",
       "energy": "Energia",
-      "headache": "Dor de cabeça",
+      "headache": "Dores de cabeça",
       "sleep": "Sono",
       "forgetfulness": "Esquecimento"
     }
   },
   "step2": {
-    "title": "How much does it affect you?",
-    "scale_low": "Barely",
-    "scale_high": "A lot"
+    "title": "Quanto te afeta?",
+    "scale_low": "Pouco",
+    "scale_high": "Muito"
   },
   "step3": {
-    "title": "A bit about your day",
-    "sleep_label": "Average sleep (hours)",
-    "caffeine_label": "Daily caffeine?"
+    "title": "Como está o teu sono?",
+    "sleep_label": "Sono médio (horas)",
+    "sleep_hint": "Não tens a certeza? Pensa num dia típico."
+  },
+  "welcome": {
+    "title": "Olá, sou o Neuro",
+    "body": "Vou estar contigo enquanto reparas nos teus padrões. Configuramos o teu perfil em menos de um minuto?",
+    "cta": "Vamos começar"
+  },
+  "step4": {
+    "title": "Cafeína diária?",
+    "caffeine_label": "Sim, todos os dias",
+    "hint": "A cafeína não muda o que registas; apenas ajuda a ler melhor os padrões."
+  },
+  "step5": {
+    "title": "Um lembrete suave todos os dias?",
+    "reminder_label": "Lembrete diário",
+    "hour_label": "Por volta de que hora?"
+  },
+  "ready": {
+    "title": "Tudo pronto",
+    "body": "O teu perfil está pronto. Respira e adiciona o teu primeiro registo quando quiseres.",
+    "cta": "Vamos"
   }
 }

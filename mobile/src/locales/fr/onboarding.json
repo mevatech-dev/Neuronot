@@ -7,23 +7,43 @@
   "finish": "Commencer",
   "progress": "Étape {{current}} sur {{total}}",
   "step1": {
-    "title": "Quelle difficulté revient le plus souvent ?",
+    "title": "Avec quoi as-tu le plus de mal?",
     "options": {
       "focus": "Concentration",
       "energy": "Énergie",
       "headache": "Maux de tête",
       "sleep": "Sommeil",
-      "forgetfulness": "Oublis"
+      "forgetfulness": "Oubli"
     }
   },
   "step2": {
-    "title": "À quel point cela vous affecte ?",
+    "title": "À quel point cela t affecte?",
     "scale_low": "À peine",
     "scale_high": "Beaucoup"
   },
   "step3": {
-    "title": "Un peu sur votre journée",
+    "title": "Comment dors-tu?",
     "sleep_label": "Sommeil moyen (heures)",
-    "caffeine_label": "Caféine chaque jour ?"
+    "sleep_hint": "Pas sûr? Pense à une journée typique."
+  },
+  "welcome": {
+    "title": "Bonjour, je suis Neuro",
+    "body": "Je serai avec toi pendant que tu observes tes schémas. On configure ton profil en moins d une minute?",
+    "cta": "Commençons"
+  },
+  "step4": {
+    "title": "Caféine quotidienne?",
+    "caffeine_label": "Oui, tous les jours",
+    "hint": "La caféine ne change pas ce que tu enregistres; elle aide à lire les schémas."
+  },
+  "step5": {
+    "title": "Un petit rappel chaque jour?",
+    "reminder_label": "Rappel quotidien",
+    "hour_label": "Vers quelle heure?"
+  },
+  "ready": {
+    "title": "Tout est prêt",
+    "body": "Ton profil est prêt. Respire, puis ajoute ton premier enregistrement quand tu veux.",
+    "cta": "On y va"
   }
 }

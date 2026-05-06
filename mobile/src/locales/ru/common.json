@@ -48,5 +48,38 @@
     "focus_avg": "Фокус (среднее)",
     "energy_avg": "Энергия (среднее)",
     "unavailable": "Сводка пока недоступна"
+  },
+  "trends": {
+    "title": "Тренды",
+    "days_zero": "0 дней",
+    "days_one": "{{count}} день",
+    "days_other": "{{count}} дней",
+    "metrics": {
+      "focus": "Фокус",
+      "energy": "Энергия",
+      "stress": "Стресс",
+      "forgetfulness": "Забывчивость",
+      "sleep_quality": "Сон"
+    }
+  },
+  "profile_edit": {
+    "title": "Редактировать профиль",
+    "saved": "Профиль обновлён",
+    "focus_problem": "Что давит больше всего",
+    "intensity": "Насколько влияет",
+    "intensity_low": "Чуть-чуть",
+    "intensity_high": "Сильно",
+    "sleep": "Средний сон (часы)",
+    "caffeine": "Ежедневный кофеин",
+    "reminder_enabled": "Ежедневное напоминание",
+    "reminder_hour": "Время напоминания",
+    "options": {
+      "focus": "Фокус",
+      "energy": "Энергия",
+      "headache": "Головные боли",
+      "sleep": "Сон",
+      "forgetfulness": "Забывчивость"
+    },
+    "open": "Редактировать профиль"
   }
 }

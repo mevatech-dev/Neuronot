@@ -48,5 +48,38 @@
     "focus_avg": "Focus (avg)",
     "energy_avg": "Energy (avg)",
     "unavailable": "Summary not available yet"
+  },
+  "trends": {
+    "title": "Trends",
+    "days_zero": "0 days",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "metrics": {
+      "focus": "Focus",
+      "energy": "Energy",
+      "stress": "Stress",
+      "forgetfulness": "Forgetfulness",
+      "sleep_quality": "Sleep"
+    }
+  },
+  "profile_edit": {
+    "title": "Edit profile",
+    "saved": "Profile updated",
+    "focus_problem": "Most pressing",
+    "intensity": "How much it affects you",
+    "intensity_low": "Barely",
+    "intensity_high": "A lot",
+    "sleep": "Average sleep (hours)",
+    "caffeine": "Daily caffeine",
+    "reminder_enabled": "Daily reminder",
+    "reminder_hour": "Reminder time",
+    "options": {
+      "focus": "Focus",
+      "energy": "Energy",
+      "headache": "Headaches",
+      "sleep": "Sleep",
+      "forgetfulness": "Forgetfulness"
+    },
+    "open": "Edit profile"
   }
 }

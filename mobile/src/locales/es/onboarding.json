@@ -13,17 +13,37 @@
       "energy": "Energía",
       "headache": "Dolores de cabeza",
       "sleep": "Sueño",
-      "forgetfulness": "Olvidos"
+      "forgetfulness": "Olvido"
     }
   },
   "step2": {
     "title": "¿Cuánto te afecta?",
-    "scale_low": "Apenas",
+    "scale_low": "Poco",
     "scale_high": "Mucho"
   },
   "step3": {
-    "title": "Un poco sobre tu día",
+    "title": "¿Cómo duermes?",
     "sleep_label": "Sueño promedio (horas)",
-    "caffeine_label": "¿Cafeína diaria?"
+    "sleep_hint": "Si no estás seguro piensa en un día típico."
+  },
+  "welcome": {
+    "title": "Hola, soy Neuro",
+    "body": "Te acompañaré mientras observas tus patrones. ¿Configuramos tu perfil en menos de un minuto?",
+    "cta": "Empecemos"
+  },
+  "step4": {
+    "title": "¿Cafeína diaria?",
+    "caffeine_label": "Sí, todos los días",
+    "hint": "La cafeína no cambia lo que registras; solo ayuda a leer mejor los patrones."
+  },
+  "step5": {
+    "title": "¿Un recordatorio suave cada día?",
+    "reminder_label": "Recordatorio diario",
+    "hour_label": "¿Alrededor de qué hora?"
+  },
+  "ready": {
+    "title": "Todo listo",
+    "body": "Tu perfil está listo. Respira y añade tu primer registro cuando quieras.",
+    "cta": "Vamos"
   }
 }

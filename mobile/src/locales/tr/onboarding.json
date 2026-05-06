@@ -7,9 +7,9 @@
   "finish": "Başla",
   "progress": "Adım {{current}} / {{total}}",
   "step1": {
-    "title": "En çok hangisi seni zorluyor?",
+    "title": "En çok zorlandığın hangisi?",
     "options": {
-      "focus": "Odaklanma",
+      "focus": "Odak",
       "energy": "Enerji",
       "headache": "Baş ağrısı",
       "sleep": "Uyku",
@@ -17,13 +17,33 @@
     }
   },
   "step2": {
-    "title": "Ne kadar etkiliyor?",
+    "title": "Günlük yaşamını ne kadar etkiliyor?",
     "scale_low": "Az",
     "scale_high": "Çok"
   },
   "step3": {
-    "title": "Günün hakkında biraz bilgi",
+    "title": "Uykun nasıl?",
     "sleep_label": "Ortalama uyku (saat)",
-    "caffeine_label": "Günlük kafein?"
+    "sleep_hint": "Emin değilsen ortalama bir gününü düşün."
+  },
+  "welcome": {
+    "title": "Merhaba, ben Neuro",
+    "body": "Örüntülerini fark ederken sana eşlik edeceğim. Profilini bir dakikadan kısa sürede kuralım mı?",
+    "cta": "Başlayalım"
+  },
+  "step4": {
+    "title": "Günlük kafein?",
+    "caffeine_label": "Evet, her gün",
+    "hint": "Kafein neyi kaydedeceğini değiştirmez; örüntüleri daha iyi okumama yardım eder."
+  },
+  "step5": {
+    "title": "Her gün küçük bir hatırlatma?",
+    "reminder_label": "Günlük hatırlatıcı",
+    "hour_label": "Yaklaşık saat kaçta?"
+  },
+  "ready": {
+    "title": "Hazır",
+    "body": "Profilin hazır. Hazır olduğunda ilk kaydını ekleyebilirsin.",
+    "cta": "Devam edelim"
   }
 }

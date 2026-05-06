@@ -1,37 +1,45 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  Switch,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { NeuroMascot, type NeuroMood } from '@/components/brand/NeuroMascot';
-import { SegmentScale } from '@/features/onboarding/Slider';
-import { FOCUS_PROBLEMS, type FocusProblem, type OnboardingState } from '@/features/onboarding/types';
+import { ProgressBar } from '@/features/onboarding/ProgressBar';
+import { Ready } from '@/features/onboarding/Ready';
+import { Step1FocusProblem } from '@/features/onboarding/Step1FocusProblem';
+import { Step2Intensity } from '@/features/onboarding/Step2Intensity';
+import { Step3Sleep } from '@/features/onboarding/Step3Sleep';
+import { Step4Caffeine } from '@/features/onboarding/Step4Caffeine';
+import { Step5Reminder } from '@/features/onboarding/Step5Reminder';
+import { Welcome } from '@/features/onboarding/Welcome';
+import type { OnboardingState } from '@/features/onboarding/types';
+import { useHapticPress } from '@/hooks/useHapticPress';
+import { useSlideTransition } from '@/hooks/useSlideTransition';
 import { patchProfile } from '@/services/api/profile';
 import { useTheme } from '@/theme';
 
-const TOTAL_STEPS = 3;
+type Phase = 'welcome' | 1 | 2 | 3 | 4 | 5 | 'ready';
 
-const STEP_MASCOT: Record<number, NeuroMood> = {
+const QUESTION_STEPS = 5;
+
+const STEP_MOOD: Record<Exclude<Phase, 'welcome' | 'ready'>, NeuroMood> = {
   1: 'thinking',
-  2: 'encouraging',
-  3: 'calm',
+  2: 'sad',
+  3: 'sleepy',
+  4: 'happy',
+  5: 'encouraging',
 };
 
 export default function OnboardingScreen() {
   const { t } = useTranslation('onboarding');
   const theme = useTheme();
-  const [step, setStep] = useState(1);
+  const press = useHapticPress();
+
+  const [phase, setPhase] = useState<Phase>('welcome');
   const [state, setState] = useState<OnboardingState>({});
   const [submitting, setSubmitting] = useState(false);
+  const transition = useSlideTransition(typeof phase === 'number' ? phase : phase === 'welcome' ? -1 : QUESTION_STEPS + 1);
 
   const update = (patch: Partial<OnboardingState>) => setState((prev) => ({ ...prev, ...patch }));
 
@@ -43,187 +51,147 @@ export default function OnboardingScreen() {
         intensity_level: state.intensityLevel,
         avg_sleep_hours: state.avgSleepHours,
         caffeine_daily: state.caffeineDaily,
+        reminder_enabled: state.reminderEnabled,
+        reminder_hour: state.reminderHour,
         complete_onboarding: true,
       });
       router.replace('/(tabs)/home');
     } catch {
-      // Onboarding is best-effort — user can always edit profile later.
       router.replace('/(tabs)/home');
     } finally {
       setSubmitting(false);
     }
   };
 
+  if (phase === 'welcome') {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
+        <Welcome onStart={() => setPhase(1)} />
+      </SafeAreaView>
+    );
+  }
+
+  if (phase === 'ready') {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
+        <Ready onFinish={finish} submitting={submitting} />
+      </SafeAreaView>
+    );
+  }
+
   const canAdvance =
-    (step === 1 && !!state.focusProblem) ||
-    (step === 2 && !!state.intensityLevel) ||
-    step === 3;
+    (phase === 1 && !!state.focusProblem) ||
+    (phase === 2 && !!state.intensityLevel) ||
+    (phase === 3 && state.avgSleepHours !== undefined && state.avgSleepHours > 0) ||
+    phase === 4 ||
+    phase === 5;
+
+  const goNext = () => {
+    if (!canAdvance) return;
+    if (phase === QUESTION_STEPS) {
+      setPhase('ready');
+    } else {
+      setPhase((phase + 1) as Phase);
+    }
+  };
+
+  const goBack = () => {
+    if (phase === 1) {
+      setPhase('welcome');
+      return;
+    }
+    setPhase(((phase as number) - 1) as Phase);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
-      <ScrollView contentContainerStyle={{ padding: theme.space[6], flexGrow: 1 }}>
-        <Text style={{ ...theme.typography.micro, color: theme.colors.text.muted, marginBottom: theme.space[2] }}>
-          {t('progress', { current: step, total: TOTAL_STEPS })}
+      <ScrollView contentContainerStyle={{ padding: theme.space[6], flexGrow: 1, gap: theme.space[5] }}>
+        <Text style={{ ...theme.typography.micro, color: theme.colors.text.muted }}>
+          {t('progress', { current: phase, total: QUESTION_STEPS })}
         </Text>
-        <Text style={{ ...theme.typography.title, color: theme.colors.text.primary, marginBottom: theme.space[1] }}>
-          {t('title')}
-        </Text>
-        <Text style={{ ...theme.typography.body, color: theme.colors.text.secondary, marginBottom: theme.space[6] }}>
-          {t('subtitle')}
-        </Text>
+        <ProgressBar current={phase} total={QUESTION_STEPS} />
 
-        <View style={{ alignItems: 'center', marginBottom: theme.space[6] }}>
-          <NeuroMascot mood={STEP_MASCOT[step]} size={128} />
+        <View style={{ alignItems: 'center', paddingVertical: theme.space[2] }}>
+          <NeuroMascot mood={STEP_MOOD[phase]} size={120} />
         </View>
 
-        {step === 1 && (
-          <View>
-            <Text
-              style={{
-                ...theme.typography.heading,
-                color: theme.colors.text.primary,
-                marginBottom: theme.space[4],
-              }}
-            >
-              {t('step1.title')}
-            </Text>
-            {FOCUS_PROBLEMS.map((problem: FocusProblem) => {
-              const active = state.focusProblem === problem;
-              return (
-                <Pressable
-                  key={problem}
-                  onPress={() => update({ focusProblem: problem })}
-                  style={{
-                    padding: theme.space[4],
-                    borderRadius: theme.radius.md,
-                    borderWidth: 1,
-                    borderColor: active ? theme.colors.border.focus : theme.colors.border.subtle,
-                    backgroundColor: active ? theme.colors.surface.raised : theme.colors.surface.elevated,
-                    marginBottom: theme.space[2],
-                  }}
-                >
-                  <Text style={{ ...theme.typography.body, color: theme.colors.text.primary }}>
-                    {t(`step1.options.${problem}`)}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        )}
-
-        {step === 2 && (
-          <View>
-            <Text
-              style={{
-                ...theme.typography.heading,
-                color: theme.colors.text.primary,
-                marginBottom: theme.space[4],
-              }}
-            >
-              {t('step2.title')}
-            </Text>
-            <SegmentScale
+        <Animated.View style={transition}>
+          {phase === 1 && (
+            <Step1FocusProblem
+              value={state.focusProblem}
+              onChange={(focusProblem) => update({ focusProblem })}
+            />
+          )}
+          {phase === 2 && (
+            <Step2Intensity
               value={state.intensityLevel}
-              onChange={(v) => update({ intensityLevel: v })}
-              min={1}
-              max={5}
-              lowLabel={t('step2.scale_low')}
-              highLabel={t('step2.scale_high')}
+              onChange={(intensityLevel) => update({ intensityLevel })}
             />
-          </View>
-        )}
-
-        {step === 3 && (
-          <View>
-            <Text
-              style={{
-                ...theme.typography.heading,
-                color: theme.colors.text.primary,
-                marginBottom: theme.space[4],
-              }}
-            >
-              {t('step3.title')}
-            </Text>
-
-            <Text style={{ ...theme.typography.caption, color: theme.colors.text.muted, marginBottom: theme.space[1] }}>
-              {t('step3.sleep_label')}
-            </Text>
-            <TextInput
-              keyboardType="decimal-pad"
-              value={state.avgSleepHours?.toString() ?? ''}
-              onChangeText={(txt) => {
-                const n = Number(txt.replace(',', '.'));
-                update({ avgSleepHours: Number.isFinite(n) ? n : undefined });
-              }}
-              style={{
-                backgroundColor: theme.colors.surface.elevated,
-                color: theme.colors.text.primary,
-                borderColor: theme.colors.border.subtle,
-                borderWidth: 1,
-                borderRadius: theme.radius.md,
-                paddingHorizontal: theme.space[4],
-                paddingVertical: theme.space[3],
-                marginBottom: theme.space[6],
-              }}
-              placeholderTextColor={theme.colors.text.muted}
+          )}
+          {phase === 3 && (
+            <Step3Sleep
+              value={state.avgSleepHours}
+              onChange={(avgSleepHours) => update({ avgSleepHours })}
             />
-
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={{ ...theme.typography.body, color: theme.colors.text.primary }}>
-                {t('step3.caffeine_label')}
-              </Text>
-              <Switch
-                value={!!state.caffeineDaily}
-                onValueChange={(v) => update({ caffeineDaily: v })}
-              />
-            </View>
-          </View>
-        )}
+          )}
+          {phase === 4 && (
+            <Step4Caffeine
+              value={state.caffeineDaily}
+              onChange={(caffeineDaily) => update({ caffeineDaily })}
+            />
+          )}
+          {phase === 5 && (
+            <Step5Reminder
+              enabled={state.reminderEnabled}
+              hour={state.reminderHour}
+              onEnabledChange={(reminderEnabled) =>
+                update({
+                  reminderEnabled,
+                  reminderHour: reminderEnabled ? (state.reminderHour ?? 9) : state.reminderHour,
+                })
+              }
+              onHourChange={(reminderHour) => update({ reminderHour })}
+            />
+          )}
+        </Animated.View>
 
         <View style={{ flex: 1 }} />
 
-        <View style={{ flexDirection: 'row', gap: theme.space[2], marginTop: theme.space[8] }}>
-          {step > 1 && (
-            <Pressable
-              onPress={() => setStep(step - 1)}
-              style={{
-                flex: 1,
-                paddingVertical: theme.space[4],
-                borderRadius: theme.radius.md,
-                alignItems: 'center',
-                backgroundColor: theme.colors.surface.elevated,
-                borderWidth: 1,
-                borderColor: theme.colors.border.subtle,
-              }}
-            >
-              <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.text.primary }}>
-                {t('back')}
-              </Text>
-            </Pressable>
-          )}
+        <View style={{ flexDirection: 'row', gap: theme.space[2] }}>
           <Pressable
-            onPress={() => {
-              if (!canAdvance) return;
-              if (step < TOTAL_STEPS) setStep(step + 1);
-              else void finish();
-            }}
-            disabled={!canAdvance || submitting}
+            onPress={goBack}
             style={{
               flex: 1,
               paddingVertical: theme.space[4],
               borderRadius: theme.radius.md,
               alignItems: 'center',
-              backgroundColor: canAdvance ? theme.colors.accent.default : theme.colors.accent.muted,
+              backgroundColor: theme.colors.surface.elevated,
+              borderWidth: 1,
+              borderColor: theme.colors.border.subtle,
             }}
           >
-            {submitting ? (
-              <ActivityIndicator color={theme.colors.accent.onAccent} />
-            ) : (
-              <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.accent.onAccent }}>
-                {step < TOTAL_STEPS ? t('next') : t('finish')}
-              </Text>
-            )}
+            <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.text.primary }}>
+              {t('back')}
+            </Text>
           </Pressable>
+          <Animated.View style={[{ flex: 1 }, press.style]}>
+            <Pressable
+              onPress={goNext}
+              onPressIn={press.onPressIn}
+              onPressOut={press.onPressOut}
+              disabled={!canAdvance}
+              style={{
+                paddingVertical: theme.space[4],
+                borderRadius: theme.radius.md,
+                alignItems: 'center',
+                backgroundColor: canAdvance ? theme.colors.accent.default : theme.colors.accent.muted,
+              }}
+            >
+              <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.accent.onAccent }}>
+                {t('next')}
+              </Text>
+            </Pressable>
+          </Animated.View>
         </View>
       </ScrollView>
     </SafeAreaView>

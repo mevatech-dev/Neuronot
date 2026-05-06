@@ -29,6 +29,9 @@ module.exports = [
       // newer react-hooks/immutability rule treats it as a hook argument
       // mutation, which produces false positives for every animation hook.
       'react-hooks/immutability': 'off',
+      // Form sheets seed local state from a remote query inside useEffect;
+      // we accept this "load remote → seed form" idiom.
+      'react-hooks/set-state-in-effect': 'off',
       // Style preference, not a correctness rule.
       '@typescript-eslint/array-type': 'off',
     },

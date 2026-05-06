@@ -22,8 +22,28 @@
     "scale_high": "A lot"
   },
   "step3": {
-    "title": "A bit about your day",
+    "title": "How are you sleeping?",
     "sleep_label": "Average sleep (hours)",
-    "caffeine_label": "Daily caffeine?"
+    "sleep_hint": "Not sure? A typical day is fine."
+  },
+  "welcome": {
+    "title": "Hi, I am Neuro",
+    "body": "I will keep you company while you notice your patterns. Ready to set up your profile in under a minute?",
+    "cta": "Let us start"
+  },
+  "step4": {
+    "title": "Daily caffeine?",
+    "caffeine_label": "Yes, every day",
+    "hint": "Caffeine does not change what you log; it just helps read patterns."
+  },
+  "step5": {
+    "title": "A gentle nudge each day?",
+    "reminder_label": "Daily reminder",
+    "hour_label": "Around what time?"
+  },
+  "ready": {
+    "title": "All set",
+    "body": "Your profile is ready. Take a breath, then add your first log when you are up for it.",
+    "cta": "Take me in"
   }
 }

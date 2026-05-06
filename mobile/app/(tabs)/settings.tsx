@@ -1,7 +1,9 @@
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
+import { ProfileEditSheet } from '@/features/profile/ProfileEditSheet';
 import { SUPPORTED_LANGUAGES, BETA_LANGUAGES, setAppLanguage, type SupportedLanguage } from '@/i18n';
 import { useAuthStore } from '@/store/auth';
 import { useTheme, useThemeMode } from '@/theme';
@@ -25,6 +27,7 @@ export default function SettingsScreen() {
   const theme = useTheme();
   const { mode, setMode } = useThemeMode();
   const logout = useAuthStore((s) => s.logout);
+  const [profileSheetVisible, setProfileSheetVisible] = useState(false);
 
   const handleLanguageChange = (lang: SupportedLanguage) => {
     void setAppLanguage(lang);
@@ -41,6 +44,22 @@ export default function SettingsScreen() {
         <Text style={{ ...theme.typography.title, color: theme.colors.text.primary, marginBottom: theme.space[6] }}>
           {t('tabs.settings')}
         </Text>
+
+        <Pressable
+          onPress={() => setProfileSheetVisible(true)}
+          style={{
+            padding: theme.space[4],
+            borderRadius: theme.radius.md,
+            backgroundColor: theme.colors.surface.elevated,
+            borderWidth: 1,
+            borderColor: theme.colors.border.subtle,
+            marginBottom: theme.space[8],
+          }}
+        >
+          <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.text.primary }}>
+            {t('profile_edit.open')}
+          </Text>
+        </Pressable>
 
         <Text style={{ ...theme.typography.heading, color: theme.colors.text.primary, marginBottom: theme.space[3] }}>
           {t('settings.theme.title')}
@@ -128,6 +147,11 @@ export default function SettingsScreen() {
           </Text>
         </Pressable>
       </ScrollView>
+
+      <ProfileEditSheet
+        visible={profileSheetVisible}
+        onClose={() => setProfileSheetVisible(false)}
+      />
     </SafeAreaView>
   );
 }

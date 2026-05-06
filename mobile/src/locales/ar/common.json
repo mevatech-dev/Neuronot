@@ -48,5 +48,38 @@
     "focus_avg": "التركيز (متوسط)",
     "energy_avg": "الطاقة (متوسط)",
     "unavailable": "الملخص غير متاح بعد"
+  },
+  "trends": {
+    "title": "الاتجاهات",
+    "days_zero": "0 يوم",
+    "days_one": "{{count}} يوم",
+    "days_other": "{{count}} أيام",
+    "metrics": {
+      "focus": "التركيز",
+      "energy": "الطاقة",
+      "stress": "التوتر",
+      "forgetfulness": "النسيان",
+      "sleep_quality": "النوم"
+    }
+  },
+  "profile_edit": {
+    "title": "تعديل الملف",
+    "saved": "تم تحديث الملف",
+    "focus_problem": "الأكثر إرهاقًا",
+    "intensity": "كم يؤثر عليك",
+    "intensity_low": "قليل",
+    "intensity_high": "كثير",
+    "sleep": "متوسط النوم (ساعات)",
+    "caffeine": "كافيين يومي",
+    "reminder_enabled": "تذكير يومي",
+    "reminder_hour": "وقت التذكير",
+    "options": {
+      "focus": "التركيز",
+      "energy": "الطاقة",
+      "headache": "الصداع",
+      "sleep": "النوم",
+      "forgetfulness": "النسيان"
+    },
+    "open": "تعديل الملف"
   }
 }

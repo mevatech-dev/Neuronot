@@ -48,5 +48,38 @@
     "focus_avg": "集中力 (平均)",
     "energy_avg": "エネルギー (平均)",
     "unavailable": "サマリーはまだ利用できません"
+  },
+  "trends": {
+    "title": "トレンド",
+    "days_zero": "0日",
+    "days_one": "{{count}}日",
+    "days_other": "{{count}}日",
+    "metrics": {
+      "focus": "集中力",
+      "energy": "エネルギー",
+      "stress": "ストレス",
+      "forgetfulness": "物忘れ",
+      "sleep_quality": "睡眠"
+    }
+  },
+  "profile_edit": {
+    "title": "プロフィールを編集",
+    "saved": "プロフィールを更新しました",
+    "focus_problem": "一番つらいこと",
+    "intensity": "どれくらい影響するか",
+    "intensity_low": "少し",
+    "intensity_high": "とても",
+    "sleep": "平均睡眠 (時間)",
+    "caffeine": "毎日のカフェイン",
+    "reminder_enabled": "毎日のリマインダー",
+    "reminder_hour": "リマインダー時刻",
+    "options": {
+      "focus": "集中力",
+      "energy": "エネルギー",
+      "headache": "頭痛",
+      "sleep": "睡眠",
+      "forgetfulness": "物忘れ"
+    },
+    "open": "プロフィールを編集"
   }
 }

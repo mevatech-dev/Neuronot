@@ -17,13 +17,33 @@
     }
   },
   "step2": {
-    "title": "Wie stark beeinflusst es dich?",
+    "title": "Wie sehr beeinflusst es dich?",
     "scale_low": "Kaum",
     "scale_high": "Sehr"
   },
   "step3": {
-    "title": "Ein bisschen über deinen Tag",
+    "title": "Wie schläfst du?",
     "sleep_label": "Durchschnittlicher Schlaf (Stunden)",
-    "caffeine_label": "Täglich Koffein?"
+    "sleep_hint": "Unsicher? Denk an einen typischen Tag."
+  },
+  "welcome": {
+    "title": "Hallo, ich bin Neuro",
+    "body": "Ich begleite dich, während du deine Muster wahrnimmst. Profil in weniger als einer Minute einrichten?",
+    "cta": "Los geht es"
+  },
+  "step4": {
+    "title": "Täglich Koffein?",
+    "caffeine_label": "Ja, jeden Tag",
+    "hint": "Koffein ändert nichts an dem, was du protokollierst; es hilft beim Lesen der Muster."
+  },
+  "step5": {
+    "title": "Eine sanfte Erinnerung jeden Tag?",
+    "reminder_label": "Tägliche Erinnerung",
+    "hour_label": "Um welche Uhrzeit ungefähr?"
+  },
+  "ready": {
+    "title": "Fertig",
+    "body": "Dein Profil ist bereit. Atme durch und füge deinen ersten Eintrag hinzu, wenn du soweit bist.",
+    "cta": "Weiter"
   }
 }

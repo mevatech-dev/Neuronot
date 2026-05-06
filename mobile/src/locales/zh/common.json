@@ -48,5 +48,38 @@
     "focus_avg": "专注 (平均)",
     "energy_avg": "活力 (平均)",
     "unavailable": "摘要暂不可用"
+  },
+  "trends": {
+    "title": "趋势",
+    "days_zero": "0 天",
+    "days_one": "{{count}} 天",
+    "days_other": "{{count}} 天",
+    "metrics": {
+      "focus": "专注",
+      "energy": "活力",
+      "stress": "压力",
+      "forgetfulness": "健忘",
+      "sleep_quality": "睡眠"
+    }
+  },
+  "profile_edit": {
+    "title": "编辑资料",
+    "saved": "已更新资料",
+    "focus_problem": "最困扰的项目",
+    "intensity": "影响程度",
+    "intensity_low": "几乎没有",
+    "intensity_high": "非常多",
+    "sleep": "平均睡眠 (小时)",
+    "caffeine": "每日咖啡因",
+    "reminder_enabled": "每日提醒",
+    "reminder_hour": "提醒时间",
+    "options": {
+      "focus": "专注",
+      "energy": "活力",
+      "headache": "头痛",
+      "sleep": "睡眠",
+      "forgetfulness": "健忘"
+    },
+    "open": "编辑资料"
   }
 }

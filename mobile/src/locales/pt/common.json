@@ -48,5 +48,38 @@
     "focus_avg": "Foco (méd.)",
     "energy_avg": "Energia (méd.)",
     "unavailable": "Resumo ainda não disponível"
+  },
+  "trends": {
+    "title": "Tendências",
+    "days_zero": "0 dias",
+    "days_one": "{{count}} dia",
+    "days_other": "{{count}} dias",
+    "metrics": {
+      "focus": "Concentração",
+      "energy": "Energia",
+      "stress": "Stress",
+      "forgetfulness": "Esquecimento",
+      "sleep_quality": "Sono"
+    }
+  },
+  "profile_edit": {
+    "title": "Editar perfil",
+    "saved": "Perfil atualizado",
+    "focus_problem": "O que mais te afeta",
+    "intensity": "Quanto te afeta",
+    "intensity_low": "Pouco",
+    "intensity_high": "Muito",
+    "sleep": "Sono médio (horas)",
+    "caffeine": "Cafeína diária",
+    "reminder_enabled": "Lembrete diário",
+    "reminder_hour": "Hora do lembrete",
+    "options": {
+      "focus": "Concentração",
+      "energy": "Energia",
+      "headache": "Dores de cabeça",
+      "sleep": "Sono",
+      "forgetfulness": "Esquecimento"
+    },
+    "open": "Editar perfil"
   }
 }
