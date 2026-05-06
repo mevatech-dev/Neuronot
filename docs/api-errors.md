@@ -39,6 +39,7 @@ Client `code` veya `message_key` üzerinden kendi locale'inden çeviri yapar. `m
 |---|---|---|---|
 | `DAILY_LOG_DUPLICATE` | 409 | `errors.daily_log.duplicate` | Aynı gün ikinci log |
 | `DAILY_LOG_INVALID_RANGE` | 422 | `errors.daily_log.invalid_range` | Slider değeri 1-5 dışında |
+| `RESOURCE_NOT_FOUND` | 404 | `errors.generic.not_found` | PATCH'de id yok / başkasına ait (404, 403 değil) |
 
 ---
 
@@ -47,7 +48,40 @@ Client `code` veya `message_key` üzerinden kendi locale'inden çeviri yapar. `m
 | Code | HTTP | message_key | Anlam |
 |---|---|---|---|
 | `EVENT_INVALID_TYPE` | 422 | `errors.event.invalid_type` | Bilinmeyen event type |
+| `EVENT_INVALID_INTENSITY` | 422 | `errors.event.invalid_intensity` | intensity 1-5 dışında |
 | `EVENT_NOTE_TOO_LONG` | 422 | `errors.event.note_too_long` | Note > 500 karakter |
+
+---
+
+## Profile
+
+| Code | HTTP | message_key | Anlam |
+|---|---|---|---|
+| `PROFILE_INVALID_FOCUS` | 422 | `errors.profile.invalid_focus` | Bilinmeyen focus_problem |
+| `PROFILE_INVALID_INTENSITY` | 422 | `errors.profile.invalid_intensity` | intensity_level 1-5 dışında |
+| `PROFILE_INVALID_SLEEP` | 422 | `errors.profile.invalid_sleep` | avg_sleep_hours 0-24 dışında |
+| `PROFILE_INVALID_TIMEZONE` | 422 | `errors.profile.invalid_timezone` | Geçersiz IANA timezone |
+| `PROFILE_INVALID_REMINDER_HOUR` | 422 | `errors.profile.invalid_reminder_hour` | reminder_hour 0-23 dışında |
+| `PROFILE_REMINDER_HOUR_REQUIRED` | 422 | `errors.profile.reminder_hour_required` | reminder_enabled true ise saat şart |
+
+---
+
+## Stats
+
+| Code | HTTP | message_key | Anlam |
+|---|---|---|---|
+| `STATS_INVALID_METRIC` | 422 | `errors.stats.invalid_metric` | Bilinmeyen trend metric |
+| `STATS_INVALID_DAYS` | 422 | `errors.stats.invalid_days` | days 1-90 dışında |
+
+---
+
+## Sync
+
+| Code | HTTP | message_key | Anlam |
+|---|---|---|---|
+| `SYNC_INVALID_SINCE` | 422 | `errors.sync.invalid_since` | since RFC3339 değil |
+| `SYNC_BATCH_TOO_LARGE` | 413 | `errors.sync.batch_too_large` | push body > 200 op |
+| `SYNC_UNKNOWN_TABLE` | 422 | `errors.sync.unknown_table` | Bilinmeyen sync tablosu |
 
 ---
 
