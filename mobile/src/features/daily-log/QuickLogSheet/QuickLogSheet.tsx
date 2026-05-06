@@ -43,9 +43,9 @@ export function QuickLogSheet({ visible, onClose }: Props) {
         stress: stress!,
         sleep_quality: sleepQuality!,
       }),
-    onSuccess: (data: DailyLogResponse) => {
+    onSuccess: (_data: DailyLogResponse) => {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      qc.setQueryData(['daily-log', 'today'], data);
+      void qc.invalidateQueries({ queryKey: ['daily-log', 'today'] });
       void qc.invalidateQueries({ queryKey: ['timeline'] });
       void qc.invalidateQueries({ queryKey: ['summary', 'weekly'] });
       scheduleCycleForCurrentUser();

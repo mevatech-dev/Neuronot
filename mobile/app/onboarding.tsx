@@ -1,3 +1,4 @@
+import * as Localization from 'expo-localization';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,6 +47,10 @@ export default function OnboardingScreen() {
   const finish = async () => {
     setSubmitting(true);
     try {
+      // Capture device timezone so reminders fire in the user's local time
+      // without an extra prompt. IANA name like 'Europe/Istanbul'; backend
+      // validates via time.LoadLocation.
+      const timezone = Localization.getCalendars()[0]?.timeZone ?? 'UTC';
       await patchProfile({
         focus_problem: state.focusProblem,
         intensity_level: state.intensityLevel,
@@ -53,6 +58,7 @@ export default function OnboardingScreen() {
         caffeine_daily: state.caffeineDaily,
         reminder_enabled: state.reminderEnabled,
         reminder_hour: state.reminderHour,
+        timezone,
         complete_onboarding: true,
       });
       router.replace('/(tabs)/home');

@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 
 import { NeuroMascot } from '@/components/brand/NeuroMascot';
-import { getTodayLog, type DailyLogResponse } from '@/services/api/dailylog';
+import { todayLogQuery } from '@/features/daily-log/queries';
+import { type DailyLogResponse } from '@/services/api/dailylog';
+import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
 
 type Props = {
@@ -15,12 +17,9 @@ type Props = {
 export function DailyLogCard({ onTapEmpty, onTapEdit }: Props) {
   const { t } = useTranslation('daily-log');
   const theme = useTheme();
+  const userId = useAuthStore((s) => s.user?.id ?? null);
 
-  const today = useQuery({
-    queryKey: ['daily-log', 'today'],
-    queryFn: getTodayLog,
-    staleTime: 60_000,
-  });
+  const today = useQuery({ ...todayLogQuery(userId), staleTime: 60_000 });
 
   if (today.isLoading) return null;
 

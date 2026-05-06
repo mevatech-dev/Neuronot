@@ -50,9 +50,9 @@ export function DailyLogEditSheet({ visible, log, onClose }: Props) {
         stress,
         sleep_quality: sleepQuality,
       }),
-    onSuccess: (data) => {
+    onSuccess: () => {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      qc.setQueryData(['daily-log', 'today'], data);
+      void qc.invalidateQueries({ queryKey: ['daily-log', 'today'] });
       void qc.invalidateQueries({ queryKey: ['timeline'] });
       void qc.invalidateQueries({ queryKey: ['summary', 'weekly'] });
       scheduleCycleForCurrentUser();

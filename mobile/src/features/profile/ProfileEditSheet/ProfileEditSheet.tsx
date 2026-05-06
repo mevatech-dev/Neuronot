@@ -12,6 +12,7 @@ import { FOCUS_PROBLEMS, type FocusProblem } from '@/features/onboarding/types';
 import { ApiError } from '@/services/api/client';
 import { patchProfile } from '@/services/api/profile';
 import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
+import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
 
 import { profileQuery } from '../queries';
@@ -29,8 +30,12 @@ export function ProfileEditSheet({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const userId = useAuthStore((s) => s.user?.id ?? null);
 
-  const { data: profile, isLoading } = useQuery({ ...profileQuery, enabled: visible });
+  const { data: profile, isLoading } = useQuery({
+    ...profileQuery(userId),
+    enabled: visible && !!userId,
+  });
 
   const [focusProblem, setFocusProblem] = useState<FocusProblem | undefined>();
   const [intensity, setIntensity] = useState<number | undefined>();
