@@ -12,12 +12,19 @@ import {
   View,
 } from 'react-native';
 
+import { NeuroMascot, type NeuroMood } from '@/components/brand/NeuroMascot';
 import { SegmentScale } from '@/features/onboarding/Slider';
 import { FOCUS_PROBLEMS, type FocusProblem, type OnboardingState } from '@/features/onboarding/types';
 import { patchProfile } from '@/services/api/profile';
 import { useTheme } from '@/theme';
 
 const TOTAL_STEPS = 3;
+
+const STEP_MASCOT: Record<number, NeuroMood> = {
+  1: 'thinking',
+  2: 'encouraging',
+  3: 'calm',
+};
 
 export default function OnboardingScreen() {
   const { t } = useTranslation('onboarding');
@@ -61,9 +68,13 @@ export default function OnboardingScreen() {
         <Text style={{ ...theme.typography.title, color: theme.colors.text.primary, marginBottom: theme.space[1] }}>
           {t('title')}
         </Text>
-        <Text style={{ ...theme.typography.body, color: theme.colors.text.secondary, marginBottom: theme.space[8] }}>
+        <Text style={{ ...theme.typography.body, color: theme.colors.text.secondary, marginBottom: theme.space[6] }}>
           {t('subtitle')}
         </Text>
+
+        <View style={{ alignItems: 'center', marginBottom: theme.space[6] }}>
+          <NeuroMascot mood={STEP_MASCOT[step]} size={128} />
+        </View>
 
         {step === 1 && (
           <View>

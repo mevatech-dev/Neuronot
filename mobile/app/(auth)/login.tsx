@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
 
+import { NeuroMascot } from '@/components/brand/NeuroMascot';
 import { ApiError } from '@/services/api/client';
 import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
@@ -34,6 +35,9 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
       <View style={{ flex: 1, padding: theme.space[6], justifyContent: 'center' }}>
+        <View style={{ alignItems: 'center', marginBottom: theme.space[5] }}>
+          <NeuroMascot mood="calm" size={112} />
+        </View>
         <Text style={{ ...theme.typography.title, color: theme.colors.text.primary, marginBottom: theme.space[2] }}>
           {t('app.name')}
         </Text>
