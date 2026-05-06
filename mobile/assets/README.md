@@ -1,10 +1,23 @@
 # Assets
 
-Bu klasör Expo asset'leri için. Hafta 5'te tamamlanır.
+This folder contains Expo runtime assets.
 
-Beklenen dosyalar (Hafta 5):
-- `icon.png` 1024x1024 — App Store icon
-- `splash.png` 1284x2778 — splash screen
-- `adaptive-icon.png` 1024x1024 — Android adaptive
+## Source mascot images
 
-MVP'de placeholder olarak Expo'nun default'ları kullanılabilir. App.json gerçek dosyalar konana kadar `expo-asset-utils` ile generate edilebilir veya boş bırakılabilir (Expo dev'de hata vermeyecek şekilde).
+`assets/images/neuro-*.png` files are source mascot variants (1254x1254). Do not edit them in place. Generated app assets are derived from these files.
+
+## Generated files
+
+- `icon.png` 1024x1024 — iOS / App Store icon source
+- `adaptive-icon.png` 1024x1024 — Android adaptive icon foreground
+- `splash.png` 1284x2778 — native splash image
+
+## Commands
+
+```bash
+cd mobile
+bun run generate:assets
+bun run validate:assets
+```
+
+`generate:assets` uses `neuro-calm.png` for icon/adaptive icon and `neuro-happy.png` for splash. The background color is `#0F1115`, matching the default soft dark theme.
