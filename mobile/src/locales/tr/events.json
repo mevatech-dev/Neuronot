@@ -1,0 +1,18 @@
+{
+  "add": "Olay ekle",
+  "add_subtitle": "Az önce yaşadığın bir şeyi not et.",
+  "submit": "Kaydet",
+  "intensity": "Ne kadar şiddetli?",
+  "note_placeholder": "Opsiyonel not…",
+  "delete": "Sil",
+  "types": {
+    "headache": "Baş ağrısı",
+    "brain_fog": "Brain fog",
+    "forgetfulness": "Unutkanlık anı",
+    "distraction": "Dikkat dağıldı",
+    "mental_fatigue": "Zihinsel yorgunluk"
+  },
+  "card": {
+    "intensity_short": "Şiddet {{value}}/5"
+  }
+}

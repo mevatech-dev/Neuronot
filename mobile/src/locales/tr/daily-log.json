@@ -1,0 +1,24 @@
+{
+  "title": "Bugün nasıldı?",
+  "subtitle": "Beş hızlı dokunuş. Hepsi bu.",
+  "submit": "Kaydet",
+  "submitting": "Kaydediliyor…",
+  "submitted": "Eklendi. Yarın görüşürüz.",
+  "already_logged": "Bugünün kaydını zaten girdin.",
+  "card": {
+    "today": "Bugün",
+    "empty_cta": "Bugünün kaydını ekle",
+    "summary": "Odak {{focus}} · Enerji {{energy}}"
+  },
+  "fields": {
+    "focus": "Odak",
+    "energy": "Enerji",
+    "forgetfulness": "Unutkanlık",
+    "stress": "Stres",
+    "sleep_quality": "Uyku kalitesi"
+  },
+  "scale": {
+    "low": "Düşük",
+    "high": "Yüksek"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Timeline",
+  "empty_title": "Nothing yet",
+  "empty_body": "Add a daily log or event to start your timeline.",
+  "loading_more": "Loading more…",
+  "headers": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "this_week": "This week",
+    "earlier": "Earlier"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "title": "How was today?",
+  "subtitle": "Five quick taps. That's it.",
+  "submit": "Save log",
+  "submitting": "Saving…",
+  "submitted": "Logged. See you tomorrow.",
+  "already_logged": "You've already logged today.",
+  "card": {
+    "today": "Today",
+    "empty_cta": "Add today's log",
+    "summary": "Focus {{focus}} · Energy {{energy}}"
+  },
+  "fields": {
+    "focus": "Focus",
+    "energy": "Energy",
+    "forgetfulness": "Forgetfulness",
+    "stress": "Stress",
+    "sleep_quality": "Sleep quality"
+  },
+  "scale": {
+    "low": "Low",
+    "high": "High"
+  }
+}

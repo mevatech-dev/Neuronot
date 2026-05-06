@@ -1,0 +1,12 @@
+{
+  "title": "Akış",
+  "empty_title": "Henüz bir şey yok",
+  "empty_body": "Akışını başlatmak için günlük kaydı veya olay ekle.",
+  "loading_more": "Yükleniyor…",
+  "headers": {
+    "today": "Bugün",
+    "yesterday": "Dün",
+    "this_week": "Bu hafta",
+    "earlier": "Daha önce"
+  }
+}

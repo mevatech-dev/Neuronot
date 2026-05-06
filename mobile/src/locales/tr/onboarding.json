@@ -1,0 +1,29 @@
+{
+  "title": "Tanışalım",
+  "subtitle": "Birkaç hızlı soru — neyi takip edeceğimizi belirlemek için.",
+  "skip": "Geç",
+  "next": "Devam",
+  "back": "Geri",
+  "finish": "Başla",
+  "progress": "Adım {{current}} / {{total}}",
+  "step1": {
+    "title": "En çok hangisi seni zorluyor?",
+    "options": {
+      "focus": "Odaklanma",
+      "energy": "Enerji",
+      "headache": "Baş ağrısı",
+      "sleep": "Uyku",
+      "forgetfulness": "Unutkanlık"
+    }
+  },
+  "step2": {
+    "title": "Ne kadar etkiliyor?",
+    "scale_low": "Az",
+    "scale_high": "Çok"
+  },
+  "step3": {
+    "title": "Günün hakkında biraz bilgi",
+    "sleep_label": "Ortalama uyku (saat)",
+    "caffeine_label": "Günlük kafein?"
+  }
+}

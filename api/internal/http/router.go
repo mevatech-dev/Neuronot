@@ -12,8 +12,13 @@ import (
 type Deps struct {
 	JWTSecret []byte
 
-	// Each feature exposes a Mount(r chi.Router) function.
-	AuthRoutes func(chi.Router)
+	// Each feature mounts its own routes — keeps wiring near features
+	// instead of growing one big router file.
+	AuthRoutes     func(chi.Router)
+	ProfileRoutes  func(chi.Router)
+	DailyLogRoutes func(chi.Router)
+	EventsRoutes   func(chi.Router)
+	TimelineRoutes func(chi.Router)
 }
 
 func NewRouter(d Deps) http.Handler {
@@ -37,9 +42,27 @@ func NewRouter(d Deps) http.Handler {
 	})
 
 	r.Route("/v1", func(v1 chi.Router) {
+		// Public — no auth.
 		if d.AuthRoutes != nil {
 			v1.Route("/auth", d.AuthRoutes)
 		}
+
+		// Authenticated section.
+		v1.Group(func(p chi.Router) {
+			p.Use(middleware.RequireAuth(d.JWTSecret))
+			if d.ProfileRoutes != nil {
+				p.Route("/profile", d.ProfileRoutes)
+			}
+			if d.DailyLogRoutes != nil {
+				p.Route("/daily-logs", d.DailyLogRoutes)
+			}
+			if d.EventsRoutes != nil {
+				p.Route("/events", d.EventsRoutes)
+			}
+			if d.TimelineRoutes != nil {
+				p.Route("/timeline", d.TimelineRoutes)
+			}
+		})
 	})
 
 	return r

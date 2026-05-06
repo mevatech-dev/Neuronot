@@ -11,10 +11,15 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+
 	"github.com/neuronot/api/internal/auth"
 	"github.com/neuronot/api/internal/config"
+	"github.com/neuronot/api/internal/dailylog"
 	"github.com/neuronot/api/internal/db"
+	"github.com/neuronot/api/internal/events"
 	httpx "github.com/neuronot/api/internal/http"
+	"github.com/neuronot/api/internal/profile"
+	"github.com/neuronot/api/internal/timeline"
 )
 
 func main() {
@@ -43,11 +48,28 @@ func main() {
 	authSvc := auth.NewService(authRepo, jwtSecret)
 	authHandler := auth.NewHandler(authSvc)
 
+	profileRepo := profile.NewRepository(pool)
+	profileSvc := profile.NewService(profileRepo)
+	profileHandler := profile.NewHandler(profileSvc)
+
+	dailyLogRepo := dailylog.NewRepository(pool)
+	dailyLogSvc := dailylog.NewService(dailyLogRepo)
+	dailyLogHandler := dailylog.NewHandler(dailyLogSvc)
+
+	eventsRepo := events.NewRepository(pool)
+	eventsSvc := events.NewService(eventsRepo)
+	eventsHandler := events.NewHandler(eventsSvc)
+
+	timelineSvc := timeline.NewService(dailyLogSvc, eventsSvc)
+	timelineHandler := timeline.NewHandler(timelineSvc)
+
 	router := httpx.NewRouter(httpx.Deps{
-		JWTSecret: jwtSecret,
-		AuthRoutes: func(r chi.Router) {
-			authHandler.Mount(r)
-		},
+		JWTSecret:      jwtSecret,
+		AuthRoutes:     func(r chi.Router) { authHandler.Mount(r) },
+		ProfileRoutes:  func(r chi.Router) { profileHandler.Mount(r) },
+		DailyLogRoutes: func(r chi.Router) { dailyLogHandler.Mount(r) },
+		EventsRoutes:   func(r chi.Router) { eventsHandler.Mount(r) },
+		TimelineRoutes: func(r chi.Router) { timelineHandler.Mount(r) },
 	})
 
 	srv := &http.Server{
