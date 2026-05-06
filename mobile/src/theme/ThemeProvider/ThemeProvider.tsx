@@ -3,10 +3,10 @@ import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 
-import { darkSemanticColors, type SemanticColors } from './dark';
-import { lightSemanticColors } from './light';
-import { radius, space } from './tokens';
-import { typography } from './typography';
+import { darkSemanticColors, type SemanticColors } from '../dark';
+import { lightSemanticColors } from '../light';
+import { radius, space } from '../tokens';
+import { typography } from '../typography';
 
 type ThemeMode = 'system' | 'light' | 'dark';
 type ResolvedScheme = 'light' | 'dark';

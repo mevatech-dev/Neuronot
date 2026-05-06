@@ -1,4 +1,4 @@
-import { colors } from './tokens';
+import { colors } from '../tokens';
 
 export type SemanticColors = {
   surface: {

@@ -1,6 +1,6 @@
-import { request } from './client';
+import { request } from '../client';
 
-import type { EventType } from './events';
+import type { EventType } from '../events';
 
 export type TimelineItem =
   | {

@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import type { TimelineItem as ItemT } from '@/services/api/timeline';
 import { useTheme } from '@/theme';
 
-import { formatRelative } from './utils';
+import { formatRelative } from '../utils';
 
 type Props = { item: ItemT; locale: string };
 

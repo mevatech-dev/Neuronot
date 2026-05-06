@@ -1,4 +1,4 @@
-import { apiClient, request, type ApiEnvelope } from './client';
+import { apiClient, request, type ApiEnvelope } from '../client';
 
 export type TokenResponse = {
   access_token: string;

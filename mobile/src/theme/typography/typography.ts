@@ -1,4 +1,4 @@
-import { fontSize, fontWeight, lineHeight } from './tokens';
+import { fontSize, fontWeight, lineHeight } from '../tokens';
 
 export const typography = {
   display: {

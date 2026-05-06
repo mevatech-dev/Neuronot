@@ -1,5 +1,5 @@
-import { colors } from './tokens';
-import type { SemanticColors } from './dark';
+import { colors } from '../tokens';
+import type { SemanticColors } from '../dark';
 
 export const lightSemanticColors: SemanticColors = {
   surface: {

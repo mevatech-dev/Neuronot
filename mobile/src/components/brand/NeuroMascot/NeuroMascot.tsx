@@ -2,9 +2,9 @@ import { Image, View } from 'react-native';
 
 import { useTheme } from '@/theme';
 
-import { neuroMoods, type NeuroMood } from './neuroAssets';
+import { neuroMoods, type NeuroMood } from '../neuroAssets';
 
-export type { NeuroMood } from './neuroAssets';
+export type { NeuroMood } from '../neuroAssets';
 
 type Props = {
   mood?: NeuroMood;
