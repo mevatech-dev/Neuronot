@@ -18,7 +18,7 @@ export function formatRelative(at: Date, locale: string, now: Date = new Date())
   const diffSeconds = Math.round((at.getTime() - now.getTime()) / 1000);
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
 
-  const ranges: Array<[Intl.RelativeTimeFormatUnit, number]> = [
+  const ranges: [Intl.RelativeTimeFormatUnit, number][] = [
     ['year', 60 * 60 * 24 * 365],
     ['month', 60 * 60 * 24 * 30],
     ['week', 60 * 60 * 24 * 7],

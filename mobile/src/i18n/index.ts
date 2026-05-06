@@ -7,12 +7,14 @@ import enCommon from '@/locales/en/common.json';
 import enDailyLog from '@/locales/en/daily-log.json';
 import enErrors from '@/locales/en/errors.json';
 import enEvents from '@/locales/en/events.json';
+import enInsights from '@/locales/en/insights.json';
 import enOnboarding from '@/locales/en/onboarding.json';
 import enTimeline from '@/locales/en/timeline.json';
 import trCommon from '@/locales/tr/common.json';
 import trDailyLog from '@/locales/tr/daily-log.json';
 import trErrors from '@/locales/tr/errors.json';
 import trEvents from '@/locales/tr/events.json';
+import trInsights from '@/locales/tr/insights.json';
 import trOnboarding from '@/locales/tr/onboarding.json';
 import trTimeline from '@/locales/tr/timeline.json';
 
@@ -32,6 +34,7 @@ const resources = {
     onboarding: enOnboarding,
     'daily-log': enDailyLog,
     events: enEvents,
+    insights: enInsights,
     timeline: enTimeline,
   },
   tr: {
@@ -40,6 +43,7 @@ const resources = {
     onboarding: trOnboarding,
     'daily-log': trDailyLog,
     events: trEvents,
+    insights: trInsights,
     timeline: trTimeline,
   },
   // Other locales loaded as their JSON files are populated (Hafta 4).
@@ -57,7 +61,7 @@ void i18n.use(initReactI18next).init({
   resources,
   lng: deviceLanguage(),
   fallbackLng: 'en',
-  ns: ['common', 'errors', 'onboarding', 'daily-log', 'events', 'timeline'],
+  ns: ['common', 'errors', 'onboarding', 'daily-log', 'events', 'timeline', 'insights'],
   defaultNS: 'common',
   interpolation: { escapeValue: false },
   returnNull: false,

@@ -3,7 +3,7 @@ import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
 
-import { darkSemanticColors } from './dark';
+import { darkSemanticColors, type SemanticColors } from './dark';
 import { lightSemanticColors } from './light';
 import { radius, space } from './tokens';
 import { typography } from './typography';
@@ -15,7 +15,7 @@ const STORAGE_KEY = 'neuronot.theme.mode';
 
 export type Theme = {
   scheme: ResolvedScheme;
-  colors: typeof darkSemanticColors;
+  colors: SemanticColors;
   space: typeof space;
   radius: typeof radius;
   typography: typeof typography;

@@ -1,9 +1,16 @@
 // @ts-check
-const expoConfig = require('eslint-config-expo/flat');
+/* global __dirname */
+const { FlatCompat } = require('@eslint/eslintrc');
+const js = require('@eslint/js');
 const i18nextPlugin = require('eslint-plugin-i18next');
 
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+});
+
 module.exports = [
-  ...expoConfig,
+  ...compat.extends('expo'),
   {
     plugins: {
       i18next: i18nextPlugin,

@@ -22,7 +22,7 @@
     "insufficient_data": "Add a few more daily logs before generating an insight.",
     "ai_unavailable": "Couldn't generate an insight right now. Please try again shortly.",
     "rate_limited": "You've already generated an insight today.",
-    "crisis_detected": ""
+    "crisis_detected": "This note may need professional support."
   },
   "generic": {
     "not_found": "We couldn't find what you're looking for.",

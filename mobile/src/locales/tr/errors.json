@@ -22,7 +22,7 @@
     "insufficient_data": "İçgörü için biraz daha günlük kaydı eklemen gerek.",
     "ai_unavailable": "Şu anda içgörü üretemedik. Birazdan tekrar dene.",
     "rate_limited": "Bugün için bir içgörü zaten ürettin.",
-    "crisis_detected": ""
+    "crisis_detected": "Bu not profesyonel destek gerektirebilir."
   },
   "generic": {
     "not_found": "Aradığını bulamadık.",

@@ -1,0 +1,12 @@
+{
+  "title": "Insights",
+  "subtitle": "Short observations from your recent logs.",
+  "generate": "Generate insight",
+  "generating": "Generating…",
+  "empty_title": "No insights yet",
+  "empty_body": "Add at least three daily logs, then generate a pattern insight from the last week.",
+  "latest": "Latest",
+  "history": "History",
+  "crisis_label": "Support",
+  "fallback_error": "Couldn't load insights right now."
+}

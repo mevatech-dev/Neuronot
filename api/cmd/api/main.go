@@ -18,6 +18,7 @@ import (
 	"github.com/neuronot/api/internal/db"
 	"github.com/neuronot/api/internal/events"
 	httpx "github.com/neuronot/api/internal/http"
+	"github.com/neuronot/api/internal/insights"
 	"github.com/neuronot/api/internal/profile"
 	"github.com/neuronot/api/internal/timeline"
 )
@@ -63,6 +64,11 @@ func main() {
 	timelineSvc := timeline.NewService(dailyLogSvc, eventsSvc)
 	timelineHandler := timeline.NewHandler(timelineSvc)
 
+	insightsRepo := insights.NewRepository(pool)
+	insightsGenerator := insights.NewAnthropicGenerator(cfg.AnthropicAPIKey)
+	insightsSvc := insights.NewService(insightsRepo, insightsGenerator, insights.NewSafetyFilter())
+	insightsHandler := insights.NewHandler(insightsSvc)
+
 	router := httpx.NewRouter(httpx.Deps{
 		JWTSecret:      jwtSecret,
 		AuthRoutes:     func(r chi.Router) { authHandler.Mount(r) },
@@ -70,6 +76,7 @@ func main() {
 		DailyLogRoutes: func(r chi.Router) { dailyLogHandler.Mount(r) },
 		EventsRoutes:   func(r chi.Router) { eventsHandler.Mount(r) },
 		TimelineRoutes: func(r chi.Router) { timelineHandler.Mount(r) },
+		InsightsRoutes: func(r chi.Router) { insightsHandler.Mount(r) },
 	})
 
 	srv := &http.Server{

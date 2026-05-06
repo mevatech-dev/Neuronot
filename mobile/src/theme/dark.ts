@@ -1,12 +1,49 @@
 import { colors } from './tokens';
 
+export type SemanticColors = {
+  surface: {
+    primary: string;
+    elevated: string;
+    raised: string;
+    overlay: string;
+  };
+  text: {
+    primary: string;
+    secondary: string;
+    muted: string;
+    inverse: string;
+  };
+  border: {
+    subtle: string;
+    strong: string;
+    focus: string;
+  };
+  accent: {
+    default: string;
+    muted: string;
+    onAccent: string;
+  };
+  danger: {
+    default: string;
+    muted: string;
+  };
+  success: {
+    default: string;
+    muted: string;
+  };
+  warning: {
+    default: string;
+    muted: string;
+  };
+};
+
 /**
  * Soft dark theme — default per PRD §19.
  *
  * Surface uses gray.950 as the deepest layer, never pure black.
  * Text contrasts at high but soft level — never pure white.
  */
-export const darkSemanticColors = {
+export const darkSemanticColors: SemanticColors = {
   surface: {
     primary: colors.gray[950],
     elevated: colors.gray[900],
@@ -41,6 +78,4 @@ export const darkSemanticColors = {
     default: colors.amber[500],
     muted: colors.amber[400],
   },
-} as const;
-
-export type SemanticColors = typeof darkSemanticColors;
+};

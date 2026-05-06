@@ -4,8 +4,6 @@ import (
 	"log/slog"
 	"net/http"
 	"runtime/debug"
-
-	httpx "github.com/neuronot/api/internal/http"
 )
 
 func Recoverer(next http.Handler) http.Handler {
@@ -17,7 +15,7 @@ func Recoverer(next http.Handler) http.Handler {
 					"path", r.URL.Path,
 					"stack", string(debug.Stack()),
 				)
-				httpx.InternalError(w)
+				writeError(w, http.StatusInternalServerError, "INTERNAL_ERROR", "errors.generic.internal_error", "Internal server error")
 			}
 		}()
 		next.ServeHTTP(w, r)

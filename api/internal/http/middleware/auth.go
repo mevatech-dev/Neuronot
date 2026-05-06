@@ -2,12 +2,13 @@ package middleware
 
 import (
 	"context"
+	"encoding/json"
+	"log/slog"
 	"net/http"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	httpx "github.com/neuronot/api/internal/http"
 )
 
 type contextKey string
@@ -22,7 +23,7 @@ func RequireAuth(secret []byte) func(http.Handler) http.Handler {
 			authz := r.Header.Get("Authorization")
 			tok := strings.TrimPrefix(authz, "Bearer ")
 			if tok == "" || tok == authz {
-				httpx.WriteError(w, http.StatusUnauthorized, "UNAUTHORIZED", "errors.generic.unauthorized", "Missing bearer token")
+				writeError(w, http.StatusUnauthorized, "UNAUTHORIZED", "errors.generic.unauthorized", "Missing bearer token")
 				return
 			}
 
@@ -33,19 +34,19 @@ func RequireAuth(secret []byte) func(http.Handler) http.Handler {
 				return secret, nil
 			})
 			if err != nil || !parsed.Valid {
-				httpx.WriteError(w, http.StatusUnauthorized, "AUTH_TOKEN_INVALID", "errors.auth.token_invalid", "Invalid or expired token")
+				writeError(w, http.StatusUnauthorized, "AUTH_TOKEN_INVALID", "errors.auth.token_invalid", "Invalid or expired token")
 				return
 			}
 
 			claims, ok := parsed.Claims.(jwt.MapClaims)
 			if !ok {
-				httpx.WriteError(w, http.StatusUnauthorized, "AUTH_TOKEN_INVALID", "errors.auth.token_invalid", "Malformed token")
+				writeError(w, http.StatusUnauthorized, "AUTH_TOKEN_INVALID", "errors.auth.token_invalid", "Malformed token")
 				return
 			}
 			sub, _ := claims["sub"].(string)
 			uid, err := uuid.Parse(sub)
 			if err != nil {
-				httpx.WriteError(w, http.StatusUnauthorized, "AUTH_TOKEN_INVALID", "errors.auth.token_invalid", "Invalid subject")
+				writeError(w, http.StatusUnauthorized, "AUTH_TOKEN_INVALID", "errors.auth.token_invalid", "Invalid subject")
 				return
 			}
 
@@ -71,4 +72,30 @@ func UserIDFromContext(ctx context.Context) string {
 		return v.String()
 	}
 	return ""
+}
+
+func writeError(w http.ResponseWriter, status int, code, messageKey, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	body := struct {
+		Data  any `json:"data"`
+		Error *struct {
+			Code       string `json:"code"`
+			MessageKey string `json:"message_key"`
+			Message    string `json:"message"`
+		} `json:"error"`
+	}{
+		Error: &struct {
+			Code       string `json:"code"`
+			MessageKey string `json:"message_key"`
+			Message    string `json:"message"`
+		}{
+			Code:       code,
+			MessageKey: messageKey,
+			Message:    message,
+		},
+	}
+	if err := json.NewEncoder(w).Encode(body); err != nil {
+		slog.Error("write middleware error", "err", err)
+	}
 }

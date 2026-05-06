@@ -1,0 +1,12 @@
+{
+  "title": "İçgörüler",
+  "subtitle": "Son kayıtlarından kısa gözlemler.",
+  "generate": "İçgörü üret",
+  "generating": "Üretiliyor…",
+  "empty_title": "Henüz içgörü yok",
+  "empty_body": "En az üç günlük kayıt ekle, sonra son haftadan bir örüntü içgörüsü üret.",
+  "latest": "En yeni",
+  "history": "Geçmiş",
+  "crisis_label": "Destek",
+  "fallback_error": "İçgörüler şu anda yüklenemedi."
+}
