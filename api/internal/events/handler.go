@@ -23,6 +23,7 @@ func NewHandler(svc *Service) *Handler {
 func (h *Handler) Mount(r chi.Router) {
 	r.Post("/", h.create)
 	r.Get("/", h.list)
+	r.Patch("/{id}", h.update)
 	r.Delete("/{id}", h.delete)
 }
 
@@ -69,6 +70,30 @@ func (h *Handler) list(w http.ResponseWriter, r *http.Request) {
 	httpx.WriteJSON(w, http.StatusOK, resp)
 }
 
+func (h *Handler) update(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		httpx.NotFound(w)
+		return
+	}
+	var req UpdateRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httpx.ValidationFailed(w, "invalid json body")
+		return
+	}
+	e, err := h.svc.Update(r.Context(), uid, id, req)
+	if err != nil {
+		if errors.Is(err, ErrNotFound) {
+			httpx.NotFound(w)
+			return
+		}
+		writeEventError(w, err)
+		return
+	}
+	httpx.WriteJSON(w, http.StatusOK, ToResponse(e))
+}
+
 func (h *Handler) delete(w http.ResponseWriter, r *http.Request) {
 	uid := middleware.UserID(r.Context())
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
@@ -85,16 +110,6 @@ func (h *Handler) delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	httpx.WriteJSON(w, http.StatusOK, map[string]string{"status": "ok"})
-}
-
-func effectiveLimit(req int) int {
-	if req <= 0 {
-		return defaultLimit
-	}
-	if req > maxLimit {
-		return maxLimit
-	}
-	return req
 }
 
 func writeEventError(w http.ResponseWriter, err error) {

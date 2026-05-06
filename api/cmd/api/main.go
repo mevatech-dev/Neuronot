@@ -20,6 +20,9 @@ import (
 	httpx "github.com/neuronot/api/internal/http"
 	"github.com/neuronot/api/internal/insights"
 	"github.com/neuronot/api/internal/profile"
+	"github.com/neuronot/api/internal/stats"
+	"github.com/neuronot/api/internal/summary"
+	syncpkg "github.com/neuronot/api/internal/sync"
 	"github.com/neuronot/api/internal/timeline"
 )
 
@@ -69,6 +72,17 @@ func main() {
 	insightsSvc := insights.NewService(insightsRepo, insightsGenerator, insights.NewSafetyFilter())
 	insightsHandler := insights.NewHandler(insightsSvc)
 
+	summaryRepo := summary.NewRepository(pool)
+	summarySvc := summary.NewService(summaryRepo)
+	summaryHandler := summary.NewHandler(summarySvc)
+
+	statsRepo := stats.NewRepository(pool)
+	statsSvc := stats.NewService(statsRepo)
+	statsHandler := stats.NewHandler(statsSvc)
+
+	syncSvc := syncpkg.NewService(dailyLogSvc, eventsSvc, insightsSvc, profileSvc)
+	syncHandler := syncpkg.NewHandler(syncSvc)
+
 	router := httpx.NewRouter(httpx.Deps{
 		JWTSecret:      jwtSecret,
 		AuthRoutes:     func(r chi.Router) { authHandler.Mount(r) },
@@ -77,6 +91,9 @@ func main() {
 		EventsRoutes:   func(r chi.Router) { eventsHandler.Mount(r) },
 		TimelineRoutes: func(r chi.Router) { timelineHandler.Mount(r) },
 		InsightsRoutes: func(r chi.Router) { insightsHandler.Mount(r) },
+		SummaryRoutes:  func(r chi.Router) { summaryHandler.Mount(r) },
+		StatsRoutes:    func(r chi.Router) { statsHandler.Mount(r) },
+		SyncRoutes:     func(r chi.Router) { syncHandler.Mount(r) },
 	})
 
 	srv := &http.Server{

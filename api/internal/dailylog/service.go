@@ -54,13 +54,31 @@ func (s *Service) FindToday(ctx context.Context, userID uuid.UUID) (*DailyLog, e
 }
 
 func (s *Service) List(ctx context.Context, userID uuid.UUID, beforeAt time.Time, beforeID uuid.UUID, limit int) ([]DailyLog, error) {
-	if limit <= 0 {
-		limit = defaultLimit
+	return s.repo.List(ctx, userID, beforeAt, beforeID, effectiveLimit(limit))
+}
+
+func (s *Service) Update(ctx context.Context, userID, id uuid.UUID, req UpdateRequest) (*DailyLog, error) {
+	if req.Focus != nil && !inRange(*req.Focus, 1, 5) {
+		return nil, ErrInvalidRange
 	}
-	if limit > maxLimit {
-		limit = maxLimit
+	if req.Energy != nil && !inRange(*req.Energy, 1, 5) {
+		return nil, ErrInvalidRange
 	}
-	return s.repo.List(ctx, userID, beforeAt, beforeID, limit)
+	if req.SleepQuality != nil && !inRange(*req.SleepQuality, 1, 5) {
+		return nil, ErrInvalidRange
+	}
+	if req.Forgetfulness != nil && !inRange(*req.Forgetfulness, 0, 5) {
+		return nil, ErrInvalidRange
+	}
+	if req.Stress != nil && !inRange(*req.Stress, 0, 5) {
+		return nil, ErrInvalidRange
+	}
+	return s.repo.Update(ctx, userID, id, req)
+}
+
+// ListUpdatedSince is exposed for the sync slice — cross-feature pull aggregator.
+func (s *Service) ListUpdatedSince(ctx context.Context, userID uuid.UUID, since time.Time, limit int) ([]DailyLog, error) {
+	return s.repo.ListUpdatedSince(ctx, userID, since, effectiveLimit(limit))
 }
 
 func ToResponse(l *DailyLog) Response {
@@ -72,7 +90,18 @@ func ToResponse(l *DailyLog) Response {
 		Stress:        l.Stress,
 		SleepQuality:  l.SleepQuality,
 		LoggedAt:      l.LoggedAt,
+		UpdatedAt:     l.UpdatedAt,
 	}
+}
+
+func effectiveLimit(req int) int {
+	if req <= 0 {
+		return defaultLimit
+	}
+	if req > maxLimit {
+		return maxLimit
+	}
+	return req
 }
 
 func inRange(v, lo, hi int) bool { return v >= lo && v <= hi }

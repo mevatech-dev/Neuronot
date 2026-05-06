@@ -13,6 +13,9 @@ type Profile struct {
 	AvgSleepHours         *float64
 	CaffeineDaily         *bool
 	OnboardingCompletedAt *time.Time
+	Timezone              string
+	ReminderHour          *int
+	ReminderEnabled       bool
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 }

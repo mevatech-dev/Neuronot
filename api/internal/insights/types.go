@@ -17,6 +17,7 @@ type Insight struct {
 	GeneratedAt    time.Time
 	ViewedAt       *time.Time
 	CreatedAt      time.Time
+	UpdatedAt      time.Time
 }
 
 type Summary struct {

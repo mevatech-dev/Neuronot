@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	httpx "github.com/neuronot/api/internal/http"
 	"github.com/neuronot/api/internal/http/middleware"
 )
@@ -23,6 +24,7 @@ func (h *Handler) Mount(r chi.Router) {
 	r.Post("/", h.create)
 	r.Get("/", h.list)
 	r.Get("/today", h.today)
+	r.Patch("/{id}", h.update)
 }
 
 func (h *Handler) create(w http.ResponseWriter, r *http.Request) {
@@ -82,14 +84,24 @@ func (h *Handler) list(w http.ResponseWriter, r *http.Request) {
 	httpx.WriteJSON(w, http.StatusOK, resp)
 }
 
-func effectiveLimit(req int) int {
-	if req <= 0 {
-		return defaultLimit
+func (h *Handler) update(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	id, err := uuid.Parse(chi.URLParam(r, "id"))
+	if err != nil {
+		httpx.NotFound(w)
+		return
 	}
-	if req > maxLimit {
-		return maxLimit
+	var req UpdateRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httpx.ValidationFailed(w, "invalid json body")
+		return
 	}
-	return req
+	l, err := h.svc.Update(r.Context(), uid, id, req)
+	if err != nil {
+		writeDailyLogError(w, err)
+		return
+	}
+	httpx.WriteJSON(w, http.StatusOK, ToResponse(l))
 }
 
 func writeDailyLogError(w http.ResponseWriter, err error) {
@@ -98,8 +110,9 @@ func writeDailyLogError(w http.ResponseWriter, err error) {
 		httpx.WriteError(w, http.StatusConflict, "DAILY_LOG_DUPLICATE", "errors.daily_log.duplicate", "Already logged today")
 	case errors.Is(err, ErrInvalidRange):
 		httpx.WriteError(w, http.StatusUnprocessableEntity, "DAILY_LOG_INVALID_RANGE", "errors.daily_log.invalid_range", "Slider value out of range")
+	case errors.Is(err, ErrNotFound):
+		httpx.NotFound(w)
 	default:
 		httpx.InternalError(w)
 	}
 }
-

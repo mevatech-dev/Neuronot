@@ -19,18 +19,26 @@ func NewRepository(pool *pgxpool.Pool) *Repository {
 	return &Repository{pool: pool}
 }
 
+const profileColumns = `user_id, focus_problem, intensity_level, avg_sleep_hours,
+	caffeine_daily, onboarding_completed_at, timezone, reminder_hour, reminder_enabled,
+	created_at, updated_at`
+
+func scanProfile(row pgx.Row, p *Profile) error {
+	return row.Scan(
+		&p.UserID, &p.FocusProblem, &p.IntensityLevel, &p.AvgSleepHours,
+		&p.CaffeineDaily, &p.OnboardingCompletedAt, &p.Timezone, &p.ReminderHour, &p.ReminderEnabled,
+		&p.CreatedAt, &p.UpdatedAt,
+	)
+}
+
 // Get returns the profile, lazily creating an empty row on first read.
 // This means handler code never has to deal with "exists or not" — the row is always there.
 func (r *Repository) Get(ctx context.Context, userID uuid.UUID) (*Profile, error) {
 	var p Profile
-	err := r.pool.QueryRow(ctx, `
-		SELECT user_id, focus_problem, intensity_level, avg_sleep_hours,
-		       caffeine_daily, onboarding_completed_at, created_at, updated_at
+	err := scanProfile(r.pool.QueryRow(ctx, `
+		SELECT `+profileColumns+`
 		FROM profiles WHERE user_id = $1
-	`, userID).Scan(
-		&p.UserID, &p.FocusProblem, &p.IntensityLevel, &p.AvgSleepHours,
-		&p.CaffeineDaily, &p.OnboardingCompletedAt, &p.CreatedAt, &p.UpdatedAt,
-	)
+	`, userID), &p)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return r.create(ctx, userID)
@@ -42,15 +50,11 @@ func (r *Repository) Get(ctx context.Context, userID uuid.UUID) (*Profile, error
 
 func (r *Repository) create(ctx context.Context, userID uuid.UUID) (*Profile, error) {
 	var p Profile
-	err := r.pool.QueryRow(ctx, `
+	err := scanProfile(r.pool.QueryRow(ctx, `
 		INSERT INTO profiles (user_id) VALUES ($1)
 		ON CONFLICT (user_id) DO UPDATE SET updated_at = profiles.updated_at
-		RETURNING user_id, focus_problem, intensity_level, avg_sleep_hours,
-		          caffeine_daily, onboarding_completed_at, created_at, updated_at
-	`, userID).Scan(
-		&p.UserID, &p.FocusProblem, &p.IntensityLevel, &p.AvgSleepHours,
-		&p.CaffeineDaily, &p.OnboardingCompletedAt, &p.CreatedAt, &p.UpdatedAt,
-	)
+		RETURNING `+profileColumns+`
+	`, userID), &p)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +70,7 @@ func (r *Repository) Patch(ctx context.Context, userID uuid.UUID, p PatchRequest
 	}
 
 	var prof Profile
-	err := r.pool.QueryRow(ctx, `
+	err := scanProfile(r.pool.QueryRow(ctx, `
 		UPDATE profiles SET
 			focus_problem           = COALESCE($2, focus_problem),
 			intensity_level         = COALESCE($3, intensity_level),
@@ -74,15 +78,15 @@ func (r *Repository) Patch(ctx context.Context, userID uuid.UUID, p PatchRequest
 			caffeine_daily          = COALESCE($5, caffeine_daily),
 			onboarding_completed_at = CASE WHEN $6 AND onboarding_completed_at IS NULL THEN now()
 			                               ELSE onboarding_completed_at END,
+			timezone                = COALESCE($7, timezone),
+			reminder_hour           = COALESCE($8, reminder_hour),
+			reminder_enabled        = COALESCE($9, reminder_enabled),
 			updated_at              = now()
 		WHERE user_id = $1
-		RETURNING user_id, focus_problem, intensity_level, avg_sleep_hours,
-		          caffeine_daily, onboarding_completed_at, created_at, updated_at
-	`, userID, p.FocusProblem, p.IntensityLevel, p.AvgSleepHours, p.CaffeineDaily, completeOnboarding,
-	).Scan(
-		&prof.UserID, &prof.FocusProblem, &prof.IntensityLevel, &prof.AvgSleepHours,
-		&prof.CaffeineDaily, &prof.OnboardingCompletedAt, &prof.CreatedAt, &prof.UpdatedAt,
-	)
+		RETURNING `+profileColumns+`
+	`, userID, p.FocusProblem, p.IntensityLevel, p.AvgSleepHours, p.CaffeineDaily,
+		completeOnboarding, p.Timezone, p.ReminderHour, p.ReminderEnabled,
+	), &prof)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrProfileNotFound

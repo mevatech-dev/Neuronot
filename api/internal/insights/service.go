@@ -30,6 +30,7 @@ type repository interface {
 	SummarySince(ctx context.Context, userID uuid.UUID, since time.Time) (Summary, error)
 	Create(ctx context.Context, userID uuid.UUID, in Insight) (*Insight, error)
 	List(ctx context.Context, userID uuid.UUID, limit int) ([]Insight, error)
+	ListUpdatedSince(ctx context.Context, userID uuid.UUID, since time.Time, limit int) ([]Insight, error)
 }
 
 type Generator interface {
@@ -114,6 +115,17 @@ func (s *Service) List(ctx context.Context, userID uuid.UUID, limit int) ([]Insi
 		limit = maxListLimit
 	}
 	return s.repo.List(ctx, userID, limit)
+}
+
+// ListUpdatedSince powers sync pull for the insights slice.
+func (s *Service) ListUpdatedSince(ctx context.Context, userID uuid.UUID, since time.Time, limit int) ([]Insight, error) {
+	if limit <= 0 {
+		limit = defaultListLimit
+	}
+	if limit > maxListLimit {
+		limit = maxListLimit
+	}
+	return s.repo.ListUpdatedSince(ctx, userID, since, limit)
 }
 
 func normalizeLanguage(language string) string {

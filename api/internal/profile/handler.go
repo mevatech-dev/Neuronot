@@ -56,6 +56,12 @@ func writeProfileError(w http.ResponseWriter, err error) {
 		httpx.WriteError(w, http.StatusUnprocessableEntity, "PROFILE_INVALID_INTENSITY", "errors.profile.invalid_intensity", "intensity_level must be 1-5")
 	case errors.Is(err, ErrInvalidSleepHours):
 		httpx.WriteError(w, http.StatusUnprocessableEntity, "PROFILE_INVALID_SLEEP", "errors.profile.invalid_sleep", "avg_sleep_hours must be 0-24")
+	case errors.Is(err, ErrInvalidTimezone):
+		httpx.WriteError(w, http.StatusUnprocessableEntity, "PROFILE_INVALID_TIMEZONE", "errors.profile.invalid_timezone", "Invalid IANA timezone")
+	case errors.Is(err, ErrInvalidReminderHour):
+		httpx.WriteError(w, http.StatusUnprocessableEntity, "PROFILE_INVALID_REMINDER_HOUR", "errors.profile.invalid_reminder_hour", "reminder_hour must be 0-23")
+	case errors.Is(err, ErrReminderHourRequired):
+		httpx.WriteError(w, http.StatusUnprocessableEntity, "PROFILE_REMINDER_HOUR_REQUIRED", "errors.profile.reminder_hour_required", "reminder_hour is required when reminder_enabled is true")
 	default:
 		httpx.InternalError(w)
 	}

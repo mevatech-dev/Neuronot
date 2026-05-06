@@ -37,6 +37,10 @@ func (f *fakeRepository) List(context.Context, uuid.UUID, int) ([]Insight, error
 	return nil, nil
 }
 
+func (f *fakeRepository) ListUpdatedSince(context.Context, uuid.UUID, time.Time, int) ([]Insight, error) {
+	return nil, nil
+}
+
 type fakeGenerator struct {
 	called bool
 	out    GeneratedInsight

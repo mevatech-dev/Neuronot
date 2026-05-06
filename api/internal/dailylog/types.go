@@ -16,4 +16,6 @@ type DailyLog struct {
 	SleepQuality  int
 	LoggedAt      time.Time
 	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     *time.Time
 }

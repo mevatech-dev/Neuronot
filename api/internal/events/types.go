@@ -32,4 +32,6 @@ type Event struct {
 	Note       *string
 	OccurredAt time.Time
 	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  *time.Time
 }

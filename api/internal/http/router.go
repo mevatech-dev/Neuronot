@@ -20,6 +20,9 @@ type Deps struct {
 	EventsRoutes   func(chi.Router)
 	TimelineRoutes func(chi.Router)
 	InsightsRoutes func(chi.Router)
+	SummaryRoutes  func(chi.Router)
+	StatsRoutes    func(chi.Router)
+	SyncRoutes     func(chi.Router)
 }
 
 func NewRouter(d Deps) http.Handler {
@@ -65,6 +68,15 @@ func NewRouter(d Deps) http.Handler {
 			}
 			if d.InsightsRoutes != nil {
 				p.Route("/insights", d.InsightsRoutes)
+			}
+			if d.SummaryRoutes != nil {
+				p.Route("/summary", d.SummaryRoutes)
+			}
+			if d.StatsRoutes != nil {
+				p.Route("/stats", d.StatsRoutes)
+			}
+			if d.SyncRoutes != nil {
+				p.Route("/sync", d.SyncRoutes)
 			}
 		})
 	})
