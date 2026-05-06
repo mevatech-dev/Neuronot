@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
+import { NeuroMascot } from '@/components/brand/NeuroMascot';
 import { DailyLogCard } from '@/features/daily-log/DailyLogCard';
 import { QuickLogSheet } from '@/features/daily-log/QuickLogSheet';
 import { EventQuickAdd } from '@/features/events/EventQuickAdd';
@@ -19,19 +20,22 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
       <ScrollView contentContainerStyle={{ padding: theme.space[6], gap: theme.space[6] }}>
-        <View>
-          <Text style={{ ...theme.typography.title, color: theme.colors.text.primary }}>
-            {t('app.name')}
-          </Text>
-          <Text
-            style={{
-              ...theme.typography.caption,
-              color: theme.colors.text.muted,
-              marginTop: theme.space[1],
-            }}
-          >
-            {user?.email ?? ''}
-          </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space[4] }}>
+          <NeuroMascot mood="happy" size={72} framed />
+          <View style={{ flex: 1 }}>
+            <Text style={{ ...theme.typography.title, color: theme.colors.text.primary }}>
+              {t('app.name')}
+            </Text>
+            <Text
+              style={{
+                ...theme.typography.caption,
+                color: theme.colors.text.muted,
+                marginTop: theme.space[1],
+              }}
+            >
+              {user?.email ?? ''}
+            </Text>
+          </View>
         </View>
 
         <DailyLogCard onTapEmpty={() => setLogSheetVisible(true)} />

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 
+import { NeuroMascot } from '@/components/brand/NeuroMascot';
 import { getTodayLog, type DailyLogResponse } from '@/services/api/dailylog';
 import { useTheme } from '@/theme';
 
@@ -36,6 +37,9 @@ export function DailyLogCard({ onTapEmpty }: Props) {
           backgroundColor: theme.colors.surface.elevated,
         }}
       >
+        <View style={{ alignItems: 'flex-start', marginBottom: theme.space[3] }}>
+          <NeuroMascot mood="encouraging" size={72} />
+        </View>
         <Text style={{ ...theme.typography.micro, color: theme.colors.text.muted }}>
           {t('card.today')}
         </Text>

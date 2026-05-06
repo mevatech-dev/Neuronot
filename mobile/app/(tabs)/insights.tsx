@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Pressable, SafeAreaView, Text, View } from 'react-native';
 
+import { NeuroMascot } from '@/components/brand/NeuroMascot';
 import { ApiError } from '@/services/api/client';
 import { generateInsight, getInsights, type InsightResponse } from '@/services/api/insights';
 import { useTheme } from '@/theme';
@@ -106,6 +107,9 @@ export default function InsightsScreen() {
                   backgroundColor: theme.colors.surface.elevated,
                 }}
               >
+                <View style={{ alignItems: 'flex-start', marginBottom: theme.space[3] }}>
+                  <NeuroMascot mood="thinking" size={82} />
+                </View>
                 <Text style={{ ...theme.typography.heading, color: theme.colors.text.primary }}>
                   {t('empty_title')}
                 </Text>
@@ -148,6 +152,11 @@ function InsightCard({ item }: { item: InsightResponse }) {
         backgroundColor: theme.colors.surface.elevated,
       }}
     >
+      {item.crisis && (
+        <View style={{ alignItems: 'flex-start', marginBottom: theme.space[3] }}>
+          <NeuroMascot mood="calm" size={76} />
+        </View>
+      )}
       {item.crisis && (
         <Text
           style={{
