@@ -14,16 +14,18 @@ import (
 const anthropicMessagesURL = "https://api.anthropic.com/v1/messages"
 
 type AnthropicGenerator struct {
-	apiKey string
-	model  string
-	client *http.Client
+	apiKey   string
+	model    string
+	endpoint string
+	client   *http.Client
 }
 
 func NewAnthropicGenerator(apiKey string) *AnthropicGenerator {
 	return &AnthropicGenerator{
-		apiKey: apiKey,
-		model:  "claude-sonnet-4-6",
-		client: &http.Client{Timeout: 30 * time.Second},
+		apiKey:   apiKey,
+		model:    "claude-sonnet-4-6",
+		endpoint: anthropicMessagesURL,
+		client:   &http.Client{Timeout: 30 * time.Second},
 	}
 }
 
@@ -52,7 +54,7 @@ func (g *AnthropicGenerator) Generate(ctx context.Context, payload PromptPayload
 		return GeneratedInsight{}, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, anthropicMessagesURL, bytes.NewReader(b))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, g.endpoint, bytes.NewReader(b))
 	if err != nil {
 		return GeneratedInsight{}, err
 	}

@@ -43,7 +43,7 @@ cd api && goose -dir migrations postgres "$DATABASE_URL" status
 
 `.env` lives at `api/.env` (gitignored, copy from `api/.env.example`). Required: `DATABASE_URL`, `JWT_SECRET` (≥32 chars). `ANTHROPIC_API_KEY` becomes required at Hafta 3.
 
-Verification runbooks are per-week and authoritative for the smoke test that should pass when work claims "done": `docs/HAFTA1_VERIFICATION.md`, `docs/HAFTA2_VERIFICATION.md`, etc.
+Verification runbooks are per-week and authoritative for the smoke test that should pass when work claims "done": `docs/HAFTA1_VERIFICATION.md`, `docs/HAFTA2_VERIFICATION.md`, `docs/HAFTA3_VERIFICATION.md`, etc.
 
 ## Architecture in one diagram
 

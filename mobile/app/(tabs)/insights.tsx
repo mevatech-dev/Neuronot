@@ -136,6 +136,7 @@ export default function InsightsScreen() {
 
 function InsightCard({ item }: { item: InsightResponse }) {
   const theme = useTheme();
+  const { t } = useTranslation(['crisis']);
 
   return (
     <View
@@ -147,6 +148,17 @@ function InsightCard({ item }: { item: InsightResponse }) {
         backgroundColor: theme.colors.surface.elevated,
       }}
     >
+      {item.crisis && (
+        <Text
+          style={{
+            ...theme.typography.caption,
+            color: theme.colors.warning.default,
+            marginBottom: theme.space[2],
+          }}
+        >
+          {t('label', { ns: 'crisis' })}
+        </Text>
+      )}
       <Text style={{ ...theme.typography.heading, color: theme.colors.text.primary }}>
         {item.title}
       </Text>
@@ -159,6 +171,17 @@ function InsightCard({ item }: { item: InsightResponse }) {
       >
         {item.content}
       </Text>
+      {item.crisis && (
+        <Text
+          style={{
+            ...theme.typography.caption,
+            color: theme.colors.text.muted,
+            marginTop: theme.space[3],
+          }}
+        >
+          {t('card_hint', { ns: 'crisis' })}
+        </Text>
+      )}
     </View>
   );
 }

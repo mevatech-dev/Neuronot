@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import 'intl-pluralrules';
 
 import enCommon from '@/locales/en/common.json';
+import enCrisis from '@/locales/en/crisis.json';
 import enDailyLog from '@/locales/en/daily-log.json';
 import enErrors from '@/locales/en/errors.json';
 import enEvents from '@/locales/en/events.json';
@@ -11,6 +12,7 @@ import enInsights from '@/locales/en/insights.json';
 import enOnboarding from '@/locales/en/onboarding.json';
 import enTimeline from '@/locales/en/timeline.json';
 import trCommon from '@/locales/tr/common.json';
+import trCrisis from '@/locales/tr/crisis.json';
 import trDailyLog from '@/locales/tr/daily-log.json';
 import trErrors from '@/locales/tr/errors.json';
 import trEvents from '@/locales/tr/events.json';
@@ -30,6 +32,7 @@ export const RTL_LANGUAGES = new Set<SupportedLanguage>(['ar']);
 const resources = {
   en: {
     common: enCommon,
+    crisis: enCrisis,
     errors: enErrors,
     onboarding: enOnboarding,
     'daily-log': enDailyLog,
@@ -39,6 +42,7 @@ const resources = {
   },
   tr: {
     common: trCommon,
+    crisis: trCrisis,
     errors: trErrors,
     onboarding: trOnboarding,
     'daily-log': trDailyLog,
@@ -61,7 +65,7 @@ void i18n.use(initReactI18next).init({
   resources,
   lng: deviceLanguage(),
   fallbackLng: 'en',
-  ns: ['common', 'errors', 'onboarding', 'daily-log', 'events', 'timeline', 'insights'],
+  ns: ['common', 'errors', 'onboarding', 'daily-log', 'events', 'timeline', 'insights', 'crisis'],
   defaultNS: 'common',
   interpolation: { escapeValue: false },
   returnNull: false,
