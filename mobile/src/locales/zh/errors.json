@@ -1,1 +1,35 @@
-{}
+{
+  "auth": {
+    "invalid_credentials": "邮箱或密码不正确。",
+    "email_taken": "此邮箱已注册。",
+    "weak_password": "密码至少需要 8 个字符。",
+    "invalid_email": "请输入有效邮箱。",
+    "token_expired": "会话已过期，请重新登录。",
+    "token_invalid": "你的会话不再有效。",
+    "refresh_expired": "会话已过期。",
+    "refresh_revoked": "会话已被撤销。",
+    "rate_limited": "尝试次数过多，请稍等一分钟。"
+  },
+  "daily_log": {
+    "duplicate": "今天已经记录过了。",
+    "invalid_range": "请选择 1 到 5 之间的值。"
+  },
+  "event": {
+    "invalid_type": "未知事件类型。",
+    "note_too_long": "备注不能超过 500 个字符。"
+  },
+  "insight": {
+    "insufficient_data": "请先添加更多日记录再生成洞察。",
+    "ai_unavailable": "现在无法生成洞察，请稍后再试。",
+    "rate_limited": "你今天已经生成过洞察。",
+    "crisis_detected": "这条记录可能需要专业支持。"
+  },
+  "generic": {
+    "not_found": "找不到你要的内容。",
+    "validation_failed": "请检查标记的字段。",
+    "internal_error": "我们这边出了问题，请重试。",
+    "unauthorized": "请登录后继续。",
+    "forbidden": "你无权访问此内容。",
+    "network": "无法连接服务器，请检查网络。"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "title": "今日はどうでしたか？",
+  "subtitle": "5回タップするだけです。",
+  "submit": "記録を保存",
+  "submitting": "保存中…",
+  "submitted": "記録しました。また明日。",
+  "already_logged": "今日はすでに記録済みです。",
+  "card": {
+    "today": "今日",
+    "empty_cta": "今日の記録を追加",
+    "summary": "集中 {{focus}} · エネルギー {{energy}}"
+  },
+  "fields": {
+    "focus": "集中",
+    "energy": "エネルギー",
+    "forgetfulness": "物忘れ",
+    "stress": "ストレス",
+    "sleep_quality": "睡眠の質"
+  },
+  "scale": {
+    "low": "低い",
+    "high": "高い"
+  }
+}

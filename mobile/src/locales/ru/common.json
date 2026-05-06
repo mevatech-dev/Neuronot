@@ -1,1 +1,43 @@
-{}
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "Понимайте свои собственные паттерны"
+  },
+  "actions": {
+    "continue": "Продолжить",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "delete": "Удалить",
+    "back": "Назад",
+    "done": "Готово",
+    "retry": "Повторить"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Пароль",
+    "login": "Войти",
+    "register": "Создать аккаунт",
+    "logout": "Выйти",
+    "no_account": "Нет аккаунта?",
+    "have_account": "Уже есть аккаунт?",
+    "loading": "Момент…"
+  },
+  "tabs": {
+    "home": "Главная",
+    "timeline": "Лента",
+    "insights": "Инсайты",
+    "settings": "Настройки"
+  },
+  "settings": {
+    "language": {
+      "title": "Язык",
+      "beta": "Бета"
+    },
+    "theme": {
+      "title": "Тема",
+      "system": "Как в системе",
+      "light": "Светлая",
+      "dark": "Тёмная"
+    }
+  }
+}

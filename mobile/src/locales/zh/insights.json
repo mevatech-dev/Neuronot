@@ -1,0 +1,12 @@
+{
+  "title": "洞察",
+  "subtitle": "来自近期记录的简短观察。",
+  "generate": "生成洞察",
+  "generating": "正在生成…",
+  "empty_title": "还没有洞察",
+  "empty_body": "至少添加三条日记录，然后生成最近一周的模式洞察。",
+  "latest": "最新",
+  "history": "历史",
+  "crisis_label": "支持",
+  "fallback_error": "现在无法加载洞察。"
+}

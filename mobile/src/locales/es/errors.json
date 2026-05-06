@@ -1,1 +1,35 @@
-{}
+{
+  "auth": {
+    "invalid_credentials": "El correo o la contraseña no son correctos.",
+    "email_taken": "Este correo ya está registrado.",
+    "weak_password": "La contraseña debe tener al menos 8 caracteres.",
+    "invalid_email": "Introduce un correo válido.",
+    "token_expired": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+    "token_invalid": "Tu sesión ya no es válida.",
+    "refresh_expired": "Tu sesión ha caducado.",
+    "refresh_revoked": "Tu sesión fue revocada.",
+    "rate_limited": "Demasiados intentos. Espera un minuto."
+  },
+  "daily_log": {
+    "duplicate": "Ya registraste el día de hoy.",
+    "invalid_range": "Elige un valor entre 1 y 5."
+  },
+  "event": {
+    "invalid_type": "Tipo de evento desconocido.",
+    "note_too_long": "Las notas no pueden superar 500 caracteres."
+  },
+  "insight": {
+    "insufficient_data": "Añade algunos registros diarios más antes de generar un insight.",
+    "ai_unavailable": "No pudimos generar un insight ahora. Inténtalo de nuevo en breve.",
+    "rate_limited": "Ya generaste un insight hoy.",
+    "crisis_detected": "Esta nota puede requerir apoyo profesional."
+  },
+  "generic": {
+    "not_found": "No pudimos encontrar lo que buscas.",
+    "validation_failed": "Revisa los campos marcados.",
+    "internal_error": "Algo salió mal de nuestro lado. Inténtalo de nuevo.",
+    "unauthorized": "Inicia sesión para continuar.",
+    "forbidden": "No tienes acceso a esto.",
+    "network": "No podemos conectar con el servidor. Revisa tu conexión."
+  }
+}

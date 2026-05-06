@@ -1,0 +1,24 @@
+{
+  "title": "Comment était la journée ?",
+  "subtitle": "Cinq gestes rapides. C’est tout.",
+  "submit": "Enregistrer",
+  "submitting": "Enregistrement…",
+  "submitted": "Enregistré. À demain.",
+  "already_logged": "Vous avez déjà enregistré la journée.",
+  "card": {
+    "today": "Aujourd’hui",
+    "empty_cta": "Ajouter le journal du jour",
+    "summary": "Concentration {{focus}} · Énergie {{energy}}"
+  },
+  "fields": {
+    "focus": "Concentration",
+    "energy": "Énergie",
+    "forgetfulness": "Oublis",
+    "stress": "Stress",
+    "sleep_quality": "Qualité du sommeil"
+  },
+  "scale": {
+    "low": "Bas",
+    "high": "Élevé"
+  }
+}

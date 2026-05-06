@@ -1,1 +1,35 @@
-{}
+{
+  "auth": {
+    "invalid_credentials": "メールまたはパスワードが正しくありません。",
+    "email_taken": "このメールはすでに登録されています。",
+    "weak_password": "パスワードは8文字以上にしてください。",
+    "invalid_email": "有効なメールアドレスを入力してください。",
+    "token_expired": "セッションの有効期限が切れました。再度ログインしてください。",
+    "token_invalid": "セッションは無効です。",
+    "refresh_expired": "セッションの有効期限が切れました。",
+    "refresh_revoked": "セッションは取り消されました。",
+    "rate_limited": "試行回数が多すぎます。1分待ってください。"
+  },
+  "daily_log": {
+    "duplicate": "今日はすでに記録済みです。",
+    "invalid_range": "1〜5の値を選んでください。"
+  },
+  "event": {
+    "invalid_type": "不明なイベントタイプです。",
+    "note_too_long": "メモは500文字以内にしてください。"
+  },
+  "insight": {
+    "insufficient_data": "インサイト生成前に、もう少し日次記録を追加してください。",
+    "ai_unavailable": "今はインサイトを生成できません。少し後でお試しください。",
+    "rate_limited": "今日はすでにインサイトを生成しました。",
+    "crisis_detected": "このメモには専門的な支援が必要な可能性があります。"
+  },
+  "generic": {
+    "not_found": "探しているものが見つかりませんでした。",
+    "validation_failed": "強調された項目を確認してください。",
+    "internal_error": "こちらで問題が発生しました。もう一度お試しください。",
+    "unauthorized": "続行するにはログインしてください。",
+    "forbidden": "これにアクセスする権限がありません。",
+    "network": "サーバーに接続できません。接続を確認してください。"
+  }
+}

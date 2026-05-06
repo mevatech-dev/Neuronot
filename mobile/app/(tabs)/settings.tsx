@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
-import { SUPPORTED_LANGUAGES, BETA_LANGUAGES, type SupportedLanguage } from '@/i18n';
+import { SUPPORTED_LANGUAGES, BETA_LANGUAGES, setAppLanguage, type SupportedLanguage } from '@/i18n';
 import { useAuthStore } from '@/store/auth';
 import { useTheme, useThemeMode } from '@/theme';
 
@@ -27,7 +27,7 @@ export default function SettingsScreen() {
   const logout = useAuthStore((s) => s.logout);
 
   const handleLanguageChange = (lang: SupportedLanguage) => {
-    void i18n.changeLanguage(lang);
+    void setAppLanguage(lang);
   };
 
   const handleLogout = async () => {

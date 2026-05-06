@@ -1,0 +1,29 @@
+{
+  "title": "Lass uns dich kennenlernen",
+  "subtitle": "Ein paar kurze Fragen, damit wir die Beobachtung anpassen können.",
+  "skip": "Überspringen",
+  "next": "Weiter",
+  "back": "Zurück",
+  "finish": "Loslegen",
+  "progress": "Schritt {{current}} von {{total}}",
+  "step1": {
+    "title": "Womit hast du am meisten zu kämpfen?",
+    "options": {
+      "focus": "Fokus",
+      "energy": "Energie",
+      "headache": "Kopfschmerzen",
+      "sleep": "Schlaf",
+      "forgetfulness": "Vergesslichkeit"
+    }
+  },
+  "step2": {
+    "title": "Wie stark beeinflusst es dich?",
+    "scale_low": "Kaum",
+    "scale_high": "Sehr"
+  },
+  "step3": {
+    "title": "Ein bisschen über deinen Tag",
+    "sleep_label": "Durchschnittlicher Schlaf (Stunden)",
+    "caffeine_label": "Täglich Koffein?"
+  }
+}

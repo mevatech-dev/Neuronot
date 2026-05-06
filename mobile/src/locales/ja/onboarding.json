@@ -1,0 +1,29 @@
+{
+  "title": "あなたのことを教えてください",
+  "subtitle": "追跡内容を合わせるための短い質問です。",
+  "skip": "スキップ",
+  "next": "続ける",
+  "back": "戻る",
+  "finish": "開始する",
+  "progress": "{{total}}中{{current}}ステップ",
+  "step1": {
+    "title": "一番困っていることは？",
+    "options": {
+      "focus": "集中",
+      "energy": "エネルギー",
+      "headache": "頭痛",
+      "sleep": "睡眠",
+      "forgetfulness": "物忘れ"
+    }
+  },
+  "step2": {
+    "title": "どのくらい影響しますか？",
+    "scale_low": "ほとんどない",
+    "scale_high": "かなり"
+  },
+  "step3": {
+    "title": "一日のこと",
+    "sleep_label": "平均睡眠（時間）",
+    "caffeine_label": "毎日カフェイン？"
+  }
+}

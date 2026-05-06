@@ -1,1 +1,43 @@
-{}
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "自分のパターンを理解する"
+  },
+  "actions": {
+    "continue": "続ける",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "back": "戻る",
+    "done": "完了",
+    "retry": "再試行"
+  },
+  "auth": {
+    "email": "メール",
+    "password": "パスワード",
+    "login": "ログイン",
+    "register": "アカウント作成",
+    "logout": "ログアウト",
+    "no_account": "アカウントをお持ちでないですか？",
+    "have_account": "すでにアカウントがありますか？",
+    "loading": "少々お待ちください…"
+  },
+  "tabs": {
+    "home": "ホーム",
+    "timeline": "タイムライン",
+    "insights": "インサイト",
+    "settings": "設定"
+  },
+  "settings": {
+    "language": {
+      "title": "言語",
+      "beta": "ベータ"
+    },
+    "theme": {
+      "title": "テーマ",
+      "system": "システムに合わせる",
+      "light": "ライト",
+      "dark": "ダーク"
+    }
+  }
+}

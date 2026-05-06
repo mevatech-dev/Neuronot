@@ -1,1 +1,35 @@
-{}
+{
+  "auth": {
+    "invalid_credentials": "E-mail ou senha incorretos.",
+    "email_taken": "Este e-mail já está registrado.",
+    "weak_password": "A senha deve ter pelo menos 8 caracteres.",
+    "invalid_email": "Informe um e-mail válido.",
+    "token_expired": "Sua sessão expirou. Entre novamente.",
+    "token_invalid": "Sua sessão não é mais válida.",
+    "refresh_expired": "Sua sessão expirou.",
+    "refresh_revoked": "Sua sessão foi revogada.",
+    "rate_limited": "Muitas tentativas. Aguarde um minuto."
+  },
+  "daily_log": {
+    "duplicate": "Você já registrou o dia de hoje.",
+    "invalid_range": "Escolha um valor entre 1 e 5."
+  },
+  "event": {
+    "invalid_type": "Tipo de evento desconhecido.",
+    "note_too_long": "As notas não podem ter mais de 500 caracteres."
+  },
+  "insight": {
+    "insufficient_data": "Adicione mais alguns registros diários antes de gerar um insight.",
+    "ai_unavailable": "Não foi possível gerar um insight agora. Tente novamente em instantes.",
+    "rate_limited": "Você já gerou um insight hoje.",
+    "crisis_detected": "Esta nota pode precisar de apoio profissional."
+  },
+  "generic": {
+    "not_found": "Não encontramos o que você procura.",
+    "validation_failed": "Revise os campos destacados.",
+    "internal_error": "Algo deu errado do nosso lado. Tente novamente.",
+    "unauthorized": "Entre para continuar.",
+    "forbidden": "Você não tem acesso a isto.",
+    "network": "Não conseguimos acessar o servidor. Verifique sua conexão."
+  }
+}

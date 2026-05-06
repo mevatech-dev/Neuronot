@@ -1,0 +1,12 @@
+{
+  "title": "タイムライン",
+  "empty_title": "まだありません",
+  "empty_body": "日次記録またはイベントを追加してタイムラインを始めましょう。",
+  "loading_more": "さらに読み込み中…",
+  "headers": {
+    "today": "今日",
+    "yesterday": "昨日",
+    "this_week": "今週",
+    "earlier": "以前"
+  }
+}

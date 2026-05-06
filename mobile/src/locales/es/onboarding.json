@@ -1,0 +1,29 @@
+{
+  "title": "Queremos conocerte",
+  "subtitle": "Unas preguntas rápidas para adaptar lo que seguimos.",
+  "skip": "Omitir",
+  "next": "Siguiente",
+  "back": "Atrás",
+  "finish": "Empezar",
+  "progress": "Paso {{current}} de {{total}}",
+  "step1": {
+    "title": "¿Con qué tienes más dificultad?",
+    "options": {
+      "focus": "Concentración",
+      "energy": "Energía",
+      "headache": "Dolores de cabeza",
+      "sleep": "Sueño",
+      "forgetfulness": "Olvidos"
+    }
+  },
+  "step2": {
+    "title": "¿Cuánto te afecta?",
+    "scale_low": "Apenas",
+    "scale_high": "Mucho"
+  },
+  "step3": {
+    "title": "Un poco sobre tu día",
+    "sleep_label": "Sueño promedio (horas)",
+    "caffeine_label": "¿Cafeína diaria?"
+  }
+}

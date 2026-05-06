@@ -1,0 +1,29 @@
+{
+  "title": "Faisons connaissance",
+  "subtitle": "Quelques questions rapides pour adapter le suivi.",
+  "skip": "Ignorer",
+  "next": "Suivant",
+  "back": "Retour",
+  "finish": "Commencer",
+  "progress": "Étape {{current}} sur {{total}}",
+  "step1": {
+    "title": "Quelle difficulté revient le plus souvent ?",
+    "options": {
+      "focus": "Concentration",
+      "energy": "Énergie",
+      "headache": "Maux de tête",
+      "sleep": "Sommeil",
+      "forgetfulness": "Oublis"
+    }
+  },
+  "step2": {
+    "title": "À quel point cela vous affecte ?",
+    "scale_low": "À peine",
+    "scale_high": "Beaucoup"
+  },
+  "step3": {
+    "title": "Un peu sur votre journée",
+    "sleep_label": "Sommeil moyen (heures)",
+    "caffeine_label": "Caféine chaque jour ?"
+  }
+}

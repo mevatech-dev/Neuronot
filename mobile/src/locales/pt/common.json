@@ -1,1 +1,43 @@
-{}
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "Entenda seus próprios padrões"
+  },
+  "actions": {
+    "continue": "Continuar",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "back": "Voltar",
+    "done": "Concluído",
+    "retry": "Tentar novamente"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Senha",
+    "login": "Entrar",
+    "register": "Criar conta",
+    "logout": "Sair",
+    "no_account": "Não tem uma conta?",
+    "have_account": "Já tem uma conta?",
+    "loading": "Um momento…"
+  },
+  "tabs": {
+    "home": "Início",
+    "timeline": "Linha do tempo",
+    "insights": "Insights",
+    "settings": "Ajustes"
+  },
+  "settings": {
+    "language": {
+      "title": "Idioma",
+      "beta": "Beta"
+    },
+    "theme": {
+      "title": "Tema",
+      "system": "Seguir sistema",
+      "light": "Claro",
+      "dark": "Escuro"
+    }
+  }
+}

@@ -1,1 +1,43 @@
-{}
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "Comprendre vos propres schémas"
+  },
+  "actions": {
+    "continue": "Continuer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "back": "Retour",
+    "done": "Terminé",
+    "retry": "Réessayer"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "register": "Créer un compte",
+    "logout": "Se déconnecter",
+    "no_account": "Vous n’avez pas de compte ?",
+    "have_account": "Vous avez déjà un compte ?",
+    "loading": "Un instant…"
+  },
+  "tabs": {
+    "home": "Accueil",
+    "timeline": "Chronologie",
+    "insights": "Insights",
+    "settings": "Réglages"
+  },
+  "settings": {
+    "language": {
+      "title": "Langue",
+      "beta": "Bêta"
+    },
+    "theme": {
+      "title": "Thème",
+      "system": "Suivre le système",
+      "light": "Clair",
+      "dark": "Sombre"
+    }
+  }
+}

@@ -1,1 +1,43 @@
-{}
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "Comprendi i tuoi schemi personali"
+  },
+  "actions": {
+    "continue": "Continua",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "delete": "Elimina",
+    "back": "Indietro",
+    "done": "Fatto",
+    "retry": "Riprova"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "login": "Accedi",
+    "register": "Crea account",
+    "logout": "Esci",
+    "no_account": "Non hai un account?",
+    "have_account": "Hai già un account?",
+    "loading": "Un momento…"
+  },
+  "tabs": {
+    "home": "Home",
+    "timeline": "Timeline",
+    "insights": "Insights",
+    "settings": "Impostazioni"
+  },
+  "settings": {
+    "language": {
+      "title": "Lingua",
+      "beta": "Beta"
+    },
+    "theme": {
+      "title": "Tema",
+      "system": "Segui sistema",
+      "light": "Chiaro",
+      "dark": "Scuro"
+    }
+  }
+}

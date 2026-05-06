@@ -1,1 +1,43 @@
-{}
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "Verstehe deine eigenen Muster"
+  },
+  "actions": {
+    "continue": "Weiter",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "back": "Zurück",
+    "done": "Fertig",
+    "retry": "Erneut versuchen"
+  },
+  "auth": {
+    "email": "E-Mail",
+    "password": "Passwort",
+    "login": "Einloggen",
+    "register": "Konto erstellen",
+    "logout": "Ausloggen",
+    "no_account": "Noch kein Konto?",
+    "have_account": "Schon ein Konto?",
+    "loading": "Einen Moment…"
+  },
+  "tabs": {
+    "home": "Start",
+    "timeline": "Verlauf",
+    "insights": "Insights",
+    "settings": "Einstellungen"
+  },
+  "settings": {
+    "language": {
+      "title": "Sprache",
+      "beta": "Beta"
+    },
+    "theme": {
+      "title": "Design",
+      "system": "System folgen",
+      "light": "Hell",
+      "dark": "Dunkel"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Insights",
+  "subtitle": "Kurze Beobachtungen aus deinen letzten Einträgen.",
+  "generate": "Insight generieren",
+  "generating": "Wird generiert…",
+  "empty_title": "Noch keine Insights",
+  "empty_body": "Füge mindestens drei tägliche Einträge hinzu und generiere dann einen Muster-Insight der letzten Woche.",
+  "latest": "Neueste",
+  "history": "Verlauf",
+  "crisis_label": "Unterstützung",
+  "fallback_error": "Insights konnten gerade nicht geladen werden."
+}

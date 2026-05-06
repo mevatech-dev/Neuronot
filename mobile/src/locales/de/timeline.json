@@ -1,0 +1,12 @@
+{
+  "title": "Verlauf",
+  "empty_title": "Noch nichts vorhanden",
+  "empty_body": "Füge einen täglichen Eintrag oder ein Ereignis hinzu, um deinen Verlauf zu starten.",
+  "loading_more": "Mehr laden…",
+  "headers": {
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "this_week": "Diese Woche",
+    "earlier": "Früher"
+  }
+}

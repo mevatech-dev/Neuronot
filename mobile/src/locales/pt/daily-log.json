@@ -1,0 +1,24 @@
+{
+  "title": "How was today?",
+  "subtitle": "Five quick taps. That is it.",
+  "submit": "Save log",
+  "submitting": "Saving…",
+  "submitted": "Logged. See you tomorrow.",
+  "already_logged": "You have already logged today.",
+  "card": {
+    "today": "Hoje",
+    "empty_cta": "Add today’s log",
+    "summary": "Foco {{focus}} · Energia {{energy}}"
+  },
+  "fields": {
+    "focus": "Foco",
+    "energy": "Energia",
+    "forgetfulness": "Esquecimento",
+    "stress": "Estresse",
+    "sleep_quality": "Qualidade do sono"
+  },
+  "scale": {
+    "low": "Baixo",
+    "high": "Alto"
+  }
+}

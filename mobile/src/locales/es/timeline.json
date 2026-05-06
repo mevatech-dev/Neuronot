@@ -1,0 +1,12 @@
+{
+  "title": "Cronología",
+  "empty_title": "Todavía no hay nada",
+  "empty_body": "Añade un registro diario o un evento para iniciar tu cronología.",
+  "loading_more": "Cargando más…",
+  "headers": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "this_week": "Esta semana",
+    "earlier": "Anterior"
+  }
+}

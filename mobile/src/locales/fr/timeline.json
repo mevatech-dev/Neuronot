@@ -1,0 +1,12 @@
+{
+  "title": "Chronologie",
+  "empty_title": "Rien pour le moment",
+  "empty_body": "Ajoutez un journal quotidien ou un événement pour démarrer votre chronologie.",
+  "loading_more": "Chargement…",
+  "headers": {
+    "today": "Aujourd’hui",
+    "yesterday": "Hier",
+    "this_week": "Cette semaine",
+    "earlier": "Plus ancien"
+  }
+}

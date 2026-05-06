@@ -1,0 +1,12 @@
+{
+  "title": "Insights",
+  "subtitle": "Courtes observations à partir de vos journaux récents.",
+  "generate": "Générer un insight",
+  "generating": "Génération…",
+  "empty_title": "Aucun insight pour le moment",
+  "empty_body": "Ajoutez au moins trois journaux quotidiens, puis générez un insight sur la dernière semaine.",
+  "latest": "Le plus récent",
+  "history": "Historique",
+  "crisis_label": "Soutien",
+  "fallback_error": "Impossible de charger les insights pour le moment."
+}

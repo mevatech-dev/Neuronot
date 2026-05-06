@@ -1,0 +1,18 @@
+{
+  "add": "Add an event",
+  "add_subtitle": "Note something that just happened.",
+  "submit": "Salva",
+  "intensity": "How intense?",
+  "note_placeholder": "Optional note…",
+  "delete": "Elimina",
+  "types": {
+    "headache": "Mal di testa",
+    "brain_fog": "Brain fog",
+    "forgetfulness": "Forgetful moment",
+    "distraction": "Lost focus",
+    "mental_fatigue": "Mental fatigue"
+  },
+  "card": {
+    "intensity_short": "Intensity {{value}}/5"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "add": "Ajouter un événement",
+  "add_subtitle": "Notez quelque chose qui vient de se produire.",
+  "submit": "Enregistrer",
+  "intensity": "Quelle intensité ?",
+  "note_placeholder": "Note facultative…",
+  "delete": "Supprimer",
+  "types": {
+    "headache": "Mal de tête",
+    "brain_fog": "Brouillard mental",
+    "forgetfulness": "Moment d’oubli",
+    "distraction": "Perte de concentration",
+    "mental_fatigue": "Fatigue mentale"
+  },
+  "card": {
+    "intensity_short": "Intensité {{value}}/5"
+  }
+}

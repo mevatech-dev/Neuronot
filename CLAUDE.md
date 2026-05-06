@@ -37,13 +37,16 @@ cd mobile && bun jest path/to/file.test.tsx -t "test name fragment"
 # Mobile typecheck only
 cd mobile && bun run typecheck
 
+# Mobile i18n coverage only
+cd mobile && bun run validate:i18n
+
 # Single migration check (no apply)
 cd api && goose -dir migrations postgres "$DATABASE_URL" status
 ```
 
 `.env` lives at `api/.env` (gitignored, copy from `api/.env.example`). Required: `DATABASE_URL`, `JWT_SECRET` (≥32 chars). `ANTHROPIC_API_KEY` becomes required at Hafta 3.
 
-Verification runbooks are per-week and authoritative for the smoke test that should pass when work claims "done": `docs/HAFTA1_VERIFICATION.md`, `docs/HAFTA2_VERIFICATION.md`, `docs/HAFTA3_VERIFICATION.md`, etc.
+Verification runbooks are per-week and authoritative for the smoke test that should pass when work claims "done": `docs/HAFTA1_VERIFICATION.md`, `docs/HAFTA2_VERIFICATION.md`, `docs/HAFTA3_VERIFICATION.md`, `docs/HAFTA4_VERIFICATION.md`, etc.
 
 ## Architecture in one diagram
 
@@ -131,9 +134,9 @@ Theme has two layers (`mobile/src/theme/`):
 
 ## i18n — hardcoded strings are forbidden
 
-11 languages (`mobile/src/i18n/index.ts`): `en`, `tr` are native-quality; `es de fr` planned for native review; `pt it ru ja zh` Claude-translated + skim review; `ar` is RTL and ships with a Beta marker. All UI strings go through `t('namespace.key')`. The lint rule `i18next/no-literal-string` (configured in `mobile/eslint.config.js`) blocks raw text in JSX.
+11 languages (`mobile/src/i18n/index.ts`, resources in `mobile/src/i18n/resources.ts`): `en`, `tr` are native-quality; `es de fr` planned for native review; `pt it ru ja zh` Claude-translated + skim review; `ar` is RTL and ships with a Beta marker. All UI strings go through `t('namespace.key')`. The lint rule `i18next/no-literal-string` (configured in `mobile/eslint.config.js`) blocks raw text in JSX.
 
-Namespaces are per-feature: `common`, `errors`, `onboarding`, `daily-log`, `events`, `timeline`, `insights`, `crisis`. Each feature owns one JSON file per locale. When adding a feature, create the namespace in **en first** as the source of truth, then add `tr` natively. The 9 deferred locales fill in Hafta 4 via `mobile/scripts/translate-locales.ts` (Hafta 4 task).
+Namespaces are per-feature: `common`, `errors`, `onboarding`, `daily-log`, `events`, `timeline`, `insights`, `crisis`. Each feature owns one JSON file per locale. When adding a feature, create the namespace in **en first** as the source of truth, then add `tr` natively and fill the other supported locales before shipping. Run `cd mobile && bun run validate:i18n` after locale changes.
 
 Dates, numbers, and relative times use `Intl.*Format` (see `mobile/src/features/timeline/utils.ts`). Manual format strings are wrong in some locales — don't write them.
 

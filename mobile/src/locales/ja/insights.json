@@ -1,0 +1,12 @@
+{
+  "title": "インサイト",
+  "subtitle": "最近の記録からの短い観察です。",
+  "generate": "インサイトを生成",
+  "generating": "生成中…",
+  "empty_title": "まだインサイトはありません",
+  "empty_body": "少なくとも3つの日次記録を追加して、直近1週間のパターンを生成します。",
+  "latest": "最新",
+  "history": "履歴",
+  "crisis_label": "サポート",
+  "fallback_error": "今はインサイトを読み込めません。"
+}

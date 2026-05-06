@@ -9,6 +9,7 @@
     "android": "expo start --android",
     "web": "expo start --web",
     "lint": "eslint .",
+    "validate:i18n": "node scripts/validate-i18n.cjs",
     "typecheck": "tsc --noEmit",
     "test": "jest"
   },

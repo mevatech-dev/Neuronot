@@ -1,0 +1,24 @@
+{
+  "title": "今天怎么样？",
+  "subtitle": "快速点五下，就这样。",
+  "submit": "保存记录",
+  "submitting": "正在保存…",
+  "submitted": "已记录，明天见。",
+  "already_logged": "今天已经记录过了。",
+  "card": {
+    "today": "今天",
+    "empty_cta": "添加今天的记录",
+    "summary": "专注 {{focus}} · 精力 {{energy}}"
+  },
+  "fields": {
+    "focus": "专注",
+    "energy": "精力",
+    "forgetfulness": "健忘",
+    "stress": "压力",
+    "sleep_quality": "睡眠质量"
+  },
+  "scale": {
+    "low": "低",
+    "high": "高"
+  }
+}

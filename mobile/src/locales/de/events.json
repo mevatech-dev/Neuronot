@@ -1,0 +1,18 @@
+{
+  "add": "Ereignis hinzufügen",
+  "add_subtitle": "Notiere etwas, das gerade passiert ist.",
+  "submit": "Speichern",
+  "intensity": "Wie intensiv?",
+  "note_placeholder": "Optionale Notiz…",
+  "delete": "Löschen",
+  "types": {
+    "headache": "Kopfschmerz",
+    "brain_fog": "Brain Fog",
+    "forgetfulness": "Vergesslicher Moment",
+    "distraction": "Fokus verloren",
+    "mental_fatigue": "Mentale Müdigkeit"
+  },
+  "card": {
+    "intensity_short": "Intensität {{value}}/5"
+  }
+}

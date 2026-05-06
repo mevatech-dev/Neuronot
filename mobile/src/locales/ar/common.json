@@ -1,1 +1,43 @@
-{}
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "افهم أنماطك الشخصية"
+  },
+  "actions": {
+    "continue": "متابعة",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "back": "رجوع",
+    "done": "تم",
+    "retry": "إعادة المحاولة"
+  },
+  "auth": {
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "no_account": "ليس لديك حساب؟",
+    "have_account": "هل لديك حساب بالفعل؟",
+    "loading": "لحظة من فضلك…"
+  },
+  "tabs": {
+    "home": "الرئيسية",
+    "timeline": "الخط الزمني",
+    "insights": "الرؤى",
+    "settings": "الإعدادات"
+  },
+  "settings": {
+    "language": {
+      "title": "اللغة",
+      "beta": "تجريبي"
+    },
+    "theme": {
+      "title": "المظهر",
+      "system": "مطابقة النظام",
+      "light": "فاتح",
+      "dark": "داكن"
+    }
+  }
+}

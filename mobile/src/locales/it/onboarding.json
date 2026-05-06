@@ -1,0 +1,29 @@
+{
+  "title": "Let us get to know you",
+  "subtitle": "A few quick questions to tailor what we follow.",
+  "skip": "Skip",
+  "next": "Continua",
+  "back": "Indietro",
+  "finish": "Get started",
+  "progress": "Step {{current}} of {{total}}",
+  "step1": {
+    "title": "What do you struggle with most?",
+    "options": {
+      "focus": "Focus",
+      "energy": "Energia",
+      "headache": "Mal di testa",
+      "sleep": "Sonno",
+      "forgetfulness": "Dimenticanze"
+    }
+  },
+  "step2": {
+    "title": "How much does it affect you?",
+    "scale_low": "Barely",
+    "scale_high": "A lot"
+  },
+  "step3": {
+    "title": "A bit about your day",
+    "sleep_label": "Average sleep (hours)",
+    "caffeine_label": "Daily caffeine?"
+  }
+}

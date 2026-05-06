@@ -1,0 +1,12 @@
+{
+  "title": "Insights",
+  "subtitle": "Observaciones breves de tus registros recientes.",
+  "generate": "Generar insight",
+  "generating": "Generando…",
+  "empty_title": "Aún no hay insights",
+  "empty_body": "Añade al menos tres registros diarios y genera un insight del patrón de la última semana.",
+  "latest": "Más reciente",
+  "history": "Historial",
+  "crisis_label": "Apoyo",
+  "fallback_error": "No pudimos cargar los insights ahora."
+}

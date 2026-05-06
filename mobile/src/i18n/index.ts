@@ -1,24 +1,10 @@
 import * as Localization from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { I18nManager } from 'react-native';
 import 'intl-pluralrules';
 
-import enCommon from '@/locales/en/common.json';
-import enCrisis from '@/locales/en/crisis.json';
-import enDailyLog from '@/locales/en/daily-log.json';
-import enErrors from '@/locales/en/errors.json';
-import enEvents from '@/locales/en/events.json';
-import enInsights from '@/locales/en/insights.json';
-import enOnboarding from '@/locales/en/onboarding.json';
-import enTimeline from '@/locales/en/timeline.json';
-import trCommon from '@/locales/tr/common.json';
-import trCrisis from '@/locales/tr/crisis.json';
-import trDailyLog from '@/locales/tr/daily-log.json';
-import trErrors from '@/locales/tr/errors.json';
-import trEvents from '@/locales/tr/events.json';
-import trInsights from '@/locales/tr/insights.json';
-import trOnboarding from '@/locales/tr/onboarding.json';
-import trTimeline from '@/locales/tr/timeline.json';
+import { resources } from './resources';
 
 export const SUPPORTED_LANGUAGES = [
   'en', 'tr', 'es', 'de', 'fr', 'pt', 'it', 'ar', 'ru', 'ja', 'zh',
@@ -29,30 +15,6 @@ export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export const BETA_LANGUAGES = new Set<SupportedLanguage>(['ar']);
 export const RTL_LANGUAGES = new Set<SupportedLanguage>(['ar']);
 
-const resources = {
-  en: {
-    common: enCommon,
-    crisis: enCrisis,
-    errors: enErrors,
-    onboarding: enOnboarding,
-    'daily-log': enDailyLog,
-    events: enEvents,
-    insights: enInsights,
-    timeline: enTimeline,
-  },
-  tr: {
-    common: trCommon,
-    crisis: trCrisis,
-    errors: trErrors,
-    onboarding: trOnboarding,
-    'daily-log': trDailyLog,
-    events: trEvents,
-    insights: trInsights,
-    timeline: trTimeline,
-  },
-  // Other locales loaded as their JSON files are populated (Hafta 4).
-};
-
 function deviceLanguage(): SupportedLanguage {
   const locales = Localization.getLocales();
   const tag = locales[0]?.languageCode ?? 'en';
@@ -61,9 +23,13 @@ function deviceLanguage(): SupportedLanguage {
     : 'en';
 }
 
+const initialLanguage = deviceLanguage();
+I18nManager.allowRTL(true);
+I18nManager.forceRTL(RTL_LANGUAGES.has(initialLanguage));
+
 void i18n.use(initReactI18next).init({
   resources,
-  lng: deviceLanguage(),
+  lng: initialLanguage,
   fallbackLng: 'en',
   ns: ['common', 'errors', 'onboarding', 'daily-log', 'events', 'timeline', 'insights', 'crisis'],
   defaultNS: 'common',
@@ -71,5 +37,10 @@ void i18n.use(initReactI18next).init({
   returnNull: false,
   compatibilityJSON: 'v4',
 });
+
+export function setAppLanguage(language: SupportedLanguage) {
+  I18nManager.forceRTL(RTL_LANGUAGES.has(language));
+  return i18n.changeLanguage(language);
+}
 
 export default i18n;

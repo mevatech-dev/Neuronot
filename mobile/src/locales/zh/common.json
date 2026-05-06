@@ -1,1 +1,43 @@
-{}
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "理解你自己的模式"
+  },
+  "actions": {
+    "continue": "继续",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "back": "返回",
+    "done": "完成",
+    "retry": "重试"
+  },
+  "auth": {
+    "email": "邮箱",
+    "password": "密码",
+    "login": "登录",
+    "register": "创建账户",
+    "logout": "退出登录",
+    "no_account": "还没有账户？",
+    "have_account": "已经有账户？",
+    "loading": "请稍等…"
+  },
+  "tabs": {
+    "home": "首页",
+    "timeline": "时间线",
+    "insights": "洞察",
+    "settings": "设置"
+  },
+  "settings": {
+    "language": {
+      "title": "语言",
+      "beta": "测试版"
+    },
+    "theme": {
+      "title": "主题",
+      "system": "跟随系统",
+      "light": "浅色",
+      "dark": "深色"
+    }
+  }
+}

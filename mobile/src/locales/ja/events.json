@@ -1,0 +1,18 @@
+{
+  "add": "イベントを追加",
+  "add_subtitle": "今起きたことを記録します。",
+  "submit": "保存",
+  "intensity": "強さは？",
+  "note_placeholder": "任意メモ…",
+  "delete": "削除",
+  "types": {
+    "headache": "頭痛",
+    "brain_fog": "ブレインフォグ",
+    "forgetfulness": "物忘れの瞬間",
+    "distraction": "集中が切れた",
+    "mental_fatigue": "精神的疲労"
+  },
+  "card": {
+    "intensity_short": "強度 {{value}}/5"
+  }
+}

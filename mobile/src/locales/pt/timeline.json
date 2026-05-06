@@ -1,0 +1,12 @@
+{
+  "title": "Linha do tempo",
+  "empty_title": "Nothing yet",
+  "empty_body": "Add a daily log or event to start your timeline.",
+  "loading_more": "Loading more…",
+  "headers": {
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "this_week": "Esta semana",
+    "earlier": "Antes"
+  }
+}

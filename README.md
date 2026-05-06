@@ -67,3 +67,4 @@ neuronot/
 - [ARCHITECTURE](docs/ARCHITECTURE.md) — teknik kararlar, sınırlar, patternler
 - [ADR](docs/adr/) — mimari karar kayıtları
 - [api-errors](docs/api-errors.md) — error code katalog
+- [Hafta 4 Verification](docs/HAFTA4_VERIFICATION.md) — 11 dil i18n ve RTL smoke test

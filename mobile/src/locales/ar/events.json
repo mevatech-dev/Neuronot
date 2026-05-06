@@ -1,0 +1,18 @@
+{
+  "add": "أضف حدثاً",
+  "add_subtitle": "دوّن شيئاً حدث للتو.",
+  "submit": "حفظ",
+  "intensity": "ما شدة ذلك؟",
+  "note_placeholder": "ملاحظة اختيارية…",
+  "delete": "حذف",
+  "types": {
+    "headache": "صداع",
+    "brain_fog": "ضباب ذهني",
+    "forgetfulness": "لحظة نسيان",
+    "distraction": "فقدان التركيز",
+    "mental_fatigue": "إرهاق ذهني"
+  },
+  "card": {
+    "intensity_short": "الشدة {{value}}/5"
+  }
+}

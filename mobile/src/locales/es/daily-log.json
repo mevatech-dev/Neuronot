@@ -1,0 +1,24 @@
+{
+  "title": "¿Cómo fue hoy?",
+  "subtitle": "Cinco toques rápidos. Eso es todo.",
+  "submit": "Guardar registro",
+  "submitting": "Guardando…",
+  "submitted": "Registrado. Hasta mañana.",
+  "already_logged": "Ya registraste el día de hoy.",
+  "card": {
+    "today": "Hoy",
+    "empty_cta": "Añadir registro de hoy",
+    "summary": "Concentración {{focus}} · Energía {{energy}}"
+  },
+  "fields": {
+    "focus": "Concentración",
+    "energy": "Energía",
+    "forgetfulness": "Olvidos",
+    "stress": "Estrés",
+    "sleep_quality": "Calidad del sueño"
+  },
+  "scale": {
+    "low": "Bajo",
+    "high": "Alto"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "title": "让我们了解你",
+  "subtitle": "几个简短问题，用来调整跟踪内容。",
+  "skip": "跳过",
+  "next": "继续",
+  "back": "返回",
+  "finish": "开始",
+  "progress": "第 {{current}} / {{total}} 步",
+  "step1": {
+    "title": "你最困扰的是什么？",
+    "options": {
+      "focus": "专注",
+      "energy": "精力",
+      "headache": "头痛",
+      "sleep": "睡眠",
+      "forgetfulness": "健忘"
+    }
+  },
+  "step2": {
+    "title": "它对你的影响有多大？",
+    "scale_low": "几乎没有",
+    "scale_high": "很多"
+  },
+  "step3": {
+    "title": "关于你的一天",
+    "sleep_label": "平均睡眠（小时）",
+    "caffeine_label": "每天摄入咖啡因？"
+  }
+}

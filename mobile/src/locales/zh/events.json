@@ -1,0 +1,18 @@
+{
+  "add": "添加事件",
+  "add_subtitle": "记录刚刚发生的事情。",
+  "submit": "保存",
+  "intensity": "强度如何？",
+  "note_placeholder": "可选备注…",
+  "delete": "删除",
+  "types": {
+    "headache": "头痛",
+    "brain_fog": "脑雾",
+    "forgetfulness": "健忘时刻",
+    "distraction": "注意力中断",
+    "mental_fatigue": "心理疲劳"
+  },
+  "card": {
+    "intensity_short": "强度 {{value}}/5"
+  }
+}

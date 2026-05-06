@@ -1,0 +1,24 @@
+{
+  "title": "كيف كان اليوم؟",
+  "subtitle": "خمس نقرات سريعة فقط.",
+  "submit": "حفظ السجل",
+  "submitting": "جارٍ الحفظ…",
+  "submitted": "تم التسجيل. نراك غداً.",
+  "already_logged": "لقد سجلت اليوم بالفعل.",
+  "card": {
+    "today": "اليوم",
+    "empty_cta": "أضف سجل اليوم",
+    "summary": "التركيز {{focus}} · الطاقة {{energy}}"
+  },
+  "fields": {
+    "focus": "التركيز",
+    "energy": "الطاقة",
+    "forgetfulness": "النسيان",
+    "stress": "التوتر",
+    "sleep_quality": "جودة النوم"
+  },
+  "scale": {
+    "low": "منخفض",
+    "high": "مرتفع"
+  }
+}

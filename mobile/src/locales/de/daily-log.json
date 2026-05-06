@@ -1,0 +1,24 @@
+{
+  "title": "Wie war dein Tag?",
+  "subtitle": "Fünf schnelle Taps. Mehr nicht.",
+  "submit": "Eintrag speichern",
+  "submitting": "Speichern…",
+  "submitted": "Gespeichert. Bis morgen.",
+  "already_logged": "Du hast heute bereits einen Eintrag gemacht.",
+  "card": {
+    "today": "Heute",
+    "empty_cta": "Heutigen Eintrag hinzufügen",
+    "summary": "Fokus {{focus}} · Energie {{energy}}"
+  },
+  "fields": {
+    "focus": "Fokus",
+    "energy": "Energie",
+    "forgetfulness": "Vergesslichkeit",
+    "stress": "Stress",
+    "sleep_quality": "Schlafqualität"
+  },
+  "scale": {
+    "low": "Niedrig",
+    "high": "Hoch"
+  }
+}
