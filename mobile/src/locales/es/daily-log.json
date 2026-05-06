@@ -8,7 +8,8 @@
   "card": {
     "today": "Hoy",
     "empty_cta": "Añadir registro de hoy",
-    "summary": "Concentración {{focus}} · Energía {{energy}}"
+    "summary": "Concentración {{focus}} · Energía {{energy}}",
+    "tap_to_edit": "Toca para ajustar"
   },
   "fields": {
     "focus": "Concentración",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "Bajo",
     "high": "Alto"
+  },
+  "edit": {
+    "title": "Ajustar el registro de hoy",
+    "saved": "Registro actualizado"
   }
 }

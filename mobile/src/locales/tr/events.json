@@ -14,5 +14,11 @@
   },
   "card": {
     "intensity_short": "Şiddet {{value}}/5"
+  },
+  "edit": {
+    "title": "Olayı düzenle",
+    "saved": "Olay güncellendi",
+    "deleted": "Olay silindi",
+    "type": "Tür"
   }
 }

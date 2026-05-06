@@ -8,7 +8,8 @@
   "card": {
     "today": "Oggi",
     "empty_cta": "Add today’s log",
-    "summary": "Focus {{focus}} · Energia {{energy}}"
+    "summary": "Focus {{focus}} · Energia {{energy}}",
+    "tap_to_edit": "Tocca per modificare"
   },
   "fields": {
     "focus": "Focus",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "Basso",
     "high": "Alto"
+  },
+  "edit": {
+    "title": "Modifica la voce di oggi",
+    "saved": "Voce aggiornata"
   }
 }

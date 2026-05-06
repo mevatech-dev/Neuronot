@@ -8,7 +8,8 @@
   "card": {
     "today": "Today",
     "empty_cta": "Add today's log",
-    "summary": "Focus {{focus}} · Energy {{energy}}"
+    "summary": "Focus {{focus}} · Energy {{energy}}",
+    "tap_to_edit": "Tap to adjust"
   },
   "fields": {
     "focus": "Focus",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "Low",
     "high": "High"
+  },
+  "edit": {
+    "title": "Adjust today's log",
+    "saved": "Log updated"
   }
 }

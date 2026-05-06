@@ -14,5 +14,11 @@
   },
   "card": {
     "intensity_short": "Intensity {{value}}/5"
+  },
+  "edit": {
+    "title": "Modifica evento",
+    "saved": "Evento aggiornato",
+    "deleted": "Evento rimosso",
+    "type": "Tipo"
   }
 }

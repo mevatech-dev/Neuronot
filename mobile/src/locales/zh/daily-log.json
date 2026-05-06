@@ -8,7 +8,8 @@
   "card": {
     "today": "今天",
     "empty_cta": "添加今天的记录",
-    "summary": "专注 {{focus}} · 精力 {{energy}}"
+    "summary": "专注 {{focus}} · 精力 {{energy}}",
+    "tap_to_edit": "点按以调整"
   },
   "fields": {
     "focus": "专注",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "低",
     "high": "高"
+  },
+  "edit": {
+    "title": "调整今天的记录",
+    "saved": "记录已更新"
   }
 }

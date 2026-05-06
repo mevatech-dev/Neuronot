@@ -8,7 +8,8 @@
   "card": {
     "today": "Heute",
     "empty_cta": "Heutigen Eintrag hinzufügen",
-    "summary": "Fokus {{focus}} · Energie {{energy}}"
+    "summary": "Fokus {{focus}} · Energie {{energy}}",
+    "tap_to_edit": "Tippen zum Anpassen"
   },
   "fields": {
     "focus": "Fokus",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "Niedrig",
     "high": "Hoch"
+  },
+  "edit": {
+    "title": "Heutigen Eintrag anpassen",
+    "saved": "Eintrag aktualisiert"
   }
 }

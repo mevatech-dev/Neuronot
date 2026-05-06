@@ -8,9 +8,11 @@ import { useTheme } from '@/theme';
 
 type Props = {
   onTapEmpty: () => void;
+  /** Called when an existing log is tapped — parent opens the edit sheet. */
+  onTapEdit?: (log: DailyLogResponse) => void;
 };
 
-export function DailyLogCard({ onTapEmpty }: Props) {
+export function DailyLogCard({ onTapEmpty, onTapEdit }: Props) {
   const { t } = useTranslation('daily-log');
   const theme = useTheme();
 
@@ -57,7 +59,9 @@ export function DailyLogCard({ onTapEmpty }: Props) {
   }
 
   return (
-    <View
+    <Pressable
+      onPress={() => onTapEdit?.(log)}
+      disabled={!onTapEdit}
       style={{
         padding: theme.space[5],
         borderRadius: theme.radius.lg,
@@ -78,6 +82,17 @@ export function DailyLogCard({ onTapEmpty }: Props) {
       >
         {t('card.summary', { focus: log.focus, energy: log.energy })}
       </Text>
-    </View>
+      {onTapEdit && (
+        <Text
+          style={{
+            ...theme.typography.caption,
+            color: theme.colors.text.muted,
+            marginTop: theme.space[2],
+          }}
+        >
+          {t('card.tap_to_edit')}
+        </Text>
+      )}
+    </Pressable>
   );
 }

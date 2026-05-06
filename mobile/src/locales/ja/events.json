@@ -14,5 +14,11 @@
   },
   "card": {
     "intensity_short": "強度 {{value}}/5"
+  },
+  "edit": {
+    "title": "イベントを編集",
+    "saved": "イベントを更新しました",
+    "deleted": "イベントを削除しました",
+    "type": "タイプ"
   }
 }

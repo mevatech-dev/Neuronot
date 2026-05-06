@@ -1,20 +1,22 @@
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 import type { TimelineItem as ItemT } from '@/services/api/timeline';
 import { useTheme } from '@/theme';
 
 import { formatRelative } from '../utils';
 
-type Props = { item: ItemT; locale: string };
+type Props = { item: ItemT; locale: string; onPress?: (item: ItemT) => void };
 
-export function TimelineItem({ item, locale }: Props) {
+export function TimelineItem({ item, locale, onPress }: Props) {
   const { t } = useTranslation(['daily-log', 'events']);
   const theme = useTheme();
   const at = new Date(item.at);
 
   return (
-    <View
+    <Pressable
+      onPress={() => onPress?.(item)}
+      disabled={!onPress}
       style={{
         padding: theme.space[4],
         borderRadius: theme.radius.md,
@@ -70,6 +72,6 @@ export function TimelineItem({ item, locale }: Props) {
           ) : null}
         </View>
       )}
-    </View>
+    </Pressable>
   );
 }

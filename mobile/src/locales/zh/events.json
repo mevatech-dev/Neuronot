@@ -14,5 +14,11 @@
   },
   "card": {
     "intensity_short": "强度 {{value}}/5"
+  },
+  "edit": {
+    "title": "编辑事件",
+    "saved": "已更新事件",
+    "deleted": "已删除事件",
+    "type": "类型"
   }
 }

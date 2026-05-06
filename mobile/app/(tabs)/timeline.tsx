@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, SafeAreaView, Text, View } from 'react-native';
 
@@ -7,8 +7,12 @@ import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { LoadingDots } from '@/components/feedback/LoadingDots';
 import { Skeleton } from '@/components/feedback/Skeleton';
+import { DailyLogEditSheet } from '@/features/daily-log/DailyLogEditSheet';
+import { EventEditSheet } from '@/features/events/EventEditSheet';
 import { TimelineItem } from '@/features/timeline/TimelineItem';
 import { bucketOf } from '@/features/timeline/utils';
+import { type DailyLogResponse } from '@/services/api/dailylog';
+import { type EventResponse } from '@/services/api/events';
 import { getTimeline, type TimelineItem as ItemT } from '@/services/api/timeline';
 import { useTheme } from '@/theme';
 
@@ -17,6 +21,9 @@ type Row = { kind: 'header'; key: string; label: string } | { kind: 'item'; key:
 export default function TimelineScreen() {
   const { t, i18n } = useTranslation('timeline');
   const theme = useTheme();
+
+  const [editingLog, setEditingLog] = useState<DailyLogResponse | null>(null);
+  const [editingEvent, setEditingEvent] = useState<EventResponse | null>(null);
 
   const query = useInfiniteQuery({
     queryKey: ['timeline'],
@@ -39,6 +46,32 @@ export default function TimelineScreen() {
     }
     return out;
   }, [query.data, t]);
+
+  const onPress = (item: ItemT) => {
+    if (item.kind === 'daily_log') {
+      // Build a minimal DailyLogResponse — sheet only needs id + slider fields.
+      // logged_at and updated_at are not displayed inside the sheet.
+      setEditingLog({
+        id: item.id,
+        focus: item.daily_log.focus,
+        energy: item.daily_log.energy,
+        forgetfulness: item.daily_log.forgetfulness,
+        stress: item.daily_log.stress,
+        sleep_quality: item.daily_log.sleep_quality,
+        logged_at: item.at,
+        updated_at: item.at,
+      });
+    } else {
+      setEditingEvent({
+        id: item.id,
+        type: item.event.type,
+        intensity: item.event.intensity,
+        note: item.event.note ?? null,
+        occurred_at: item.at,
+        updated_at: item.at,
+      });
+    }
+  };
 
   if (query.isLoading) {
     return (
@@ -115,7 +148,7 @@ export default function TimelineScreen() {
               {item.label}
             </Text>
           ) : (
-            <TimelineItem item={item.item} locale={i18n.language} />
+            <TimelineItem item={item.item} locale={i18n.language} onPress={onPress} />
           )
         }
         ListFooterComponent={
@@ -133,6 +166,17 @@ export default function TimelineScreen() {
             </View>
           ) : null
         }
+      />
+
+      <DailyLogEditSheet
+        visible={editingLog !== null}
+        log={editingLog}
+        onClose={() => setEditingLog(null)}
+      />
+      <EventEditSheet
+        visible={editingEvent !== null}
+        event={editingEvent}
+        onClose={() => setEditingEvent(null)}
       />
     </SafeAreaView>
   );

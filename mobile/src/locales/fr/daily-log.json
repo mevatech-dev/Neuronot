@@ -8,7 +8,8 @@
   "card": {
     "today": "Aujourd’hui",
     "empty_cta": "Ajouter le journal du jour",
-    "summary": "Concentration {{focus}} · Énergie {{energy}}"
+    "summary": "Concentration {{focus}} · Énergie {{energy}}",
+    "tap_to_edit": "Toucher pour ajuster"
   },
   "fields": {
     "focus": "Concentration",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "Bas",
     "high": "Élevé"
+  },
+  "edit": {
+    "title": "Ajuster la saisie d'aujourd'hui",
+    "saved": "Saisie mise à jour"
   }
 }

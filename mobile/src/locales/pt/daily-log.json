@@ -8,7 +8,8 @@
   "card": {
     "today": "Hoje",
     "empty_cta": "Add today’s log",
-    "summary": "Foco {{focus}} · Energia {{energy}}"
+    "summary": "Foco {{focus}} · Energia {{energy}}",
+    "tap_to_edit": "Toca para ajustar"
   },
   "fields": {
     "focus": "Foco",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "Baixo",
     "high": "Alto"
+  },
+  "edit": {
+    "title": "Ajustar registo de hoje",
+    "saved": "Registo atualizado"
   }
 }

@@ -5,11 +5,13 @@ import Animated from 'react-native-reanimated';
 
 import { NeuroMascot } from '@/components/brand/NeuroMascot';
 import { DailyLogCard } from '@/features/daily-log/DailyLogCard';
+import { DailyLogEditSheet } from '@/features/daily-log/DailyLogEditSheet';
 import { QuickLogSheet } from '@/features/daily-log/QuickLogSheet';
 import { EventQuickAdd } from '@/features/events/EventQuickAdd';
 import { WeeklySummaryCard } from '@/features/summary/WeeklySummaryCard';
 import { useFadeIn } from '@/hooks/useFadeIn';
 import { useHapticPress } from '@/hooks/useHapticPress';
+import { type DailyLogResponse } from '@/services/api/dailylog';
 import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
 
@@ -22,6 +24,7 @@ export default function HomeScreen() {
 
   const [logSheetVisible, setLogSheetVisible] = useState(false);
   const [eventSheetVisible, setEventSheetVisible] = useState(false);
+  const [editingLog, setEditingLog] = useState<DailyLogResponse | null>(null);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
@@ -47,7 +50,10 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <DailyLogCard onTapEmpty={() => setLogSheetVisible(true)} />
+        <DailyLogCard
+          onTapEmpty={() => setLogSheetVisible(true)}
+          onTapEdit={(log) => setEditingLog(log)}
+        />
 
         <WeeklySummaryCard />
       </Animated.ScrollView>
@@ -86,6 +92,11 @@ export default function HomeScreen() {
 
       <QuickLogSheet visible={logSheetVisible} onClose={() => setLogSheetVisible(false)} />
       <EventQuickAdd visible={eventSheetVisible} onClose={() => setEventSheetVisible(false)} />
+      <DailyLogEditSheet
+        visible={editingLog !== null}
+        log={editingLog}
+        onClose={() => setEditingLog(null)}
+      />
     </SafeAreaView>
   );
 }

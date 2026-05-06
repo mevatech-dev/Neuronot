@@ -8,7 +8,8 @@
   "card": {
     "today": "اليوم",
     "empty_cta": "أضف سجل اليوم",
-    "summary": "التركيز {{focus}} · الطاقة {{energy}}"
+    "summary": "التركيز {{focus}} · الطاقة {{energy}}",
+    "tap_to_edit": "اضغط للتعديل"
   },
   "fields": {
     "focus": "التركيز",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "منخفض",
     "high": "مرتفع"
+  },
+  "edit": {
+    "title": "تعديل سجل اليوم",
+    "saved": "تم تحديث السجل"
   }
 }

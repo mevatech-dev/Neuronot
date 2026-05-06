@@ -8,7 +8,8 @@
   "card": {
     "today": "Bugün",
     "empty_cta": "Bugünün kaydını ekle",
-    "summary": "Odak {{focus}} · Enerji {{energy}}"
+    "summary": "Odak {{focus}} · Enerji {{energy}}",
+    "tap_to_edit": "Düzenlemek için dokun"
   },
   "fields": {
     "focus": "Odak",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "Düşük",
     "high": "Yüksek"
+  },
+  "edit": {
+    "title": "Bugünün kaydını düzenle",
+    "saved": "Kayıt güncellendi"
   }
 }

@@ -8,7 +8,8 @@
   "card": {
     "today": "今日",
     "empty_cta": "今日の記録を追加",
-    "summary": "集中 {{focus}} · エネルギー {{energy}}"
+    "summary": "集中 {{focus}} · エネルギー {{energy}}",
+    "tap_to_edit": "タップして編集"
   },
   "fields": {
     "focus": "集中",
@@ -20,5 +21,9 @@
   "scale": {
     "low": "低い",
     "high": "高い"
+  },
+  "edit": {
+    "title": "今日のログを編集",
+    "saved": "ログを更新しました"
   }
 }
