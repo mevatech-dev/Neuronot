@@ -7,6 +7,9 @@ export type ProfileResponse = {
   avg_sleep_hours: number | null;
   caffeine_daily: boolean | null;
   onboarding_completed_at: string | null;
+  timezone: string;
+  reminder_hour: number | null;
+  reminder_enabled: boolean;
   updated_at: string;
 };
 
@@ -16,6 +19,9 @@ export type ProfilePatch = {
   avg_sleep_hours?: number;
   caffeine_daily?: boolean;
   complete_onboarding?: boolean;
+  timezone?: string;
+  reminder_hour?: number;
+  reminder_enabled?: boolean;
 };
 
 export function getProfile() {

@@ -25,6 +25,12 @@ module.exports = [
           ignoreCallee: ['t', 'i18next.t', 'translate'],
         },
       ],
+      // Reanimated's SharedValue.value mutation pattern is idiomatic. The
+      // newer react-hooks/immutability rule treats it as a hook argument
+      // mutation, which produces false positives for every animation hook.
+      'react-hooks/immutability': 'off',
+      // Style preference, not a correctness rule.
+      '@typescript-eslint/array-type': 'off',
     },
   },
   {

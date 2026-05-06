@@ -85,6 +85,17 @@ export const fontWeight = {
   bold: '700',
 } as const;
 
+/**
+ * Nunito Sans is loaded at app start via expo-font (`@expo-google-fonts/nunito-sans`).
+ * The app must wait for these to be ready before un-hiding the splash screen.
+ */
+export const fontFamily = {
+  regular: 'NunitoSans_400Regular',
+  medium: 'NunitoSans_500Medium',
+  semibold: 'NunitoSans_600SemiBold',
+  bold: 'NunitoSans_700Bold',
+} as const;
+
 export const lineHeight = {
   tight: 1.2,
   normal: 1.45,
@@ -96,3 +107,4 @@ export type Space = typeof space;
 export type Radius = typeof radius;
 export type FontSize = typeof fontSize;
 export type FontWeight = typeof fontWeight;
+export type FontFamily = typeof fontFamily;

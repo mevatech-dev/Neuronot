@@ -16,12 +16,20 @@ export type EventResponse = {
   intensity: number;
   note: string | null;
   occurred_at: string;
+  updated_at: string;
 };
 
 export type EventCreate = {
   type: EventType;
   intensity: number;
   note?: string;
+  occurred_at?: string;
+};
+
+export type EventUpdate = {
+  type?: EventType;
+  intensity?: number;
+  note?: string | null;
   occurred_at?: string;
 };
 
@@ -40,4 +48,12 @@ export function listEvents(cursor?: string, limit = 20) {
 
 export function deleteEvent(id: string) {
   return request<{ status: string }>({ method: 'DELETE', url: `/v1/events/${id}` });
+}
+
+export function updateEvent(id: string, patch: EventUpdate) {
+  return request<EventResponse>({
+    method: 'PATCH',
+    url: `/v1/events/${id}`,
+    data: patch,
+  });
 }

@@ -8,6 +8,15 @@ export type DailyLogResponse = {
   stress: number;
   sleep_quality: number;
   logged_at: string;
+  updated_at: string;
+};
+
+export type DailyLogUpdate = {
+  focus?: number;
+  energy?: number;
+  forgetfulness?: number;
+  stress?: number;
+  sleep_quality?: number;
 };
 
 export type DailyLogCreate = {
@@ -37,5 +46,13 @@ export function listDailyLogs(cursor?: string, limit = 20) {
     method: 'GET',
     url: '/v1/daily-logs',
     params: { cursor, limit },
+  });
+}
+
+export function updateDailyLog(id: string, patch: DailyLogUpdate) {
+  return request<DailyLogResponse>({
+    method: 'PATCH',
+    url: `/v1/daily-logs/${id}`,
+    data: patch,
   });
 }
