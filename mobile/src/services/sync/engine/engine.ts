@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/store/auth';
 import { useSyncStore } from '@/store/sync';
 
 import { pullDelta } from '../pull';
@@ -56,4 +57,13 @@ export async function runCycle(userId: string, opts: SyncCycleOptions = {}): Pro
  */
 export function scheduleCycle(userId: string, opts?: SyncCycleOptions): void {
   void runCycle(userId, opts);
+}
+
+/**
+ * Convenience for mutation handlers: pulls userId from the auth store and
+ * schedules a cycle. No-op when logged out.
+ */
+export function scheduleCycleForCurrentUser(opts?: SyncCycleOptions): void {
+  const id = useAuthStore.getState().user?.id;
+  if (id) scheduleCycle(id, opts);
 }

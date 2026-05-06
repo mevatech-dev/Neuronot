@@ -7,6 +7,7 @@ import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'rea
 import { SegmentScale } from '@/features/onboarding/Slider';
 import { ApiError } from '@/services/api/client';
 import { createDailyLog, type DailyLogResponse } from '@/services/api/dailylog';
+import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
 import { useTheme } from '@/theme';
 
 type Props = {
@@ -46,6 +47,8 @@ export function QuickLogSheet({ visible, onClose }: Props) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       qc.setQueryData(['daily-log', 'today'], data);
       void qc.invalidateQueries({ queryKey: ['timeline'] });
+      void qc.invalidateQueries({ queryKey: ['summary', 'weekly'] });
+      scheduleCycleForCurrentUser();
       reset();
       onClose();
     },

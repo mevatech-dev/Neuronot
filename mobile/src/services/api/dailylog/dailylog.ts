@@ -1,4 +1,4 @@
-import { request } from '../client';
+import { request, requestNullable } from '../client';
 
 export type DailyLogResponse = {
   id: string;
@@ -38,7 +38,7 @@ export function createDailyLog(data: DailyLogCreate) {
 }
 
 export function getTodayLog() {
-  return request<DailyLogResponse | null>({ method: 'GET', url: '/v1/daily-logs/today' });
+  return requestNullable<DailyLogResponse>({ method: 'GET', url: '/v1/daily-logs/today' });
 }
 
 export function listDailyLogs(cursor?: string, limit = 20) {

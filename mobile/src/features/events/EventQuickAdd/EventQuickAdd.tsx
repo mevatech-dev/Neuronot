@@ -8,6 +8,7 @@ import { SegmentScale } from '@/features/onboarding/Slider';
 import { ApiError } from '@/services/api/client';
 import { createEvent, EVENT_TYPES, type EventType } from '@/services/api/events';
 import { getProfile } from '@/services/api/profile';
+import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
 import { useTheme } from '@/theme';
 
 const FOCUS_TO_EVENT: Partial<Record<string, EventType>> = {
@@ -50,6 +51,8 @@ export function EventQuickAdd({ visible, onClose }: Props) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       void qc.invalidateQueries({ queryKey: ['timeline'] });
       void qc.invalidateQueries({ queryKey: ['events'] });
+      void qc.invalidateQueries({ queryKey: ['summary', 'weekly'] });
+      scheduleCycleForCurrentUser();
       reset();
       onClose();
     },

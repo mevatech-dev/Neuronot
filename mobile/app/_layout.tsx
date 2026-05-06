@@ -14,6 +14,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import '@/i18n';
 import { ToastProvider } from '@/components/feedback/Toast';
+import { useSyncLifecycle } from '@/hooks/useSyncLifecycle';
 import { useAuthStore } from '@/store/auth';
 import { ThemeProvider } from '@/theme';
 
@@ -31,6 +32,7 @@ const queryClient = new QueryClient({
 export default function RootLayout() {
   const hydrated = useAuthStore((s) => s.hydrated);
   const hydrate = useAuthStore((s) => s.hydrate);
+  const userId = useAuthStore((s) => s.user?.id ?? null);
 
   const [fontsLoaded] = useFonts({
     NunitoSans_400Regular,
@@ -42,6 +44,8 @@ export default function RootLayout() {
   useEffect(() => {
     void hydrate();
   }, [hydrate]);
+
+  useSyncLifecycle(userId);
 
   useEffect(() => {
     if (hydrated && fontsLoaded) {

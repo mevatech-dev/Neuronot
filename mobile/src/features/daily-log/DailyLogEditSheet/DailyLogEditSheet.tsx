@@ -10,6 +10,7 @@ import { useToast } from '@/components/feedback/Toast';
 import { SegmentScale } from '@/features/onboarding/Slider';
 import { ApiError } from '@/services/api/client';
 import { type DailyLogResponse, updateDailyLog } from '@/services/api/dailylog';
+import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
 import { useTheme } from '@/theme';
 
 type Props = {
@@ -54,6 +55,7 @@ export function DailyLogEditSheet({ visible, log, onClose }: Props) {
       qc.setQueryData(['daily-log', 'today'], data);
       void qc.invalidateQueries({ queryKey: ['timeline'] });
       void qc.invalidateQueries({ queryKey: ['summary', 'weekly'] });
+      scheduleCycleForCurrentUser();
       toast.show({ messageKey: 'daily-log:edit.saved', tone: 'success' });
       onClose();
     },

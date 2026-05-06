@@ -69,6 +69,19 @@ export async function request<T>(config: AxiosRequestConfig): Promise<T> {
   return res.data.data;
 }
 
+/**
+ * Some endpoints legitimately return `data: null` (e.g. /v1/daily-logs/today
+ * before any log exists). Use this variant to surface that as `null` rather
+ * than an EMPTY_RESPONSE exception.
+ */
+export async function requestNullable<T>(config: AxiosRequestConfig): Promise<T | null> {
+  const res = await apiClient.request<ApiEnvelope<T>>(config);
+  if (res.data.error) {
+    throw new ApiError(res.data.error.code, res.data.error.message_key, res.data.error.message);
+  }
+  return res.data.data;
+}
+
 export class ApiError extends Error {
   constructor(public code: string, public messageKey: string, message: string) {
     super(message);

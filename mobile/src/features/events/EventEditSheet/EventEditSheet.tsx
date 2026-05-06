@@ -10,6 +10,7 @@ import { useToast } from '@/components/feedback/Toast';
 import { SegmentScale } from '@/features/onboarding/Slider';
 import { ApiError } from '@/services/api/client';
 import { deleteEvent, EVENT_TYPES, type EventType, updateEvent } from '@/services/api/events';
+import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
 import { useTheme } from '@/theme';
 
 type EditableEvent = {
@@ -48,12 +49,15 @@ export function EventEditSheet({ visible, event, onClose }: Props) {
       updateEvent(event!.id, {
         type,
         intensity,
-        note: note.trim() ? note.trim() : null,
+        // Backend's PATCH applies COALESCE — sending `null` would keep the
+        // old note. Empty string clears it visibly.
+        note: note.trim() ? note.trim() : '',
       }),
     onSuccess: () => {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       void qc.invalidateQueries({ queryKey: ['timeline'] });
       void qc.invalidateQueries({ queryKey: ['events'] });
+      scheduleCycleForCurrentUser();
       toast.show({ messageKey: 'events:edit.saved', tone: 'success' });
       onClose();
     },
@@ -69,6 +73,7 @@ export function EventEditSheet({ visible, event, onClose }: Props) {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       void qc.invalidateQueries({ queryKey: ['timeline'] });
       void qc.invalidateQueries({ queryKey: ['events'] });
+      scheduleCycleForCurrentUser();
       toast.show({ messageKey: 'events:edit.deleted', tone: 'info' });
       onClose();
     },

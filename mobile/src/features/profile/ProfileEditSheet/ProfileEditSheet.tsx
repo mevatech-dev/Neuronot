@@ -11,6 +11,7 @@ import { SegmentScale } from '@/features/onboarding/Slider';
 import { FOCUS_PROBLEMS, type FocusProblem } from '@/features/onboarding/types';
 import { ApiError } from '@/services/api/client';
 import { patchProfile } from '@/services/api/profile';
+import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
 import { useTheme } from '@/theme';
 
 import { profileQuery } from '../queries';
@@ -60,6 +61,7 @@ export function ProfileEditSheet({ visible, onClose }: Props) {
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['profile'] });
+      scheduleCycleForCurrentUser();
       toast.show({ messageKey: 'profile_edit.saved', tone: 'success' });
       onClose();
     },
