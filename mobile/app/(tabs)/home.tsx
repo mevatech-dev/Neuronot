@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { NeuroMascot } from '@/components/brand/NeuroMascot';
 import { DailyLogCard } from '@/features/daily-log/DailyLogCard';
 import { QuickLogSheet } from '@/features/daily-log/QuickLogSheet';
 import { EventQuickAdd } from '@/features/events/EventQuickAdd';
+import { WeeklySummaryCard } from '@/features/summary/WeeklySummaryCard';
+import { useFadeIn } from '@/hooks/useFadeIn';
+import { useHapticPress } from '@/hooks/useHapticPress';
 import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
 
@@ -13,13 +17,18 @@ export default function HomeScreen() {
   const { t } = useTranslation(['common', 'events']);
   const theme = useTheme();
   const user = useAuthStore((s) => s.user);
+  const fade = useFadeIn();
+  const fab = useHapticPress();
 
   const [logSheetVisible, setLogSheetVisible] = useState(false);
   const [eventSheetVisible, setEventSheetVisible] = useState(false);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
-      <ScrollView contentContainerStyle={{ padding: theme.space[6], gap: theme.space[6] }}>
+      <Animated.ScrollView
+        style={fade}
+        contentContainerStyle={{ padding: theme.space[6], gap: theme.space[6] }}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.space[4] }}>
           <NeuroMascot mood="happy" size={72} framed />
           <View style={{ flex: 1 }}>
@@ -39,29 +48,41 @@ export default function HomeScreen() {
         </View>
 
         <DailyLogCard onTapEmpty={() => setLogSheetVisible(true)} />
-      </ScrollView>
 
-      <Pressable
-        onPress={() => setEventSheetVisible(true)}
-        style={{
-          position: 'absolute',
-          right: theme.space[6],
-          bottom: theme.space[6],
-          backgroundColor: theme.colors.accent.default,
-          paddingHorizontal: theme.space[5],
-          paddingVertical: theme.space[4],
-          borderRadius: theme.radius.full,
-          shadowColor: '#000',
-          shadowOpacity: 0.2,
-          shadowRadius: 8,
-          shadowOffset: { width: 0, height: 4 },
-          elevation: 6,
-        }}
+        <WeeklySummaryCard />
+      </Animated.ScrollView>
+
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            right: theme.space[6],
+            bottom: theme.space[6],
+          },
+          fab.style,
+        ]}
       >
-        <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.accent.onAccent }}>
-          {t('add', { ns: 'events' })}
-        </Text>
-      </Pressable>
+        <Pressable
+          onPress={() => setEventSheetVisible(true)}
+          onPressIn={fab.onPressIn}
+          onPressOut={fab.onPressOut}
+          style={{
+            backgroundColor: theme.colors.accent.default,
+            paddingHorizontal: theme.space[5],
+            paddingVertical: theme.space[4],
+            borderRadius: theme.radius.full,
+            shadowColor: '#000',
+            shadowOpacity: 0.2,
+            shadowRadius: 8,
+            shadowOffset: { width: 0, height: 4 },
+            elevation: 6,
+          }}
+        >
+          <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.accent.onAccent }}>
+            {t('add', { ns: 'events' })}
+          </Text>
+        </Pressable>
+      </Animated.View>
 
       <QuickLogSheet visible={logSheetVisible} onClose={() => setLogSheetVisible(false)} />
       <EventQuickAdd visible={eventSheetVisible} onClose={() => setEventSheetVisible(false)} />

@@ -39,5 +39,14 @@
       "light": "Chiaro",
       "dark": "Scuro"
     }
+  },
+  "summary": {
+    "title": "Questa settimana",
+    "log_count_zero": "Nessuna voce questa settimana",
+    "log_count_one": "{{count}} voce",
+    "log_count_other": "{{count}} voci",
+    "focus_avg": "Focus (med.)",
+    "energy_avg": "Energia (med.)",
+    "unavailable": "Riepilogo non ancora disponibile"
   }
 }

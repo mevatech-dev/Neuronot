@@ -39,5 +39,14 @@
       "light": "Claro",
       "dark": "Escuro"
     }
+  },
+  "summary": {
+    "title": "Esta semana",
+    "log_count_zero": "Sem registos esta semana",
+    "log_count_one": "{{count}} registo",
+    "log_count_other": "{{count}} registos",
+    "focus_avg": "Foco (méd.)",
+    "energy_avg": "Energia (méd.)",
+    "unavailable": "Resumo ainda não disponível"
   }
 }

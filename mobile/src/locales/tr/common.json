@@ -39,5 +39,14 @@
       "light": "Açık",
       "dark": "Koyu"
     }
+  },
+  "summary": {
+    "title": "Bu Hafta",
+    "log_count_zero": "Bu hafta giriş yok",
+    "log_count_one": "{{count}} giriş",
+    "log_count_other": "{{count}} giriş",
+    "focus_avg": "Odak (ort.)",
+    "energy_avg": "Enerji (ort.)",
+    "unavailable": "Özet henüz hazır değil"
   }
 }

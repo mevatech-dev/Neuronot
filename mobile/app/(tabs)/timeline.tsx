@@ -1,8 +1,12 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, FlatList, SafeAreaView, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, Text, View } from 'react-native';
 
+import { EmptyState } from '@/components/feedback/EmptyState';
+import { ErrorState } from '@/components/feedback/ErrorState';
+import { LoadingDots } from '@/components/feedback/LoadingDots';
+import { Skeleton } from '@/components/feedback/Skeleton';
 import { TimelineItem } from '@/features/timeline/TimelineItem';
 import { bucketOf } from '@/features/timeline/utils';
 import { getTimeline, type TimelineItem as ItemT } from '@/services/api/timeline';
@@ -38,36 +42,46 @@ export default function TimelineScreen() {
 
   if (query.isLoading) {
     return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
+        <View style={{ paddingHorizontal: theme.space[6], paddingTop: theme.space[4] }}>
+          <Text style={{ ...theme.typography.title, color: theme.colors.text.primary }}>
+            {t('title')}
+          </Text>
+        </View>
+        <View style={{ padding: theme.space[6], gap: theme.space[3] }}>
+          <Skeleton height={56} radius="lg" />
+          <Skeleton height={56} radius="lg" />
+          <Skeleton height={56} radius="lg" />
+          <Skeleton height={56} radius="lg" />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (query.isError) {
+    return (
       <SafeAreaView
         style={{
           flex: 1,
           backgroundColor: theme.colors.surface.primary,
-          alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <ActivityIndicator color={theme.colors.accent.default} />
+        <ErrorState messageKey="errors.generic.network" onRetry={() => query.refetch()} />
       </SafeAreaView>
     );
   }
 
   if (rows.length === 0) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
-        <View style={{ flex: 1, padding: theme.space[6], justifyContent: 'center' }}>
-          <Text style={{ ...theme.typography.title, color: theme.colors.text.primary }}>
-            {t('empty_title')}
-          </Text>
-          <Text
-            style={{
-              ...theme.typography.body,
-              color: theme.colors.text.secondary,
-              marginTop: theme.space[2],
-            }}
-          >
-            {t('empty_body')}
-          </Text>
-        </View>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.surface.primary,
+          justifyContent: 'center',
+        }}
+      >
+        <EmptyState mood="thinking" titleKey="timeline:empty_title" bodyKey="timeline:empty_body" />
       </SafeAreaView>
     );
   }
@@ -106,13 +120,12 @@ export default function TimelineScreen() {
         }
         ListFooterComponent={
           query.isFetchingNextPage ? (
-            <View style={{ padding: theme.space[4], alignItems: 'center' }}>
-              <ActivityIndicator color={theme.colors.accent.default} />
+            <View style={{ padding: theme.space[4], alignItems: 'center', gap: theme.space[2] }}>
+              <LoadingDots />
               <Text
                 style={{
                   ...theme.typography.micro,
                   color: theme.colors.text.muted,
-                  marginTop: theme.space[2],
                 }}
               >
                 {t('loading_more')}

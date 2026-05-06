@@ -39,5 +39,14 @@
       "light": "Claro",
       "dark": "Oscuro"
     }
+  },
+  "summary": {
+    "title": "Esta semana",
+    "log_count_zero": "Sin registros esta semana",
+    "log_count_one": "{{count}} registro",
+    "log_count_other": "{{count}} registros",
+    "focus_avg": "Foco (prom.)",
+    "energy_avg": "Energía (prom.)",
+    "unavailable": "Resumen aún no disponible"
   }
 }

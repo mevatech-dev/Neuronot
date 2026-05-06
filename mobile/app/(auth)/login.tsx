@@ -1,9 +1,13 @@
 import { Link, router } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
+import { Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { NeuroMascot } from '@/components/brand/NeuroMascot';
+import { LoadingDots } from '@/components/feedback/LoadingDots';
+import { useFadeIn } from '@/hooks/useFadeIn';
+import { useHapticPress } from '@/hooks/useHapticPress';
 import { ApiError } from '@/services/api/client';
 import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
@@ -12,6 +16,8 @@ export default function LoginScreen() {
   const { t } = useTranslation(['common', 'errors']);
   const theme = useTheme();
   const login = useAuthStore((s) => s.login);
+  const fade = useFadeIn();
+  const press = useHapticPress();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +40,7 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
-      <View style={{ flex: 1, padding: theme.space[6], justifyContent: 'center' }}>
+      <Animated.View style={[{ flex: 1, padding: theme.space[6], justifyContent: 'center' }, fade]}>
         <View style={{ alignItems: 'center', marginBottom: theme.space[5] }}>
           <NeuroMascot mood="calm" size={112} />
         </View>
@@ -57,6 +63,7 @@ export default function LoginScreen() {
           keyboardType="email-address"
           autoComplete="email"
           style={{
+            ...theme.typography.body,
             backgroundColor: theme.colors.surface.elevated,
             color: theme.colors.text.primary,
             borderColor: theme.colors.border.subtle,
@@ -78,6 +85,7 @@ export default function LoginScreen() {
           secureTextEntry
           autoComplete="password"
           style={{
+            ...theme.typography.body,
             backgroundColor: theme.colors.surface.elevated,
             color: theme.colors.text.primary,
             borderColor: theme.colors.border.subtle,
@@ -96,25 +104,29 @@ export default function LoginScreen() {
           </Text>
         )}
 
-        <Pressable
-          onPress={onSubmit}
-          disabled={submitting}
-          style={{
-            backgroundColor: submitting ? theme.colors.accent.muted : theme.colors.accent.default,
-            paddingVertical: theme.space[4],
-            borderRadius: theme.radius.md,
-            alignItems: 'center',
-            marginBottom: theme.space[4],
-          }}
-        >
-          {submitting ? (
-            <ActivityIndicator color={theme.colors.accent.onAccent} />
-          ) : (
-            <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.accent.onAccent }}>
-              {t('auth.login')}
-            </Text>
-          )}
-        </Pressable>
+        <Animated.View style={press.style}>
+          <Pressable
+            onPress={onSubmit}
+            onPressIn={press.onPressIn}
+            onPressOut={press.onPressOut}
+            disabled={submitting}
+            style={{
+              backgroundColor: submitting ? theme.colors.accent.muted : theme.colors.accent.default,
+              paddingVertical: theme.space[4],
+              borderRadius: theme.radius.md,
+              alignItems: 'center',
+              marginBottom: theme.space[4],
+            }}
+          >
+            {submitting ? (
+              <LoadingDots color={theme.colors.accent.onAccent} />
+            ) : (
+              <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.accent.onAccent }}>
+                {t('auth.login')}
+              </Text>
+            )}
+          </Pressable>
+        </Animated.View>
 
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
           <Text style={{ ...theme.typography.caption, color: theme.colors.text.muted }}>
@@ -126,7 +138,7 @@ export default function LoginScreen() {
             </Text>
           </Link>
         </View>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }

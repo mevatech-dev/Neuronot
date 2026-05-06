@@ -39,5 +39,14 @@
       "light": "Светлая",
       "dark": "Тёмная"
     }
+  },
+  "summary": {
+    "title": "На этой неделе",
+    "log_count_zero": "Записей за неделю нет",
+    "log_count_one": "{{count}} запись",
+    "log_count_other": "{{count}} записей",
+    "focus_avg": "Фокус (среднее)",
+    "energy_avg": "Энергия (среднее)",
+    "unavailable": "Сводка пока недоступна"
   }
 }

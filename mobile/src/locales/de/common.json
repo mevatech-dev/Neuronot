@@ -39,5 +39,14 @@
       "light": "Hell",
       "dark": "Dunkel"
     }
+  },
+  "summary": {
+    "title": "Diese Woche",
+    "log_count_zero": "Diese Woche keine Einträge",
+    "log_count_one": "{{count}} Eintrag",
+    "log_count_other": "{{count}} Einträge",
+    "focus_avg": "Fokus (Ø)",
+    "energy_avg": "Energie (Ø)",
+    "unavailable": "Zusammenfassung noch nicht verfügbar"
   }
 }

@@ -39,5 +39,14 @@
       "light": "Clair",
       "dark": "Sombre"
     }
+  },
+  "summary": {
+    "title": "Cette semaine",
+    "log_count_zero": "Aucune saisie cette semaine",
+    "log_count_one": "{{count}} saisie",
+    "log_count_other": "{{count}} saisies",
+    "focus_avg": "Concentration (moy.)",
+    "energy_avg": "Énergie (moy.)",
+    "unavailable": "Résumé pas encore disponible"
   }
 }

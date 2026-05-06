@@ -39,5 +39,14 @@
       "light": "ライト",
       "dark": "ダーク"
     }
+  },
+  "summary": {
+    "title": "今週",
+    "log_count_zero": "今週はまだログがありません",
+    "log_count_one": "{{count}}件のログ",
+    "log_count_other": "{{count}}件のログ",
+    "focus_avg": "集中力 (平均)",
+    "energy_avg": "エネルギー (平均)",
+    "unavailable": "サマリーはまだ利用できません"
   }
 }

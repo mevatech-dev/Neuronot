@@ -39,5 +39,14 @@
       "light": "浅色",
       "dark": "深色"
     }
+  },
+  "summary": {
+    "title": "本周",
+    "log_count_zero": "本周还没有记录",
+    "log_count_one": "{{count}} 条记录",
+    "log_count_other": "{{count}} 条记录",
+    "focus_avg": "专注 (平均)",
+    "energy_avg": "活力 (平均)",
+    "unavailable": "摘要暂不可用"
   }
 }

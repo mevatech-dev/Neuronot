@@ -39,5 +39,14 @@
       "light": "فاتح",
       "dark": "داكن"
     }
+  },
+  "summary": {
+    "title": "هذا الأسبوع",
+    "log_count_zero": "لا توجد سجلات هذا الأسبوع",
+    "log_count_one": "سجل {{count}}",
+    "log_count_other": "{{count}} سجلات",
+    "focus_avg": "التركيز (متوسط)",
+    "energy_avg": "الطاقة (متوسط)",
+    "unavailable": "الملخص غير متاح بعد"
   }
 }
