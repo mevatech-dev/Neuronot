@@ -75,27 +75,46 @@ neuronot/
 
 ```
 mobile/
-├─ app/                     # Expo Router pages
-│  ├─ _layout.tsx
-│  ├─ (auth)/
-│  ├─ (tabs)/
-│  │  ├─ home.tsx
-│  │  ├─ timeline.tsx
-│  │  └─ insights.tsx
-│  └─ onboarding.tsx
+├─ app/                          # Expo Router (file = route, kalıbı bozma)
+│  ├─ _layout.tsx                # font preload + ThemeProvider + ToastProvider
+│  ├─ (auth)/{login,register}.tsx
+│  ├─ (tabs)/{home,timeline,insights,settings}.tsx
+│  └─ onboarding.tsx             # composes features/onboarding/* steps
 ├─ src/
 │  ├─ components/
-│  ├─ features/
-│  ├─ services/api/
-│  ├─ store/
-│  ├─ theme/
-│  ├─ i18n/
-│  ├─ locales/
-│  └─ utils/
+│  │  ├─ brand/                  # NeuroMascot, neuroAssets
+│  │  ├─ feedback/               # Skeleton, ErrorState, EmptyState, LoadingDots, Toast
+│  │  └─ charts/                 # Sparkline, BarChart7Day, TrendLineChart, chartUtils
+│  ├─ hooks/                     # useFadeIn, useHapticPress, useSlideTransition, useNetworkStatus
+│  ├─ features/                  # daily-log, events, onboarding, timeline,
+│  │                             # insights, profile, summary
+│  ├─ services/
+│  │  ├─ api/                    # network clients (axios envelope)
+│  │  ├─ cache/                  # SQLite mirror (db, schema, migrations, repos)
+│  │  └─ sync/                   # engine, pull, push, queue (orchestration)
+│  ├─ store/                     # zustand slices (auth, sync)
+│  ├─ theme/                     # tokens, light, dark, typography, ThemeProvider
+│  ├─ i18n/                      # init + setAppLanguage + resources
+│  └─ locales/                   # 11 languages × N namespaces (json files)
 └─ app.json
 ```
 
-State: **Zustand**. API: **TanStack Query**.
+### Per-unit folder pattern (mecburi)
+
+Her birim — component, hook, util, repo, store slice — kendi klasöründe yaşar. Pattern:
+
+```
+Foo/
+├─ Foo.tsx                       # ana dosya
+├─ index.ts                      # `export * from './Foo';`
+├─ Foo.types.ts                  # (ileride eklenir)
+├─ Foo.test.tsx                  # (ileride eklenir)
+└─ Foo.styles.ts                 # (ileride eklenir)
+```
+
+Tek istisna `app/` (Expo Router dosya yolunu route olarak yorumlar, klasör pattern'i çalışmaz). Ekran dosyaları minimal compose eder; gerçek UI ve logic feature klasörlerinde.
+
+State: **Zustand**. API: **TanStack Query**. Cache: **expo-sqlite** (yerel mirror). Animasyon: **Reanimated 3**. Charts: **react-native-svg** (custom; üçüncü chart kütüphanesi yok).
 
 ---
 
@@ -113,7 +132,11 @@ api/
 │  ├─ profile/
 │  ├─ dailylog/
 │  ├─ events/
-│  └─ insights/
+│  ├─ insights/
+│  ├─ summary/                   # weekly aggregate (cross-feature read)
+│  ├─ stats/                     # /v1/stats/trend (chart serisi)
+│  ├─ sync/                      # /v1/sync/{pull,push}
+│  └─ timeline/
 ├─ migrations/
 ├─ .env.example
 ├─ go.mod
@@ -152,12 +175,16 @@ PostgreSQL 18. Migration'lar `/api/migrations/` altında, `goose` ile.
 MVP tabloları:
 
 - `users` — id, email, password_hash, preferred_language (default 'en'), created_at
-- `profiles` — user_id, focus_problem, energy_level, sleep_quality, onboarding_completed_at
-- `daily_logs` — id, user_id, focus, energy, forgetfulness, stress, sleep_quality, logged_at
-- `events` — id, user_id, type, intensity, note, occurred_at
-- `insights` — id, user_id, content, language, source_event_ids, generated_at, viewed_at
+- `profiles` — user_id, focus_problem, intensity_level, avg_sleep_hours, caffeine_daily, onboarding_completed_at, **timezone**, **reminder_hour**, **reminder_enabled**
+- `daily_logs` — id, user_id, focus, energy, forgetfulness, stress, sleep_quality, logged_at, **updated_at**, **deleted_at**
+- `events` — id, user_id, type, intensity, note, occurred_at, **updated_at**, **deleted_at**
+- `insights` — id, user_id, title, content, language, source_event_ids, generated_at, viewed_at, **updated_at**
 
-Index stratejisi: `(user_id, occurred_at DESC)` her kayıt tablosunda.
+Index stratejisi:
+- `(user_id, occurred_at DESC)` veya `(user_id, logged_at DESC)` — UI listing
+- `(user_id, updated_at DESC)` — sync pull (`/v1/sync/pull?since=`)
+
+Trigger: `set_updated_at()` her UPDATE'de `updated_at = now()` basar (`daily_logs`, `events`, `insights`).
 
 ---
 
@@ -219,11 +246,19 @@ mobile/src/theme/
 └─ useTheme.ts
 ```
 
-İki katman: **primitive tokens** (palette, spacing scale) → **semantic tokens** (`surface.primary`, `text.primary`).
+İki katman: **primitive tokens** (palette, spacing scale, fontFamily) → **semantic tokens** (`surface.primary`, `text.primary`).
 
 Bileşenler **sadece semantic token kullanır**. Hex renk veya primitive token doğrudan kullanılmaz.
 
 PRD §19: modern medical-tech, soft dark default, sade glassmorphism, düşük bilişsel yük.
+
+### Tipografi: Nunito Sans
+
+Uygulama dört ağırlıkta Nunito Sans yükler (`@expo-google-fonts/nunito-sans`): regular(400), medium(500), semibold(600), bold(700). `_layout.tsx` `useFonts` ile preload yapar; splash screen font yüklenene kadar açık kalır. Token'lar `theme.tokens.fontFamily.{regular,medium,semibold,bold}`; ekranlar bu ailelere `theme.typography.*` üzerinden erişir. Hardcoded `fontFamily: 'System'` veya başka aile yasak.
+
+### Charts (custom SVG)
+
+Üçüncü chart kütüphanesi yok. `mobile/src/components/charts/` altında `Sparkline`, `BarChart7Day`, `TrendLineChart` ve `chartUtils` saf `react-native-svg` ile yazıldı. Tema renklerini `useTheme` ile alır, RTL desteği `chartUtils.flipRtl`'de. Yeni chart eklerken aynı klasör pattern'i (`Foo/Foo.tsx` + `Foo/index.ts`).
 
 ### Mascot ve Native Asset Pipeline
 
@@ -238,6 +273,53 @@ cd mobile
 bun run generate:assets
 bun run validate:assets
 ```
+
+---
+
+## 12b. Offline & Sync (read-first + dirty queue)
+
+Mobile, **TanStack Query + expo-sqlite + manual delta sync** üçlüsünü kullanır. Üçüncü senkron motoru yok (WatermelonDB / PowerSync MVP scope dışı).
+
+```
+TanStack Query  ← reactive UI layer (var olan)
+       ↓
+   SQLite cache  ← read-first kaynak; write-through
+       ↓
+   syncEngine   ← background pull(?since=ts) + push (batch)
+       ↓
+       API
+```
+
+### Kontrat
+
+- **Pull**: `GET /v1/sync/pull?since=<rfc3339>` — tüm syncable tabloların delta'sını döndürür (daily_logs, events, insights, profile + soft-delete listeleri).
+- **Push**: `POST /v1/sync/push` — client'ın dirty satırlarını batch (max 200) gönderir; server `accepted` / `conflicts` döner.
+- **Conflict policy**: last-write-wins, server tie-break. Client `updated_at` server'dakinden eski ise → conflict; client server satırını cache'e yazar (UI re-render).
+- **Soft delete**: server `deleted_at` set eder; pull bu id'leri `deletes` listesinde döner; client cache mirror'lar.
+
+### Klasörler (mobile)
+
+- `services/api/sync/` — sadece network çağrısı.
+- `services/cache/` — SQLite şema + per-tablo repo'lar (`dailyLog`, `events`, `insights`, `profile`). Her satıra `dirty` ve `local_updated_at` eklenir.
+- `services/sync/` — orchestration: `engine.runCycle()` (mutex'li) → `push.flushDirty()` → `pull.applyDelta()`.
+- `store/sync/` — `isSyncing`, `lastSyncAt`, `lastError` (zustand).
+- `features/<x>/queries/` — read-first wrapper'lar; UI `useQuery` ile bunları çağırır, alttaki katmanları bilmez.
+
+**UI cache veya sync'i doğrudan import etmez.** Bu kural ekranların API yüzeyine bağımlılığını feature query'lerinin arkasında tutar.
+
+### Trigger noktaları (`syncEngine.runCycle`)
+
+1. App foreground'a geldiğinde
+2. `useNetworkStatus().online: true` sinyalinde
+3. Mutation `onSettled`'inde (optimistic flush)
+4. Periyodik (foreground'da, 5 dk)
+
+### Backend yan etki
+
+- Her syncable tablo: `updated_at timestamptz NOT NULL DEFAULT now()` + trigger.
+- `daily_logs`, `events`: ek `deleted_at timestamptz NULL` (soft delete).
+- `insights`: immutable history, `deleted_at` yok.
+- Index: `(user_id, updated_at DESC)` her tabloda.
 
 ---
 

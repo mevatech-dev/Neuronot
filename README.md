@@ -69,3 +69,4 @@ neuronot/
 - [api-errors](docs/api-errors.md) — error code katalog
 - [Hafta 4 Verification](docs/HAFTA4_VERIFICATION.md) — 11 dil i18n ve RTL smoke test
 - [Hafta 5 Verification](docs/HAFTA5_VERIFICATION.md) — Neuro maskot, splash, icon, polish smoke test
+- [Hafta 6 Verification](docs/HAFTA6_VERIFICATION.md) — modüler folder, SQLite sync, Nunito Sans, charts, onboarding redesign smoke test

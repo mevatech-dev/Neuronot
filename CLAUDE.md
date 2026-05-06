@@ -138,7 +138,19 @@ Theme has two layers (`mobile/src/theme/`):
 
 ## Mascot — semantic moods only
 
-Neuro mascot usage goes through `mobile/src/components/brand/NeuroMascot.tsx`. Screens never import `mobile/assets/images/neuro-*.png` directly; they pass a semantic `mood` (`calm`, `happy`, `thinking`, `encouraging`, `sleepy`, `sad`). Crisis/safety surfaces use only `calm`. Generated native assets (`icon.png`, `adaptive-icon.png`, `splash.png`) are produced via `bun run generate:assets`.
+Neuro mascot usage goes through `mobile/src/components/brand/NeuroMascot/`. Screens never import `mobile/assets/images/neuro-*.png` directly; they pass a semantic `mood` (`calm`, `happy`, `thinking`, `encouraging`, `sleepy`, `sad`). Crisis/safety surfaces use only `calm`. Generated native assets (`icon.png`, `adaptive-icon.png`, `splash.png`) are produced via `bun run generate:assets`.
+
+## Per-unit folder pattern (mobile)
+
+Every component, hook, util, repo, store slice lives in its own folder. Pattern: `Foo/Foo.tsx` + `Foo/index.ts` (re-export). Imports go to the folder, not the file: `from '@/components/feedback/Skeleton'`. The only exception is `mobile/app/`, where Expo Router treats the file path as the route. Future siblings (tests, types, styles, sub-components) drop into the same folder without restructuring.
+
+## Typography — Nunito Sans
+
+`@expo-google-fonts/nunito-sans` is preloaded in `_layout.tsx` via `useFonts`. The splash stays up until fonts and auth hydration are ready. `theme.typography.*` includes `fontFamily` from `theme.tokens.fontFamily.{regular,medium,semibold,bold}`. Components consume `...theme.typography.body` / `bodyMedium` / etc. — never set `fontFamily` inline.
+
+## Offline & sync
+
+Mobile mirrors syncable tables (daily_logs, events, insights, profile) into a local SQLite cache at `mobile/src/services/cache/`. `mobile/src/services/sync/engine.runCycle()` does push (dirty rows) → pull (`?since=<lastSyncAt>`) on app foreground, network-online, mutation `onSettled`, and a 5-minute timer. UI never imports `services/cache` or `services/sync` directly — it goes through `features/<x>/queries/` (TanStack Query options objects). Conflict policy is last-write-wins with server tie-break.
 
 ## i18n — hardcoded strings are forbidden
 
