@@ -52,3 +52,5 @@ infra/postgres/data/
 # Test artifacts
 coverage/
 *.lcov
+
+AGENTS.md
