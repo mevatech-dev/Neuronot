@@ -1,13 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 
+import { useCreateDailyLog } from '@/features/daily-log/mutations';
 import { SegmentScale } from '@/features/onboarding/Slider';
 import { ApiError } from '@/services/api/client';
-import { createDailyLog, type DailyLogResponse } from '@/services/api/dailylog';
-import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
 import { useTheme } from '@/theme';
 
 type Props = {
@@ -18,7 +16,6 @@ type Props = {
 export function QuickLogSheet({ visible, onClose }: Props) {
   const { t } = useTranslation(['daily-log', 'errors']);
   const theme = useTheme();
-  const qc = useQueryClient();
 
   const [focus, setFocus] = useState<number | undefined>();
   const [energy, setEnergy] = useState<number | undefined>();
@@ -34,30 +31,6 @@ export function QuickLogSheet({ visible, onClose }: Props) {
     stress !== undefined &&
     sleepQuality !== undefined;
 
-  const mutation = useMutation({
-    mutationFn: () =>
-      createDailyLog({
-        focus: focus!,
-        energy: energy!,
-        forgetfulness: forgetfulness!,
-        stress: stress!,
-        sleep_quality: sleepQuality!,
-      }),
-    onSuccess: (_data: DailyLogResponse) => {
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      void qc.invalidateQueries({ queryKey: ['daily-log', 'today'] });
-      void qc.invalidateQueries({ queryKey: ['timeline'] });
-      void qc.invalidateQueries({ queryKey: ['summary', 'weekly'] });
-      scheduleCycleForCurrentUser();
-      reset();
-      onClose();
-    },
-    onError: (err) => {
-      const key = err instanceof ApiError ? err.messageKey : 'errors.generic.network';
-      setErrorKey(key);
-    },
-  });
-
   const reset = () => {
     setFocus(undefined);
     setEnergy(undefined);
@@ -66,6 +39,18 @@ export function QuickLogSheet({ visible, onClose }: Props) {
     setSleepQuality(undefined);
     setErrorKey(null);
   };
+
+  const mutation = useCreateDailyLog({
+    onSuccess: () => {
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      reset();
+      onClose();
+    },
+    onError: (err) => {
+      const key = err instanceof ApiError ? err.messageKey : 'errors.generic.network';
+      setErrorKey(key);
+    },
+  });
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -148,7 +133,13 @@ export function QuickLogSheet({ visible, onClose }: Props) {
             onPress={() => {
               if (!ready) return;
               setErrorKey(null);
-              mutation.mutate();
+              mutation.mutate({
+                focus: focus!,
+                energy: energy!,
+                forgetfulness: forgetfulness!,
+                stress: stress!,
+                sleep_quality: sleepQuality!,
+              });
             }}
             disabled={!ready || mutation.isPending}
             style={{

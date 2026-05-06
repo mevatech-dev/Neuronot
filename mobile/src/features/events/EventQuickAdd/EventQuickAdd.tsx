@@ -1,14 +1,14 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Modal, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
+import { useCreateEvent } from '@/features/events/mutations';
 import { SegmentScale } from '@/features/onboarding/Slider';
 import { ApiError } from '@/services/api/client';
-import { createEvent, EVENT_TYPES, type EventType } from '@/services/api/events';
+import { EVENT_TYPES, type EventType } from '@/services/api/events';
 import { getProfile } from '@/services/api/profile';
-import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
 import { useTheme } from '@/theme';
 
 const FOCUS_TO_EVENT: Partial<Record<string, EventType>> = {
@@ -27,7 +27,6 @@ type Props = {
 export function EventQuickAdd({ visible, onClose }: Props) {
   const { t } = useTranslation(['events', 'errors']);
   const theme = useTheme();
-  const qc = useQueryClient();
 
   const profile = useQuery({ queryKey: ['profile'], queryFn: getProfile, staleTime: 60_000 });
 
@@ -40,28 +39,6 @@ export function EventQuickAdd({ visible, onClose }: Props) {
   // event sits first so they don't hunt for it.
   const orderedTypes = useOrderedTypes(profile.data?.focus_problem ?? null);
 
-  const mutation = useMutation({
-    mutationFn: () =>
-      createEvent({
-        type: type!,
-        intensity: intensity!,
-        note: note.trim() ? note.trim() : undefined,
-      }),
-    onSuccess: () => {
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      void qc.invalidateQueries({ queryKey: ['timeline'] });
-      void qc.invalidateQueries({ queryKey: ['events'] });
-      void qc.invalidateQueries({ queryKey: ['summary', 'weekly'] });
-      scheduleCycleForCurrentUser();
-      reset();
-      onClose();
-    },
-    onError: (err) => {
-      const key = err instanceof ApiError ? err.messageKey : 'errors.generic.network';
-      setErrorKey(key);
-    },
-  });
-
   const ready = type !== undefined && intensity !== undefined;
 
   const reset = () => {
@@ -70,6 +47,18 @@ export function EventQuickAdd({ visible, onClose }: Props) {
     setNote('');
     setErrorKey(null);
   };
+
+  const mutation = useCreateEvent({
+    onSuccess: () => {
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      reset();
+      onClose();
+    },
+    onError: (err) => {
+      const key = err instanceof ApiError ? err.messageKey : 'errors.generic.network';
+      setErrorKey(key);
+    },
+  });
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -180,7 +169,11 @@ export function EventQuickAdd({ visible, onClose }: Props) {
             onPress={() => {
               if (!ready) return;
               setErrorKey(null);
-              mutation.mutate();
+              mutation.mutate({
+                type: type!,
+                intensity: intensity!,
+                note: note.trim() ? note.trim() : undefined,
+              });
             }}
             disabled={!ready || mutation.isPending}
             style={{

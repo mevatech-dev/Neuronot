@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,10 +6,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoadingDots } from '@/components/feedback/LoadingDots';
 import { useToast } from '@/components/feedback/Toast';
+import { useUpdateDailyLog } from '@/features/daily-log/mutations';
 import { SegmentScale } from '@/features/onboarding/Slider';
 import { ApiError } from '@/services/api/client';
-import { type DailyLogResponse, updateDailyLog } from '@/services/api/dailylog';
-import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
+import { type DailyLogResponse } from '@/services/api/dailylog';
 import { useTheme } from '@/theme';
 
 type Props = {
@@ -24,7 +23,6 @@ export function DailyLogEditSheet({ visible, log, onClose }: Props) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const toast = useToast();
-  const qc = useQueryClient();
 
   const [focus, setFocus] = useState<number | undefined>();
   const [energy, setEnergy] = useState<number | undefined>();
@@ -41,21 +39,9 @@ export function DailyLogEditSheet({ visible, log, onClose }: Props) {
     setSleepQuality(log.sleep_quality);
   }, [log]);
 
-  const mutation = useMutation({
-    mutationFn: () =>
-      updateDailyLog(log!.id, {
-        focus,
-        energy,
-        forgetfulness,
-        stress,
-        sleep_quality: sleepQuality,
-      }),
+  const mutation = useUpdateDailyLog({
     onSuccess: () => {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      void qc.invalidateQueries({ queryKey: ['daily-log', 'today'] });
-      void qc.invalidateQueries({ queryKey: ['timeline'] });
-      void qc.invalidateQueries({ queryKey: ['summary', 'weekly'] });
-      scheduleCycleForCurrentUser();
       toast.show({ messageKey: 'daily-log:edit.saved', tone: 'success' });
       onClose();
     },
@@ -124,7 +110,18 @@ export function DailyLogEditSheet({ visible, log, onClose }: Props) {
           ))}
 
           <Pressable
-            onPress={() => mutation.mutate()}
+            onPress={() =>
+              mutation.mutate({
+                id: log.id,
+                patch: {
+                  focus,
+                  energy,
+                  forgetfulness,
+                  stress,
+                  sleep_quality: sleepQuality,
+                },
+              })
+            }
             disabled={mutation.isPending}
             style={{
               backgroundColor: mutation.isPending ? theme.colors.accent.muted : theme.colors.accent.default,

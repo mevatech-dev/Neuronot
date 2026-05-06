@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, ScrollView, Switch, Text, TextInput, View } from 'react-native';
@@ -10,11 +10,10 @@ import { useToast } from '@/components/feedback/Toast';
 import { SegmentScale } from '@/features/onboarding/Slider';
 import { FOCUS_PROBLEMS, type FocusProblem } from '@/features/onboarding/types';
 import { ApiError } from '@/services/api/client';
-import { patchProfile } from '@/services/api/profile';
-import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
 import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
 
+import { usePatchProfile } from '../mutations';
 import { profileQuery } from '../queries';
 
 type Props = {
@@ -29,7 +28,6 @@ export function ProfileEditSheet({ visible, onClose }: Props) {
   const { t } = useTranslation('common');
   const insets = useSafeAreaInsets();
   const toast = useToast();
-  const queryClient = useQueryClient();
   const userId = useAuthStore((s) => s.user?.id ?? null);
 
   const { data: profile, isLoading } = useQuery({
@@ -54,19 +52,8 @@ export function ProfileEditSheet({ visible, onClose }: Props) {
     setReminderHour(profile.reminder_hour ?? undefined);
   }, [profile]);
 
-  const save = useMutation({
-    mutationFn: () =>
-      patchProfile({
-        focus_problem: focusProblem,
-        intensity_level: intensity,
-        avg_sleep_hours: sleepHours,
-        caffeine_daily: caffeine,
-        reminder_enabled: reminderEnabled,
-        reminder_hour: reminderEnabled ? reminderHour : undefined,
-      }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['profile'] });
-      scheduleCycleForCurrentUser();
+  const save = usePatchProfile({
+    onSuccess: () => {
       toast.show({ messageKey: 'profile_edit.saved', tone: 'success' });
       onClose();
     },
@@ -75,6 +62,16 @@ export function ProfileEditSheet({ visible, onClose }: Props) {
       toast.show({ messageKey: key, tone: 'danger' });
     },
   });
+
+  const submit = () =>
+    save.mutate({
+      focus_problem: focusProblem,
+      intensity_level: intensity,
+      avg_sleep_hours: sleepHours,
+      caffeine_daily: caffeine,
+      reminder_enabled: reminderEnabled,
+      reminder_hour: reminderEnabled ? reminderHour : undefined,
+    });
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose} transparent>
@@ -209,7 +206,7 @@ export function ProfileEditSheet({ visible, onClose }: Props) {
 
           <View style={{ paddingHorizontal: theme.space[6] }}>
             <Pressable
-              onPress={() => save.mutate()}
+              onPress={submit}
               disabled={save.isPending}
               style={{
                 backgroundColor: save.isPending ? theme.colors.accent.muted : theme.colors.accent.default,

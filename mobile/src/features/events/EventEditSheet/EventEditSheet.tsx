@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as Haptics from 'expo-haptics';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,10 +6,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoadingDots } from '@/components/feedback/LoadingDots';
 import { useToast } from '@/components/feedback/Toast';
+import { useDeleteEvent, useUpdateEvent } from '@/features/events/mutations';
 import { SegmentScale } from '@/features/onboarding/Slider';
 import { ApiError } from '@/services/api/client';
-import { deleteEvent, EVENT_TYPES, type EventType, updateEvent } from '@/services/api/events';
-import { scheduleCycleForCurrentUser } from '@/services/sync/engine';
+import { EVENT_TYPES, type EventType } from '@/services/api/events';
 import { useTheme } from '@/theme';
 
 type EditableEvent = {
@@ -31,7 +30,6 @@ export function EventEditSheet({ visible, event, onClose }: Props) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const toast = useToast();
-  const qc = useQueryClient();
 
   const [type, setType] = useState<EventType | undefined>();
   const [intensity, setIntensity] = useState<number | undefined>();
@@ -44,20 +42,9 @@ export function EventEditSheet({ visible, event, onClose }: Props) {
     setNote(event.note ?? '');
   }, [event]);
 
-  const update = useMutation({
-    mutationFn: () =>
-      updateEvent(event!.id, {
-        type,
-        intensity,
-        // Backend's PATCH applies COALESCE — sending `null` would keep the
-        // old note. Empty string clears it visibly.
-        note: note.trim() ? note.trim() : '',
-      }),
+  const update = useUpdateEvent({
     onSuccess: () => {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      void qc.invalidateQueries({ queryKey: ['timeline'] });
-      void qc.invalidateQueries({ queryKey: ['events'] });
-      scheduleCycleForCurrentUser();
       toast.show({ messageKey: 'events:edit.saved', tone: 'success' });
       onClose();
     },
@@ -67,13 +54,9 @@ export function EventEditSheet({ visible, event, onClose }: Props) {
     },
   });
 
-  const remove = useMutation({
-    mutationFn: () => deleteEvent(event!.id),
+  const remove = useDeleteEvent({
     onSuccess: () => {
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-      void qc.invalidateQueries({ queryKey: ['timeline'] });
-      void qc.invalidateQueries({ queryKey: ['events'] });
-      scheduleCycleForCurrentUser();
       toast.show({ messageKey: 'events:edit.deleted', tone: 'info' });
       onClose();
     },
@@ -171,7 +154,18 @@ export function EventEditSheet({ visible, event, onClose }: Props) {
           />
 
           <Pressable
-            onPress={() => update.mutate()}
+            onPress={() =>
+              update.mutate({
+                id: event.id,
+                patch: {
+                  type,
+                  intensity,
+                  // Backend's PATCH applies COALESCE — sending `null` would
+                  // keep the old note. Empty string clears it visibly.
+                  note: note.trim() ? note.trim() : '',
+                },
+              })
+            }
             disabled={update.isPending || remove.isPending}
             style={{
               backgroundColor: update.isPending ? theme.colors.accent.muted : theme.colors.accent.default,
@@ -191,7 +185,7 @@ export function EventEditSheet({ visible, event, onClose }: Props) {
           </Pressable>
 
           <Pressable
-            onPress={() => remove.mutate()}
+            onPress={() => remove.mutate(event.id)}
             disabled={update.isPending || remove.isPending}
             style={{
               padding: theme.space[4],

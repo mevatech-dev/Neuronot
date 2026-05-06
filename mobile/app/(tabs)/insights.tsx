@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, SafeAreaView, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
@@ -6,29 +6,25 @@ import Animated from 'react-native-reanimated';
 import { NeuroMascot } from '@/components/brand/NeuroMascot';
 import { LoadingDots } from '@/components/feedback/LoadingDots';
 import { Skeleton } from '@/components/feedback/Skeleton';
+import { useGenerateInsight } from '@/features/insights/mutations';
 import { insightsListQuery } from '@/features/insights/queries';
 import { TrendsSection } from '@/features/insights/TrendsSection';
 import { useFadeIn } from '@/hooks/useFadeIn';
 import { useHapticPress } from '@/hooks/useHapticPress';
 import { ApiError } from '@/services/api/client';
-import { generateInsight, type InsightResponse } from '@/services/api/insights';
+import { type InsightResponse } from '@/services/api/insights';
 import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
 
 export default function InsightsScreen() {
   const { t, i18n } = useTranslation(['insights', 'errors']);
   const theme = useTheme();
-  const queryClient = useQueryClient();
   const userId = useAuthStore((s) => s.user?.id ?? null);
   const fade = useFadeIn();
   const press = useHapticPress();
 
   const insights = useQuery(insightsListQuery(userId));
-
-  const generate = useMutation({
-    mutationFn: () => generateInsight(i18n.language),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['insights'] }),
-  });
+  const generate = useGenerateInsight(i18n.language);
 
   const latest = insights.data?.items[0];
   const history = insights.data?.items.slice(latest ? 1 : 0) ?? [];
