@@ -272,6 +272,8 @@ Arayüz: düşük sürtünmeli, hızlı, temiz, modern, zihni yormayan.
 
 Tasarım dili: modern medical-tech, soft dark theme default, sade glassmorphism, düşük bilişsel yük.
 
+Neuro maskotu ürünün sakin rehber hissini destekler. Maskot tanı, tedavi, acil durum değerlendirmesi veya medikal otorite gibi davranmaz; kullanım alanı marka kimliği, onboarding destekleyici görselleri ve seçili boş durumları yumuşatmaktır. Kriz/güvenlik yüzeylerinde yalnızca `calm` ifade kullanılır.
+
 ---
 
 ## 20. Platform Strategy

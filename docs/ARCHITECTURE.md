@@ -225,6 +225,20 @@ Bileşenler **sadece semantic token kullanır**. Hex renk veya primitive token d
 
 PRD §19: modern medical-tech, soft dark default, sade glassmorphism, düşük bilişsel yük.
 
+### Mascot ve Native Asset Pipeline
+
+Neuro maskotu kaynak dosyaları `mobile/assets/images/neuro-*.png` altında durur. Üretilen native asset'ler `mobile/assets/icon.png`, `mobile/assets/adaptive-icon.png` ve `mobile/assets/splash.png` olarak kök `assets/` altında tutulur.
+
+Runtime UI **yalnızca** `mobile/src/components/brand/NeuroMascot.tsx` üzerinden maskot kullanır; ekran dosyaları PNG'leri doğrudan import etmez. Maskot kullanımı marka çapasına ve seçili boş/destek state'lerine sınırlıdır — her kart veya timeline satırına yerleştirilmez. Kriz/güvenlik bağlamında yalnızca `calm` mood kullanılır; oyunlaştırıcı varyantlar (excited, playful) bu bağlamda yasaktır.
+
+Asset komutları:
+
+```bash
+cd mobile
+bun run generate:assets
+bun run validate:assets
+```
+
 ---
 
 ## 13. Internationalization

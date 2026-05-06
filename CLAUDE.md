@@ -40,6 +40,10 @@ cd mobile && bun run typecheck
 # Mobile i18n coverage only
 cd mobile && bun run validate:i18n
 
+# Mobile native asset generation/check (Neuro mascot pipeline)
+cd mobile && bun run generate:assets
+cd mobile && bun run validate:assets
+
 # Single migration check (no apply)
 cd api && goose -dir migrations postgres "$DATABASE_URL" status
 ```
@@ -131,6 +135,10 @@ Theme has two layers (`mobile/src/theme/`):
 2. **Semantic** in `dark.ts` / `light.ts` — `surface.primary`, `text.primary`, `accent.default`, etc.
 
 **Components consume only semantic tokens**, accessed via `useTheme()` from `@/theme`. Inline hex (`backgroundColor: '#...'`) and primitive imports (`tokens.colors.gray[900]`) in components are review-blocked. If a new color is needed, add it to `tokens.ts`, expose it via the semantic file, then consume it. Default theme is **soft dark** (PRD §19) — surfaces near `#0F1115`, never pure black; text `#E6E8EC`, never pure white.
+
+## Mascot — semantic moods only
+
+Neuro mascot usage goes through `mobile/src/components/brand/NeuroMascot.tsx`. Screens never import `mobile/assets/images/neuro-*.png` directly; they pass a semantic `mood` (`calm`, `happy`, `thinking`, `encouraging`, `sleepy`, `sad`). Crisis/safety surfaces use only `calm`. Generated native assets (`icon.png`, `adaptive-icon.png`, `splash.png`) are produced via `bun run generate:assets`.
 
 ## i18n — hardcoded strings are forbidden
 
