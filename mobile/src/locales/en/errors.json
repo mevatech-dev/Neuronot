@@ -1,0 +1,35 @@
+{
+  "auth": {
+    "invalid_credentials": "Email or password is incorrect.",
+    "email_taken": "This email is already registered.",
+    "weak_password": "Password must be at least 8 characters.",
+    "invalid_email": "Please enter a valid email address.",
+    "token_expired": "Your session has expired. Please log in again.",
+    "token_invalid": "Your session is no longer valid.",
+    "refresh_expired": "Your session has expired.",
+    "refresh_revoked": "Your session was revoked.",
+    "rate_limited": "Too many attempts. Please wait a minute."
+  },
+  "daily_log": {
+    "duplicate": "You've already logged today.",
+    "invalid_range": "Please choose a value between 1 and 5."
+  },
+  "event": {
+    "invalid_type": "Unknown event type.",
+    "note_too_long": "Notes can't be longer than 500 characters."
+  },
+  "insight": {
+    "insufficient_data": "Add a few more daily logs before generating an insight.",
+    "ai_unavailable": "Couldn't generate an insight right now. Please try again shortly.",
+    "rate_limited": "You've already generated an insight today.",
+    "crisis_detected": ""
+  },
+  "generic": {
+    "not_found": "We couldn't find what you're looking for.",
+    "validation_failed": "Please review the highlighted fields.",
+    "internal_error": "Something went wrong on our end. Please try again.",
+    "unauthorized": "Please log in to continue.",
+    "forbidden": "You don't have access to this.",
+    "network": "We can't reach the server. Check your connection."
+  }
+}

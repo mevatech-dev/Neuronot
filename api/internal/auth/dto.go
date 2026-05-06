@@ -1,0 +1,32 @@
+package auth
+
+import "time"
+
+type RegisterRequest struct {
+	Email             string `json:"email"`
+	Password          string `json:"password"`
+	PreferredLanguage string `json:"preferred_language,omitempty"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type RefreshRequest struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
+type LogoutRequest struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
+type TokenResponse struct {
+	AccessToken      string    `json:"access_token"`
+	RefreshToken     string    `json:"refresh_token"`
+	AccessExpiresAt  time.Time `json:"access_expires_at"`
+	RefreshExpiresAt time.Time `json:"refresh_expires_at"`
+	UserID           string    `json:"user_id"`
+	Email            string    `json:"email"`
+	PreferredLanguage string   `json:"preferred_language"`
+}

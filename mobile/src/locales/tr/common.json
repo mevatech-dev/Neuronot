@@ -1,0 +1,43 @@
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "Kendi örüntülerini anla"
+  },
+  "actions": {
+    "continue": "Devam et",
+    "cancel": "Vazgeç",
+    "save": "Kaydet",
+    "delete": "Sil",
+    "back": "Geri",
+    "done": "Tamam",
+    "retry": "Tekrar dene"
+  },
+  "auth": {
+    "email": "E-posta",
+    "password": "Şifre",
+    "login": "Giriş yap",
+    "register": "Hesap oluştur",
+    "logout": "Çıkış yap",
+    "no_account": "Hesabın yok mu?",
+    "have_account": "Hesabın var mı?",
+    "loading": "Bir saniye…"
+  },
+  "tabs": {
+    "home": "Anasayfa",
+    "timeline": "Akış",
+    "insights": "İçgörü",
+    "settings": "Ayarlar"
+  },
+  "settings": {
+    "language": {
+      "title": "Dil",
+      "beta": "Beta"
+    },
+    "theme": {
+      "title": "Tema",
+      "system": "Sistemi takip et",
+      "light": "Açık",
+      "dark": "Koyu"
+    }
+  }
+}

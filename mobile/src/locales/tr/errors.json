@@ -1,0 +1,35 @@
+{
+  "auth": {
+    "invalid_credentials": "E-posta veya şifre hatalı.",
+    "email_taken": "Bu e-posta zaten kayıtlı.",
+    "weak_password": "Şifre en az 8 karakter olmalı.",
+    "invalid_email": "Geçerli bir e-posta gir.",
+    "token_expired": "Oturumun sona erdi. Lütfen tekrar giriş yap.",
+    "token_invalid": "Oturumun artık geçerli değil.",
+    "refresh_expired": "Oturumun sona erdi.",
+    "refresh_revoked": "Oturumun iptal edildi.",
+    "rate_limited": "Çok fazla deneme. Bir dakika bekle."
+  },
+  "daily_log": {
+    "duplicate": "Bugünün kaydını zaten girdin.",
+    "invalid_range": "1 ile 5 arasında bir değer seç."
+  },
+  "event": {
+    "invalid_type": "Bilinmeyen olay türü.",
+    "note_too_long": "Not 500 karakterden uzun olamaz."
+  },
+  "insight": {
+    "insufficient_data": "İçgörü için biraz daha günlük kaydı eklemen gerek.",
+    "ai_unavailable": "Şu anda içgörü üretemedik. Birazdan tekrar dene.",
+    "rate_limited": "Bugün için bir içgörü zaten ürettin.",
+    "crisis_detected": ""
+  },
+  "generic": {
+    "not_found": "Aradığını bulamadık.",
+    "validation_failed": "Lütfen işaretli alanları kontrol et.",
+    "internal_error": "Bir şeyler ters gitti. Tekrar dener misin?",
+    "unauthorized": "Devam etmek için giriş yap.",
+    "forbidden": "Bu içeriğe erişimin yok.",
+    "network": "Sunucuya ulaşamıyoruz. Bağlantını kontrol et."
+  }
+}

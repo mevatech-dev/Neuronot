@@ -1,0 +1,43 @@
+{
+  "app": {
+    "name": "Neuronot",
+    "tagline": "Understand your own patterns"
+  },
+  "actions": {
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "back": "Back",
+    "done": "Done",
+    "retry": "Retry"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "login": "Log in",
+    "register": "Create account",
+    "logout": "Log out",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "loading": "Just a moment…"
+  },
+  "tabs": {
+    "home": "Home",
+    "timeline": "Timeline",
+    "insights": "Insights",
+    "settings": "Settings"
+  },
+  "settings": {
+    "language": {
+      "title": "Language",
+      "beta": "Beta"
+    },
+    "theme": {
+      "title": "Theme",
+      "system": "Match system",
+      "light": "Light",
+      "dark": "Dark"
+    }
+  }
+}
