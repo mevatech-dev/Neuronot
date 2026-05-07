@@ -18,6 +18,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/time/rate"
 
+	"github.com/neuronot/api/internal/auth/oidc"
 	"github.com/neuronot/api/internal/consents"
 )
 
@@ -35,11 +36,18 @@ var supportedLanguages = map[string]bool{
 }
 
 var (
-	ErrInvalidCredentials = errors.New("invalid credentials")
-	ErrWeakPassword       = errors.New("weak password")
-	ErrInvalidEmail       = errors.New("invalid email")
-	ErrRateLimited        = errors.New("rate limited")
-	ErrAIConsentRequired  = errors.New("ai_usage consent required")
+	ErrInvalidCredentials       = errors.New("invalid credentials")
+	ErrWeakPassword             = errors.New("weak password")
+	ErrInvalidEmail             = errors.New("invalid email")
+	ErrRateLimited              = errors.New("rate limited")
+	ErrAIConsentRequired        = errors.New("ai_usage consent required")
+	ErrTosOrPrivacyConsentMissing = errors.New("terms and privacy consent required")
+	ErrAppleTokenInvalid        = errors.New("apple token invalid")
+	ErrAppleNonceMismatch       = errors.New("apple nonce mismatch")
+	ErrGoogleTokenInvalid       = errors.New("google token invalid")
+	ErrGoogleEmailUnverified    = errors.New("google email unverified")
+	ErrLinkRequired             = errors.New("link required: email already in use")
+	ErrProviderDisabled         = errors.New("auth provider disabled by config")
 )
 
 // consentService is the auth-local view of the consents service. We keep
@@ -57,10 +65,19 @@ type RegisterContext struct {
 	UserAgent string
 }
 
+// OIDCVerifier is the narrow surface auth needs from the oidc package.
+// Exported so wiring code in cmd/api/main.go can pass *oidc.Verifier
+// directly without an extra adapter; tests can drop in a stub.
+type OIDCVerifier interface {
+	VerifyApple(ctx context.Context, idToken, rawNonce string) (*oidc.Claims, error)
+	VerifyGoogle(ctx context.Context, idToken string) (*oidc.Claims, error)
+}
+
 type Service struct {
 	repo      *Repository
 	consents  consentService
 	jwtSecret []byte
+	verifier  OIDCVerifier
 
 	// In-memory rate limiter — 5 attempts per minute per IP.
 	// Switches to Redis when MVP outgrows in-memory; bucket map TTL
@@ -69,11 +86,21 @@ type Service struct {
 	limiters  map[string]*rate.Limiter
 }
 
+// NewService wires the existing email/password flows. Use NewServiceWithOIDC
+// to additionally enable /v1/auth/{anonymous,apple,google}.
 func NewService(repo *Repository, consentSvc consentService, jwtSecret []byte) *Service {
+	return NewServiceWithOIDC(repo, consentSvc, jwtSecret, nil)
+}
+
+// NewServiceWithOIDC returns a Service that can verify Apple/Google ID
+// tokens. Pass nil to keep social endpoints disabled (they will return
+// ErrProviderDisabled — the handler maps that to 503).
+func NewServiceWithOIDC(repo *Repository, consentSvc consentService, jwtSecret []byte, verifier OIDCVerifier) *Service {
 	return &Service{
 		repo:      repo,
 		consents:  consentSvc,
 		jwtSecret: jwtSecret,
+		verifier:  verifier,
 		limiters:  make(map[string]*rate.Limiter),
 	}
 }
@@ -149,6 +176,54 @@ func aiConsentGranted(in []ConsentInput) bool {
 	return false
 }
 
+// tosAndPrivacyGranted enforces the universal floor: every account creation
+// path (register, anonymous, apple, google) requires the user to actively
+// accept Terms of Service and Privacy Policy. AI usage is treated separately
+// per flow.
+func tosAndPrivacyGranted(in []ConsentInput) bool {
+	tos := false
+	priv := false
+	for _, c := range in {
+		if !c.Granted {
+			continue
+		}
+		switch c.Type {
+		case string(consents.ConsentTypeTermsOfService):
+			tos = true
+		case string(consents.ConsentTypePrivacyPolicy):
+			priv = true
+		}
+	}
+	return tos && priv
+}
+
+// recordConsents writes a row for every consent the client granted in this
+// request. Used by Anonymous / Apple / Google paths where AI consent is
+// optional (unlike Register where AI is required).
+func (s *Service) recordConsents(ctx context.Context, tx consents.DBTX, userID uuid.UUID, in []ConsentInput, rc consents.RecordContext) error {
+	for _, c := range in {
+		if !c.Granted {
+			continue
+		}
+		t := consents.ConsentType(c.Type)
+		// Skip unknown consent types silently — they have no row to grant.
+		var known bool
+		for _, allowed := range consents.AllTypes {
+			if allowed == t {
+				known = true
+				break
+			}
+		}
+		if !known {
+			continue
+		}
+		if err := s.consents.GrantTx(ctx, tx, userID, t, rc); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func findConsent(in []ConsentInput, t consents.ConsentType) (bool, bool) {
 	for _, c := range in {
 		if c.Type == string(t) {
@@ -156,6 +231,205 @@ func findConsent(in []ConsentInput, t consents.ConsentType) (bool, bool) {
 		}
 	}
 	return false, false
+}
+
+// Anonymous creates a new user with no email/password and is_anonymous = true.
+// ToS and Privacy consents are required; AI usage is optional and gates the
+// /v1/insights/generate endpoint until granted.
+func (s *Service) Anonymous(ctx context.Context, req AnonymousRequest, rc RegisterContext) (*TokenResponse, error) {
+	if !tosAndPrivacyGranted(req.Consents) {
+		return nil, ErrTosOrPrivacyConsentMissing
+	}
+	lang := normalizeLanguage(req.PreferredLanguage)
+
+	pool := s.repo.Pool()
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("begin tx: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	user, err := s.repo.CreateAnonymousUser(ctx, tx, lang)
+	if err != nil {
+		return nil, err
+	}
+	consentRC := consents.RecordContext{
+		IP: rc.IP, DeviceID: rc.DeviceID, UserAgent: rc.UserAgent,
+		Source: consents.SourceRegister,
+	}
+	if err := s.recordConsents(ctx, tx, user.ID, req.Consents, consentRC); err != nil {
+		return nil, fmt.Errorf("record consents: %w", err)
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+	return s.issueTokens(ctx, user)
+}
+
+// Apple verifies an Apple identity token. If the apple_sub already maps to
+// a user, that user is logged in. If the token's email is already on a
+// different user record, ErrLinkRequired is returned (manual link only —
+// see ADR 0003). Otherwise a new account is created.
+func (s *Service) Apple(ctx context.Context, req AppleRequest, rc RegisterContext) (*TokenResponse, error) {
+	if s.verifier == nil {
+		return nil, ErrProviderDisabled
+	}
+	claims, err := s.verifier.VerifyApple(ctx, req.IdentityToken, req.Nonce)
+	if err != nil {
+		return nil, mapAppleVerifyErr(err)
+	}
+	return s.signInWithSocial(ctx, socialClaims{
+		provider:        oidc.ProviderApple,
+		subject:         claims.Subject,
+		email:           strings.ToLower(strings.TrimSpace(claims.Email)),
+		preferredLang:   req.PreferredLanguage,
+		consents:        req.Consents,
+		registerContext: rc,
+	})
+}
+
+// Google verifies a Google ID token; same flow shape as Apple.
+func (s *Service) Google(ctx context.Context, req GoogleRequest, rc RegisterContext) (*TokenResponse, error) {
+	if s.verifier == nil {
+		return nil, ErrProviderDisabled
+	}
+	claims, err := s.verifier.VerifyGoogle(ctx, req.IDToken)
+	if err != nil {
+		return nil, mapGoogleVerifyErr(err)
+	}
+	return s.signInWithSocial(ctx, socialClaims{
+		provider:        oidc.ProviderGoogle,
+		subject:         claims.Subject,
+		email:           strings.ToLower(strings.TrimSpace(claims.Email)),
+		preferredLang:   req.PreferredLanguage,
+		consents:        req.Consents,
+		registerContext: rc,
+	})
+}
+
+type socialClaims struct {
+	provider        oidc.Provider
+	subject         string
+	email           string
+	preferredLang   string
+	consents        []ConsentInput
+	registerContext RegisterContext
+}
+
+// signInWithSocial is the shared "sign in or sign up" path for Apple and
+// Google. Note: existing accounts (matched by social subject) skip the
+// consent check; only new-account creation enforces ToS+Privacy.
+func (s *Service) signInWithSocial(ctx context.Context, c socialClaims) (*TokenResponse, error) {
+	// 1. Existing match by social subject → straight sign-in.
+	var existing *User
+	var err error
+	switch c.provider {
+	case oidc.ProviderApple:
+		existing, err = s.repo.FindUserByAppleSub(ctx, c.subject)
+	case oidc.ProviderGoogle:
+		existing, err = s.repo.FindUserByGoogleSub(ctx, c.subject)
+	}
+	if err != nil && !errors.Is(err, ErrUserNotFound) {
+		return nil, err
+	}
+	if existing != nil {
+		return s.issueTokens(ctx, existing)
+	}
+
+	// 2. New account creation requires ToS + Privacy consents.
+	if !tosAndPrivacyGranted(c.consents) {
+		return nil, ErrTosOrPrivacyConsentMissing
+	}
+
+	// 3. Email collision check — refuse to auto-link to an existing
+	//    password account (account-takeover defense per ADR 0003).
+	if c.email != "" {
+		if existingByEmail, err := s.repo.FindUserByEmail(ctx, c.email); err == nil && existingByEmail != nil {
+			return nil, ErrLinkRequired
+		} else if err != nil && !errors.Is(err, ErrUserNotFound) {
+			return nil, err
+		}
+	}
+
+	lang := normalizeLanguage(c.preferredLang)
+
+	pool := s.repo.Pool()
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("begin tx: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	var newUser *User
+	switch c.provider {
+	case oidc.ProviderApple:
+		newUser, err = s.repo.CreateUserWithApple(ctx, tx, c.subject, c.email, lang)
+	case oidc.ProviderGoogle:
+		newUser, err = s.repo.CreateUserWithGoogle(ctx, tx, c.subject, c.email, lang)
+	}
+	if err != nil {
+		// EmailTaken here covers a race against an email-based sign-up
+		// committed between the check above and the INSERT.
+		if errors.Is(err, ErrEmailTaken) {
+			return nil, ErrLinkRequired
+		}
+		return nil, err
+	}
+
+	consentRC := consents.RecordContext{
+		IP: c.registerContext.IP, DeviceID: c.registerContext.DeviceID,
+		UserAgent: c.registerContext.UserAgent,
+		Source:    consents.SourceRegister,
+	}
+	if err := s.recordConsents(ctx, tx, newUser.ID, c.consents, consentRC); err != nil {
+		return nil, fmt.Errorf("record consents: %w", err)
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+	return s.issueTokens(ctx, newUser)
+}
+
+// mapAppleVerifyErr translates the OIDC verifier sentinels into auth's
+// domain errors so handlers don't need to reach across packages.
+func mapAppleVerifyErr(err error) error {
+	switch {
+	case errors.Is(err, oidc.ErrInvalidNonce):
+		return ErrAppleNonceMismatch
+	case errors.Is(err, oidc.ErrInvalidToken),
+		errors.Is(err, oidc.ErrInvalidAudience),
+		errors.Is(err, oidc.ErrInvalidIssuer),
+		errors.Is(err, oidc.ErrUnsupportedAlg),
+		errors.Is(err, oidc.ErrKeyNotFound),
+		errors.Is(err, oidc.ErrJWKSUnavailable):
+		return ErrAppleTokenInvalid
+	default:
+		return err
+	}
+}
+
+func mapGoogleVerifyErr(err error) error {
+	switch {
+	case errors.Is(err, oidc.ErrEmailUnverified):
+		return ErrGoogleEmailUnverified
+	case errors.Is(err, oidc.ErrInvalidToken),
+		errors.Is(err, oidc.ErrInvalidAudience),
+		errors.Is(err, oidc.ErrInvalidIssuer),
+		errors.Is(err, oidc.ErrUnsupportedAlg),
+		errors.Is(err, oidc.ErrKeyNotFound),
+		errors.Is(err, oidc.ErrJWKSUnavailable):
+		return ErrGoogleTokenInvalid
+	default:
+		return err
+	}
+}
+
+func normalizeLanguage(raw string) string {
+	lang := strings.ToLower(strings.TrimSpace(raw))
+	if !supportedLanguages[lang] {
+		lang = defaultLanguage
+	}
+	return lang
 }
 
 func (s *Service) Login(ctx context.Context, req LoginRequest, ip string) (*TokenResponse, error) {
@@ -248,6 +522,7 @@ func (s *Service) issueTokens(ctx context.Context, user *User) (*TokenResponse, 
 		UserID:            user.ID.String(),
 		Email:             user.Email,
 		PreferredLanguage: user.PreferredLanguage,
+		IsAnonymous:       user.IsAnonymous,
 	}, nil
 }
 

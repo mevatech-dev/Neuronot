@@ -15,6 +15,7 @@ import (
 
 	"github.com/neuronot/api/internal/account"
 	"github.com/neuronot/api/internal/auth"
+	"github.com/neuronot/api/internal/auth/oidc"
 	"github.com/neuronot/api/internal/config"
 	"github.com/neuronot/api/internal/consents"
 	"github.com/neuronot/api/internal/dailylog"
@@ -74,7 +75,24 @@ func main() {
 	consentsHandler := consents.NewHandler(consentsSvc)
 
 	authRepo := auth.NewRepository(pool)
-	authSvc := auth.NewService(authRepo, consentsSvc, jwtSecret)
+
+	// Optional OIDC verifier. Each provider is enabled only when its
+	// audience config is present; absent providers cause the matching
+	// /v1/auth/{apple,google} endpoint to return 503.
+	var appleCfg *oidc.AppleConfig
+	if cfg.AppleBundleID != "" {
+		appleCfg = &oidc.AppleConfig{BundleID: cfg.AppleBundleID}
+	}
+	var googleCfg *oidc.GoogleConfig
+	if len(cfg.GoogleAudiences) > 0 {
+		googleCfg = &oidc.GoogleConfig{Audiences: cfg.GoogleAudiences}
+	}
+	var verifier auth.OIDCVerifier
+	if appleCfg != nil || googleCfg != nil {
+		verifier = oidc.NewVerifier(appleCfg, googleCfg)
+	}
+
+	authSvc := auth.NewServiceWithOIDC(authRepo, consentsSvc, jwtSecret, verifier)
 	authHandler := auth.NewHandler(authSvc)
 
 	profileRepo := profile.NewRepository(pool)

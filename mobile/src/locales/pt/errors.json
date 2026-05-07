@@ -8,7 +8,14 @@
     "token_invalid": "Sua sessão não é mais válida.",
     "refresh_expired": "Sua sessão expirou.",
     "refresh_revoked": "Sua sessão foi revogada.",
-    "rate_limited": "Muitas tentativas. Aguarde um minuto."
+    "rate_limited": "Muitas tentativas. Aguarde um minuto.",
+    "consent_required": "Aceite os Termos de Uso e a Política de Privacidade para continuar.",
+    "apple_invalid": "Não conseguimos verificar seu login Apple. Tente novamente.",
+    "apple_nonce": "O login Apple não pôde ser confirmado. Tente novamente.",
+    "google_invalid": "Não conseguimos verificar seu login Google. Tente novamente.",
+    "google_email_unverified": "Seu e-mail do Google ainda não foi verificado.",
+    "link_required": "Já existe uma conta com este e-mail. Entre com sua senha e depois vincule este provedor em Configurações.",
+    "provider_disabled": "Este método de login não está disponível no momento."
   },
   "daily_log": {
     "duplicate": "Você já registrou o dia de hoje.",

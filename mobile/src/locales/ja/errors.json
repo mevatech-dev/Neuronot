@@ -8,7 +8,14 @@
     "token_invalid": "セッションは無効です。",
     "refresh_expired": "セッションの有効期限が切れました。",
     "refresh_revoked": "セッションは取り消されました。",
-    "rate_limited": "試行回数が多すぎます。1分待ってください。"
+    "rate_limited": "試行回数が多すぎます。1分待ってください。",
+    "consent_required": "利用規約とプライバシーポリシーに同意してください。",
+    "apple_invalid": "Apple サインインを確認できませんでした。もう一度お試しください。",
+    "apple_nonce": "Apple サインインを確定できませんでした。もう一度お試しください。",
+    "google_invalid": "Google サインインを確認できませんでした。もう一度お試しください。",
+    "google_email_unverified": "Google のメールアドレスがまだ確認されていません。",
+    "link_required": "このメールアドレスのアカウントは既に存在します。パスワードでサインインしてから、設定でこのプロバイダーを連携してください。",
+    "provider_disabled": "このサインイン方法は現在ご利用いただけません。"
   },
   "daily_log": {
     "duplicate": "今日はすでに記録済みです。",

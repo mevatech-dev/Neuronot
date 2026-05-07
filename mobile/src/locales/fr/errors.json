@@ -8,7 +8,14 @@
     "token_invalid": "Votre session n’est plus valide.",
     "refresh_expired": "Votre session a expiré.",
     "refresh_revoked": "Votre session a été révoquée.",
-    "rate_limited": "Trop de tentatives. Veuillez attendre une minute."
+    "rate_limited": "Trop de tentatives. Veuillez attendre une minute.",
+    "consent_required": "Veuillez accepter les Conditions d'utilisation et la Politique de confidentialité pour continuer.",
+    "apple_invalid": "Nous n'avons pas pu vérifier votre connexion Apple. Veuillez réessayer.",
+    "apple_nonce": "La connexion Apple n'a pas pu être confirmée. Veuillez réessayer.",
+    "google_invalid": "Nous n'avons pas pu vérifier votre connexion Google. Veuillez réessayer.",
+    "google_email_unverified": "L'adresse e-mail Google n'est pas encore vérifiée.",
+    "link_required": "Un compte existe déjà avec cette adresse e-mail. Connectez-vous avec votre mot de passe, puis liez ce fournisseur depuis les Paramètres.",
+    "provider_disabled": "Ce mode de connexion n'est pas disponible pour le moment."
   },
   "daily_log": {
     "duplicate": "Vous avez déjà enregistré la journée.",

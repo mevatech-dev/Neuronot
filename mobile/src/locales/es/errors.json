@@ -8,7 +8,14 @@
     "token_invalid": "Tu sesión ya no es válida.",
     "refresh_expired": "Tu sesión ha caducado.",
     "refresh_revoked": "Tu sesión fue revocada.",
-    "rate_limited": "Demasiados intentos. Espera un minuto."
+    "rate_limited": "Demasiados intentos. Espera un minuto.",
+    "consent_required": "Acepta los Términos y la Política de Privacidad para continuar.",
+    "apple_invalid": "No pudimos verificar tu inicio de sesión con Apple. Inténtalo de nuevo.",
+    "apple_nonce": "No se pudo confirmar el inicio de sesión con Apple. Inténtalo de nuevo.",
+    "google_invalid": "No pudimos verificar tu inicio de sesión con Google. Inténtalo de nuevo.",
+    "google_email_unverified": "Tu correo de Google aún no está verificado.",
+    "link_required": "Ya existe una cuenta con este correo. Inicia sesión con tu contraseña y luego vincula este proveedor en Ajustes.",
+    "provider_disabled": "Este método de inicio de sesión no está disponible ahora."
   },
   "daily_log": {
     "duplicate": "Ya registraste el día de hoy.",

@@ -8,7 +8,14 @@
     "token_invalid": "Oturumun artık geçerli değil.",
     "refresh_expired": "Oturumun sona erdi.",
     "refresh_revoked": "Oturumun iptal edildi.",
-    "rate_limited": "Çok fazla deneme. Bir dakika bekle."
+    "rate_limited": "Çok fazla deneme. Bir dakika bekle.",
+    "consent_required": "Devam etmek için Kullanım Şartları ve Gizlilik Politikası'nı kabul etmelisin.",
+    "apple_invalid": "Apple ile girişini doğrulayamadık. Lütfen tekrar dene.",
+    "apple_nonce": "Apple girişi onaylanamadı. Lütfen tekrar dene.",
+    "google_invalid": "Google ile girişini doğrulayamadık. Lütfen tekrar dene.",
+    "google_email_unverified": "Google e-postan henüz doğrulanmamış.",
+    "link_required": "Bu e-posta ile zaten bir hesap var. Önce şifrenle giriş yap, sonra Ayarlar'dan bu sağlayıcıyı bağla.",
+    "provider_disabled": "Bu giriş yöntemi şu anda kullanılamıyor."
   },
   "daily_log": {
     "duplicate": "Bugünün kaydını zaten girdin.",
