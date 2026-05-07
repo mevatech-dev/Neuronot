@@ -14,6 +14,7 @@ import (
 
 	"github.com/neuronot/api/internal/auth"
 	"github.com/neuronot/api/internal/config"
+	"github.com/neuronot/api/internal/consents"
 	"github.com/neuronot/api/internal/dailylog"
 	"github.com/neuronot/api/internal/db"
 	"github.com/neuronot/api/internal/events"
@@ -80,6 +81,10 @@ func main() {
 	statsSvc := stats.NewService(statsRepo)
 	statsHandler := stats.NewHandler(statsSvc)
 
+	consentsRepo := consents.NewRepository(pool, cfg.ConsentKEK)
+	consentsSvc := consents.NewService(consentsRepo)
+	consentsHandler := consents.NewHandler(consentsSvc)
+
 	syncSvc := syncpkg.NewService(dailyLogSvc, eventsSvc, insightsSvc, profileSvc)
 	syncHandler := syncpkg.NewHandler(syncSvc)
 
@@ -94,6 +99,7 @@ func main() {
 		SummaryRoutes:  func(r chi.Router) { summaryHandler.Mount(r) },
 		StatsRoutes:    func(r chi.Router) { statsHandler.Mount(r) },
 		SyncRoutes:     func(r chi.Router) { syncHandler.Mount(r) },
+		ConsentsRoutes: func(r chi.Router) { consentsHandler.Mount(r) },
 	})
 
 	srv := &http.Server{

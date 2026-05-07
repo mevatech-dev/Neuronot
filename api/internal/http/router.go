@@ -23,6 +23,7 @@ type Deps struct {
 	SummaryRoutes  func(chi.Router)
 	StatsRoutes    func(chi.Router)
 	SyncRoutes     func(chi.Router)
+	ConsentsRoutes func(chi.Router)
 }
 
 func NewRouter(d Deps) http.Handler {
@@ -77,6 +78,9 @@ func NewRouter(d Deps) http.Handler {
 			}
 			if d.SyncRoutes != nil {
 				p.Route("/sync", d.SyncRoutes)
+			}
+			if d.ConsentsRoutes != nil {
+				p.Route("/me/consents", d.ConsentsRoutes)
 			}
 		})
 	})
