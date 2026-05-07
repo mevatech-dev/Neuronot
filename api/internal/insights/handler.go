@@ -67,6 +67,8 @@ func writeInsightError(w http.ResponseWriter, err error) {
 		httpx.WriteError(w, http.StatusServiceUnavailable, "INSIGHT_AI_UNAVAILABLE", "errors.insight.ai_unavailable", "Insight generation is unavailable")
 	case errors.Is(err, ErrRateLimited):
 		httpx.WriteError(w, http.StatusTooManyRequests, "INSIGHT_RATE_LIMITED", "errors.insight.rate_limited", "Insight already generated today")
+	case errors.Is(err, ErrConsentRevoked):
+		httpx.WriteError(w, http.StatusForbidden, "INSIGHT_CONSENT_REVOKED", "errors.insight.consent_revoked", "AI consent is revoked or out of date")
 	default:
 		httpx.InternalError(w)
 	}

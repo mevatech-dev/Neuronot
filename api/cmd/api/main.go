@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 
 	"github.com/neuronot/api/internal/auth"
 	"github.com/neuronot/api/internal/config"
@@ -26,6 +27,15 @@ import (
 	syncpkg "github.com/neuronot/api/internal/sync"
 	"github.com/neuronot/api/internal/timeline"
 )
+
+// consentsForInsights bridges insights' string-typed consent check into
+// the consents service's typed API. We keep insights independent of the
+// consents package symbols.
+type consentsForInsights struct{ svc *consents.Service }
+
+func (c *consentsForInsights) IsGranted(ctx context.Context, userID uuid.UUID, t string) (bool, error) {
+	return c.svc.IsGranted(ctx, userID, consents.ConsentType(t))
+}
 
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
@@ -49,8 +59,12 @@ func main() {
 
 	jwtSecret := []byte(cfg.JWTSecret)
 
+	consentsRepo := consents.NewRepository(pool, cfg.ConsentKEK)
+	consentsSvc := consents.NewService(consentsRepo)
+	consentsHandler := consents.NewHandler(consentsSvc)
+
 	authRepo := auth.NewRepository(pool)
-	authSvc := auth.NewService(authRepo, jwtSecret)
+	authSvc := auth.NewService(authRepo, consentsSvc, jwtSecret)
 	authHandler := auth.NewHandler(authSvc)
 
 	profileRepo := profile.NewRepository(pool)
@@ -70,7 +84,7 @@ func main() {
 
 	insightsRepo := insights.NewRepository(pool)
 	insightsGenerator := insights.NewOpenAIGenerator(cfg.OpenAIAPIKey)
-	insightsSvc := insights.NewService(insightsRepo, insightsGenerator, insights.NewSafetyFilter())
+	insightsSvc := insights.NewService(insightsRepo, insightsGenerator, insights.NewSafetyFilter(), &consentsForInsights{svc: consentsSvc})
 	insightsHandler := insights.NewHandler(insightsSvc)
 
 	summaryRepo := summary.NewRepository(pool)
@@ -80,10 +94,6 @@ func main() {
 	statsRepo := stats.NewRepository(pool)
 	statsSvc := stats.NewService(statsRepo)
 	statsHandler := stats.NewHandler(statsSvc)
-
-	consentsRepo := consents.NewRepository(pool, cfg.ConsentKEK)
-	consentsSvc := consents.NewService(consentsRepo)
-	consentsHandler := consents.NewHandler(consentsSvc)
 
 	syncSvc := syncpkg.NewService(dailyLogSvc, eventsSvc, insightsSvc, profileSvc)
 	syncHandler := syncpkg.NewHandler(syncSvc)
