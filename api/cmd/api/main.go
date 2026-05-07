@@ -13,10 +13,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 
+	"github.com/neuronot/api/internal/account"
 	"github.com/neuronot/api/internal/auth"
 	"github.com/neuronot/api/internal/config"
 	"github.com/neuronot/api/internal/consents"
 	"github.com/neuronot/api/internal/dailylog"
+	"github.com/neuronot/api/internal/dataexport"
 	"github.com/neuronot/api/internal/db"
 	"github.com/neuronot/api/internal/events"
 	httpx "github.com/neuronot/api/internal/http"
@@ -35,6 +37,14 @@ type consentsForInsights struct{ svc *consents.Service }
 
 func (c *consentsForInsights) IsGranted(ctx context.Context, userID uuid.UUID, t string) (bool, error) {
 	return c.svc.IsGranted(ctx, userID, consents.ConsentType(t))
+}
+
+// accountTokenRevoker bridges the account service to auth's refresh-token revocation.
+// Lives here because the auth and account slices are deliberately separate concerns.
+type accountTokenRevoker struct{ repo *auth.Repository }
+
+func (a *accountTokenRevoker) RevokeAllForUser(ctx context.Context, userID uuid.UUID) error {
+	return a.repo.RevokeAllForUser(ctx, userID)
 }
 
 func main() {
@@ -98,18 +108,29 @@ func main() {
 	syncSvc := syncpkg.NewService(dailyLogSvc, eventsSvc, insightsSvc, profileSvc)
 	syncHandler := syncpkg.NewHandler(syncSvc)
 
+	accountRepo := account.NewRepository(pool)
+	accountSvc := account.NewService(accountRepo, &accountTokenRevoker{repo: authRepo})
+	accountHandler := account.NewHandler(accountSvc)
+
+	exportRepo := dataexport.NewRepository(pool)
+	exportSvc := dataexport.NewService(exportRepo)
+	exportHandler := dataexport.NewHandler(exportSvc)
+
 	router := httpx.NewRouter(httpx.Deps{
-		JWTSecret:      jwtSecret,
-		AuthRoutes:     func(r chi.Router) { authHandler.Mount(r) },
-		ProfileRoutes:  func(r chi.Router) { profileHandler.Mount(r) },
-		DailyLogRoutes: func(r chi.Router) { dailyLogHandler.Mount(r) },
-		EventsRoutes:   func(r chi.Router) { eventsHandler.Mount(r) },
-		TimelineRoutes: func(r chi.Router) { timelineHandler.Mount(r) },
-		InsightsRoutes: func(r chi.Router) { insightsHandler.Mount(r) },
-		SummaryRoutes:  func(r chi.Router) { summaryHandler.Mount(r) },
-		StatsRoutes:    func(r chi.Router) { statsHandler.Mount(r) },
-		SyncRoutes:     func(r chi.Router) { syncHandler.Mount(r) },
-		ConsentsRoutes: func(r chi.Router) { consentsHandler.Mount(r) },
+		JWTSecret:             jwtSecret,
+		AuthRoutes:            func(r chi.Router) { authHandler.Mount(r) },
+		ProfileRoutes:         func(r chi.Router) { profileHandler.Mount(r) },
+		DailyLogRoutes:        func(r chi.Router) { dailyLogHandler.Mount(r) },
+		EventsRoutes:          func(r chi.Router) { eventsHandler.Mount(r) },
+		TimelineRoutes:        func(r chi.Router) { timelineHandler.Mount(r) },
+		InsightsRoutes:        func(r chi.Router) { insightsHandler.Mount(r) },
+		SummaryRoutes:         func(r chi.Router) { summaryHandler.Mount(r) },
+		StatsRoutes:           func(r chi.Router) { statsHandler.Mount(r) },
+		SyncRoutes:            func(r chi.Router) { syncHandler.Mount(r) },
+		ConsentsRoutes:        func(r chi.Router) { consentsHandler.Mount(r) },
+		AccountPasswordRoutes: func(r chi.Router) { accountHandler.MountPassword(r) },
+		AccountMeRoutes:       func(r chi.Router) { accountHandler.MountMe(r) },
+		ExportRoutes:          func(r chi.Router) { exportHandler.Mount(r) },
 	})
 
 	srv := &http.Server{

@@ -14,16 +14,19 @@ type Deps struct {
 
 	// Each feature mounts its own routes — keeps wiring near features
 	// instead of growing one big router file.
-	AuthRoutes     func(chi.Router)
-	ProfileRoutes  func(chi.Router)
-	DailyLogRoutes func(chi.Router)
-	EventsRoutes   func(chi.Router)
-	TimelineRoutes func(chi.Router)
-	InsightsRoutes func(chi.Router)
-	SummaryRoutes  func(chi.Router)
-	StatsRoutes    func(chi.Router)
-	SyncRoutes     func(chi.Router)
-	ConsentsRoutes func(chi.Router)
+	AuthRoutes            func(chi.Router)
+	ProfileRoutes         func(chi.Router)
+	DailyLogRoutes        func(chi.Router)
+	EventsRoutes          func(chi.Router)
+	TimelineRoutes        func(chi.Router)
+	InsightsRoutes        func(chi.Router)
+	SummaryRoutes         func(chi.Router)
+	StatsRoutes           func(chi.Router)
+	SyncRoutes            func(chi.Router)
+	ConsentsRoutes        func(chi.Router)
+	AccountPasswordRoutes func(chi.Router)
+	AccountMeRoutes       func(chi.Router)
+	ExportRoutes          func(chi.Router)
 }
 
 func NewRouter(d Deps) http.Handler {
@@ -79,9 +82,24 @@ func NewRouter(d Deps) http.Handler {
 			if d.SyncRoutes != nil {
 				p.Route("/sync", d.SyncRoutes)
 			}
-			if d.ConsentsRoutes != nil {
-				p.Route("/me/consents", d.ConsentsRoutes)
+
+			// /v1/auth/password is authenticated (unlike login/register).
+			if d.AccountPasswordRoutes != nil {
+				p.Route("/auth/password", d.AccountPasswordRoutes)
 			}
+
+			// All /me/* lives in one block so future extensions stay together.
+			p.Route("/me", func(sub chi.Router) {
+				if d.AccountMeRoutes != nil {
+					d.AccountMeRoutes(sub)
+				}
+				if d.ConsentsRoutes != nil {
+					sub.Route("/consents", d.ConsentsRoutes)
+				}
+				if d.ExportRoutes != nil {
+					sub.Route("/export", d.ExportRoutes)
+				}
+			})
 		})
 	})
 
