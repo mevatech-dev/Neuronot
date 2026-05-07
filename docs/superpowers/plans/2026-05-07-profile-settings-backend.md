@@ -1025,11 +1025,7 @@ func (h *Handler) Mount(r chi.Router) {
 }
 
 func (h *Handler) list(w http.ResponseWriter, r *http.Request) {
-	uid, ok := middleware.UserID(r.Context())
-	if !ok {
-		httpx.NotFound(w)
-		return
-	}
+	uid := middleware.UserID(r.Context())
 	out, err := h.svc.All(r.Context(), uid)
 	if err != nil {
 		httpx.InternalError(w)
@@ -1039,11 +1035,7 @@ func (h *Handler) list(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) grant(w http.ResponseWriter, r *http.Request) {
-	uid, ok := middleware.UserID(r.Context())
-	if !ok {
-		httpx.NotFound(w)
-		return
-	}
+	uid := middleware.UserID(r.Context())
 	var req GrantRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		httpx.ValidationFailed(w, "invalid json body")
@@ -1068,11 +1060,7 @@ func (h *Handler) grant(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) revoke(w http.ResponseWriter, r *http.Request) {
-	uid, ok := middleware.UserID(r.Context())
-	if !ok {
-		httpx.NotFound(w)
-		return
-	}
+	uid := middleware.UserID(r.Context())
 	t := ConsentType(chi.URLParam(r, "type"))
 	if !t.IsValid() {
 		httpx.WriteError(w, http.StatusUnprocessableEntity, "CONSENT_UNKNOWN_TYPE", "errors.consent.unknown_type", "Unknown consent type")
@@ -2124,11 +2112,7 @@ func (h *Handler) MountMe(r chi.Router) {
 }
 
 func (h *Handler) changePassword(w http.ResponseWriter, r *http.Request) {
-	uid, ok := middleware.UserID(r.Context())
-	if !ok {
-		httpx.NotFound(w)
-		return
-	}
+	uid := middleware.UserID(r.Context())
 	var req ChangePasswordRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		httpx.ValidationFailed(w, "invalid json body")
@@ -2142,11 +2126,7 @@ func (h *Handler) changePassword(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) deleteSelf(w http.ResponseWriter, r *http.Request) {
-	uid, ok := middleware.UserID(r.Context())
-	if !ok {
-		httpx.NotFound(w)
-		return
-	}
+	uid := middleware.UserID(r.Context())
 	var req DeleteAccountRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		httpx.ValidationFailed(w, "invalid json body")
@@ -2552,11 +2532,7 @@ func (h *Handler) Mount(r chi.Router) {
 }
 
 func (h *Handler) export(w http.ResponseWriter, r *http.Request) {
-	uid, ok := middleware.UserID(r.Context())
-	if !ok {
-		httpx.NotFound(w)
-		return
-	}
+	uid := middleware.UserID(r.Context())
 	payload, err := h.svc.Build(r.Context(), uid)
 	if err != nil {
 		httpx.WriteError(w, http.StatusInternalServerError, "EXPORT_FAILED", "errors.export.failed", "Could not build export")
