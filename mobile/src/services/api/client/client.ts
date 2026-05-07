@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 import axios, { AxiosError, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios';
 
+import { getCachedDeviceId } from '@/services/device/deviceId';
 import { useAuthStore } from '@/store/auth';
 
 const baseURL =
@@ -17,6 +18,10 @@ apiClient.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  const deviceId = getCachedDeviceId();
+  if (deviceId) {
+    config.headers['X-Device-Id'] = deviceId;
   }
   return config;
 });
