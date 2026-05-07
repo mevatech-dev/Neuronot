@@ -65,6 +65,9 @@ export type ApiEnvelope<T> = {
 
 export async function request<T>(config: AxiosRequestConfig): Promise<T> {
   const res = await apiClient.request<ApiEnvelope<T>>(config);
+  if (res.status === 204 || !res.data) {
+    return null as T;
+  }
   if (res.data.error) {
     throw new ApiError(res.data.error.code, res.data.error.message_key, res.data.error.message);
   }
