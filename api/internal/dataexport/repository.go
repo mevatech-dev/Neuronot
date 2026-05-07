@@ -9,6 +9,16 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// NOTE: GDPR Article 15 asks for everything we hold about a user, so this
+// repository intentionally includes soft-deleted rows (daily_logs.deleted_at,
+// events.deleted_at). The `deleted_at` column carries through in the export
+// so consumers can see what was tombstoned.
+//
+// SELECT * is intentional. If a future migration adds a sensitive column
+// (password hash, encrypted payload, internal flag), you MUST add an
+// explicit column list here, or the export will leak it. There is no schema
+// introspection guard.
+
 type Repository struct {
 	pool *pgxpool.Pool
 }
@@ -38,7 +48,10 @@ func rowsAsMaps(rows pgx.Rows) ([]map[string]any, error) {
 		}
 		out = append(out, row)
 	}
-	return out, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (r *Repository) FetchProfile(ctx context.Context, userID uuid.UUID) (map[string]any, error) {
@@ -48,8 +61,11 @@ func (r *Repository) FetchProfile(ctx context.Context, userID uuid.UUID) (map[st
 	}
 	defer rows.Close()
 	all, err := rowsAsMaps(rows)
-	if err != nil || len(all) == 0 {
+	if err != nil {
 		return nil, err
+	}
+	if len(all) == 0 {
+		return nil, nil
 	}
 	return all[0], nil
 }
