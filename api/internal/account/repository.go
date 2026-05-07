@@ -30,7 +30,7 @@ func (r *Repository) GetEmailAndHash(ctx context.Context, userID uuid.UUID) (ema
 }
 
 func (r *Repository) UpdatePassword(ctx context.Context, userID uuid.UUID, newHash string) error {
-	tag, err := r.pool.Exec(ctx, `UPDATE users SET password_hash = $1 WHERE id = $2`, newHash, userID)
+	tag, err := r.pool.Exec(ctx, `UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2`, newHash, userID)
 	if err != nil {
 		return err
 	}
