@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
 
@@ -90,19 +89,9 @@ func (h *Handler) revoke(w http.ResponseWriter, r *http.Request) {
 // for the consent audit row. Caller decides the source.
 func requestRecordContext(r *http.Request, src Source) RecordContext {
 	return RecordContext{
-		IP:        clientIP(r),
+		IP:        httpx.ClientIP(r),
 		DeviceID:  r.Header.Get("X-Device-Id"),
 		UserAgent: r.UserAgent(),
 		Source:    src,
 	}
-}
-
-func clientIP(r *http.Request) string {
-	if ip := r.Header.Get("X-Forwarded-For"); ip != "" {
-		if comma := strings.Index(ip, ","); comma >= 0 {
-			return strings.TrimSpace(ip[:comma])
-		}
-		return strings.TrimSpace(ip)
-	}
-	return r.RemoteAddr
 }

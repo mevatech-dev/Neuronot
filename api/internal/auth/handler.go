@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
 	httpx "github.com/neuronot/api/internal/http"
@@ -45,7 +44,7 @@ func (h *Handler) login(w http.ResponseWriter, r *http.Request) {
 		httpx.ValidationFailed(w, "invalid json body")
 		return
 	}
-	resp, err := h.svc.Login(r.Context(), req, clientIP(r))
+	resp, err := h.svc.Login(r.Context(), req, httpx.ClientIP(r))
 	if err != nil {
 		writeAuthError(w, err)
 		return
@@ -97,14 +96,4 @@ func writeAuthError(w http.ResponseWriter, err error) {
 	default:
 		httpx.InternalError(w)
 	}
-}
-
-func clientIP(r *http.Request) string {
-	if ip := r.Header.Get("X-Forwarded-For"); ip != "" {
-		if comma := strings.Index(ip, ","); comma >= 0 {
-			return strings.TrimSpace(ip[:comma])
-		}
-		return strings.TrimSpace(ip)
-	}
-	return r.RemoteAddr
 }

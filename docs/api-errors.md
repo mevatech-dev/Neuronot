@@ -66,6 +66,14 @@ Client `code` veya `message_key` üzerinden kendi locale'inden çeviri yapar. `m
 
 ---
 
+## Consents
+
+| Code | HTTP | message_key | Anlam |
+|---|---|---|---|
+| `CONSENT_UNKNOWN_TYPE` | 422 | `errors.consent.unknown_type` | Bilinmeyen consent type |
+
+---
+
 ## Stats
 
 | Code | HTTP | message_key | Anlam |

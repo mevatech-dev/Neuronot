@@ -3,6 +3,7 @@ package middleware
 import (
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -36,7 +37,10 @@ func RequestLogger(next http.Handler) http.Handler {
 
 func clientIP(r *http.Request) string {
 	if ip := r.Header.Get("X-Forwarded-For"); ip != "" {
-		return ip
+		if comma := strings.Index(ip, ","); comma >= 0 {
+			return strings.TrimSpace(ip[:comma])
+		}
+		return strings.TrimSpace(ip)
 	}
 	return r.RemoteAddr
 }
