@@ -57,7 +57,7 @@ api/internal/dataexport/
 └─ handler.go           GET /v1/me/export
 
 api/migrations/00009_consents.sql
-docs/HAFTA6_VERIFICATION.md
+docs/HAFTA7_VERIFICATION.md
 ```
 
 ### Modified files
@@ -2654,17 +2654,17 @@ git commit -m "docs: add error codes for consent, account, export"
 
 ---
 
-### Task 25: HAFTA6_VERIFICATION.md
+### Task 25: HAFTA7_VERIFICATION.md
 
 **Files:**
-- Create: `docs/HAFTA6_VERIFICATION.md`
+- Create: `docs/HAFTA7_VERIFICATION.md`
 
 - [ ] **Step 1: Write the smoke runbook**
 
 ```markdown
-# Hafta 6 Verification Runbook
+# Hafta 7 Verification Runbook
 
-Hafta 6: Profile/Settings backend — consents audit layer, account management,
+Hafta 7: Profile/Settings backend — consents audit layer, account management,
 data export, register consent gate, insights consent gate.
 
 ## Ön Koşul
@@ -2803,8 +2803,8 @@ Beklenen: `ip_encrypted` length > 12 bytes (nonce + cipher + tag), düz IP gör�
 - [ ] **Step 2: Commit**
 
 ```bash
-git add docs/HAFTA6_VERIFICATION.md
-git commit -m "docs: add Hafta 6 verification runbook for profile/settings backend"
+git add docs/HAFTA7_VERIFICATION.md
+git commit -m "docs: add Hafta 7 verification runbook for profile/settings backend"
 ```
 
 ---
@@ -2812,7 +2812,7 @@ git commit -m "docs: add Hafta 6 verification runbook for profile/settings backe
 ## Plan complete
 
 After Task 25 commits, the backend half of the Profile/Settings overhaul is
-shipped. To verify end-to-end, follow `docs/HAFTA6_VERIFICATION.md` from
+shipped. To verify end-to-end, follow `docs/HAFTA7_VERIFICATION.md` from
 section 1 to 9. All checks should pass.
 
 **Next:** Plan 2 (Mobile) — Profile tab, Settings root, sub-screens, register
