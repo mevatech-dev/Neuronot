@@ -30,7 +30,12 @@ func (h *Handler) register(w http.ResponseWriter, r *http.Request) {
 		httpx.ValidationFailed(w, "invalid json body")
 		return
 	}
-	resp, err := h.svc.Register(r.Context(), req)
+	rc := RegisterContext{
+		IP:        httpx.ClientIP(r),
+		DeviceID:  r.Header.Get("X-Device-Id"),
+		UserAgent: r.UserAgent(),
+	}
+	resp, err := h.svc.Register(r.Context(), req, rc)
 	if err != nil {
 		writeAuthError(w, err)
 		return
@@ -93,6 +98,8 @@ func writeAuthError(w http.ResponseWriter, err error) {
 		httpx.WriteError(w, http.StatusUnauthorized, "AUTH_TOKEN_INVALID", "errors.auth.token_invalid", "Invalid or expired refresh token")
 	case errors.Is(err, ErrRateLimited):
 		httpx.WriteError(w, http.StatusTooManyRequests, "AUTH_RATE_LIMITED", "errors.auth.rate_limited", "Too many login attempts")
+	case errors.Is(err, ErrAIConsentRequired):
+		httpx.WriteError(w, http.StatusUnprocessableEntity, "AUTH_AI_CONSENT_REQUIRED", "errors.auth.ai_consent_required", "AI consent is required to register")
 	default:
 		httpx.InternalError(w)
 	}

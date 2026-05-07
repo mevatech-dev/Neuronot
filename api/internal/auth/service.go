@@ -126,9 +126,6 @@ func (s *Service) Register(ctx context.Context, req RegisterRequest, rc Register
 		if g, ok := findConsent(req.Consents, t); ok {
 			granted = g
 		}
-		if !granted && t == consents.ConsentTypeAIUsage {
-			return nil, ErrAIConsentRequired
-		}
 		if granted {
 			if err := s.consents.GrantTx(ctx, tx, user.ID, t, consentRC); err != nil {
 				return nil, fmt.Errorf("record consent %s: %w", t, err)

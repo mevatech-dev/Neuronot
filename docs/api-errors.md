@@ -30,6 +30,7 @@ Client `code` veya `message_key` üzerinden kendi locale'inden çeviri yapar. `m
 | `AUTH_REFRESH_EXPIRED` | 401 | `errors.auth.refresh_expired` | Refresh token süresi dolmuş |
 | `AUTH_REFRESH_REVOKED` | 401 | `errors.auth.refresh_revoked` | Refresh token iptal edilmiş |
 | `AUTH_RATE_LIMITED` | 429 | `errors.auth.rate_limited` | Çok fazla deneme |
+| `AUTH_AI_CONSENT_REQUIRED` | 422 | `errors.auth.ai_consent_required` | Register call without an `ai_usage` consent set to true. |
 
 ---
 
