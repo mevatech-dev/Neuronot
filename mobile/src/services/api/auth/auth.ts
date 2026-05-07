@@ -10,11 +10,27 @@ export type TokenResponse = {
   preferred_language: string;
 };
 
-export function register(email: string, password: string, preferredLanguage?: string) {
+export type RegisterConsentInput = {
+  type: 'ai_usage' | 'terms_of_service' | 'privacy_policy';
+  granted: boolean;
+  version: string;
+};
+
+export function register(
+  email: string,
+  password: string,
+  preferredLanguage: string | undefined,
+  consents: RegisterConsentInput[],
+) {
   return request<TokenResponse>({
     method: 'POST',
     url: '/v1/auth/register',
-    data: { email, password, preferred_language: preferredLanguage },
+    data: {
+      email,
+      password,
+      preferred_language: preferredLanguage,
+      consents,
+    },
   });
 }
 

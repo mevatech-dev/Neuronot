@@ -2,7 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
 
 import { login as apiLogin, refresh as apiRefresh, register as apiRegister, logout as apiLogout } from '@/services/api/auth';
-import type { TokenResponse } from '@/services/api/auth';
+import type { RegisterConsentInput, TokenResponse } from '@/services/api/auth';
 
 const ACCESS_KEY = 'neuronot.auth.access';
 const REFRESH_KEY = 'neuronot.auth.refresh';
@@ -22,7 +22,12 @@ type AuthState = {
 
   hydrate: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, preferredLanguage?: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    preferredLanguage: string | undefined,
+    consents: RegisterConsentInput[],
+  ) => Promise<void>;
   logout: () => Promise<void>;
   refreshTokens: () => Promise<string | null>;
 };
@@ -76,8 +81,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  register: async (email, password, preferredLanguage) => {
-    const tokens = await apiRegister(email, password, preferredLanguage);
+  register: async (email, password, preferredLanguage, consents) => {
+    const tokens = await apiRegister(email, password, preferredLanguage, consents);
     await persistTokens(tokens);
     set({
       accessToken: tokens.access_token,
