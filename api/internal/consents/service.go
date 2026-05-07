@@ -4,15 +4,11 @@ package consents
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/google/uuid"
 )
 
-var (
-	ErrUnknownType    = errors.New("unknown consent type")
-	ErrConsentRevoked = errors.New("ai consent revoked or stale")
-)
+var ErrUnknownType = errors.New("unknown consent type")
 
 type repository interface {
 	Record(ctx context.Context, userID uuid.UUID, t ConsentType, granted bool, version string, rc RecordContext) error
@@ -23,14 +19,10 @@ type repository interface {
 
 type Service struct {
 	repo repository
-	now  func() time.Time
 }
 
 func NewService(repo repository) *Service {
-	return &Service{
-		repo: repo,
-		now:  func() time.Time { return time.Now().UTC() },
-	}
+	return &Service{repo: repo}
 }
 
 // IsGranted returns true only when the latest row is granted=true AND its
@@ -102,7 +94,7 @@ func (s *Service) All(ctx context.Context, userID uuid.UUID) ([]ConsentResponse,
 			})
 			continue
 		}
-		occ := c.OccurredAt
+		occ := c.OccurredAt // copy to avoid pointing at the range variable
 		out = append(out, ConsentResponse{
 			Type:           c.Type,
 			Granted:        c.Granted,

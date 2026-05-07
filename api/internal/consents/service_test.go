@@ -78,7 +78,10 @@ func TestIsGranted_GrantedStaleVersion(t *testing.T) {
 	svc := NewService(&fakeRepo{latest: map[ConsentType]Consent{
 		ConsentTypeAIUsage: {Granted: true, Version: "old"},
 	}})
-	got, _ := svc.IsGranted(context.Background(), uuid.New(), ConsentTypeAIUsage)
+	got, err := svc.IsGranted(context.Background(), uuid.New(), ConsentTypeAIUsage)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if got {
 		t.Fatal("stale version should not count as granted")
 	}
@@ -88,7 +91,10 @@ func TestIsGranted_Revoked(t *testing.T) {
 	svc := NewService(&fakeRepo{latest: map[ConsentType]Consent{
 		ConsentTypeAIUsage: {Granted: false, Version: CurrentVersions[ConsentTypeAIUsage]},
 	}})
-	got, _ := svc.IsGranted(context.Background(), uuid.New(), ConsentTypeAIUsage)
+	got, err := svc.IsGranted(context.Background(), uuid.New(), ConsentTypeAIUsage)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if got {
 		t.Fatal("revoked should not count as granted")
 	}
@@ -162,5 +168,22 @@ func TestAllReturnsRowForEveryType(t *testing.T) {
 	}
 	if aiRow.OccurredAt == nil {
 		t.Fatal("AI row should have non-nil OccurredAt")
+	}
+}
+
+func TestIsGranted_RepoError(t *testing.T) {
+	repo := &fakeRepo{latestErr: errors.New("db boom")}
+	svc := NewService(repo)
+	_, err := svc.IsGranted(context.Background(), uuid.New(), ConsentTypeAIUsage)
+	if err == nil || err.Error() == "consent not found" {
+		t.Fatalf("expected repo error to surface, got %v", err)
+	}
+}
+
+func TestAll_RepoError(t *testing.T) {
+	repo := &fakeRepo{latestErr: errors.New("db boom")}
+	svc := NewService(repo)
+	if _, err := svc.All(context.Background(), uuid.New()); err == nil {
+		t.Fatal("expected repo error to surface from All")
 	}
 }
