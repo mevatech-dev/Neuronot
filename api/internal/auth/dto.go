@@ -2,10 +2,17 @@ package auth
 
 import "time"
 
+type ConsentInput struct {
+	Type    string `json:"type"`
+	Granted bool   `json:"granted"`
+	Version string `json:"version"`
+}
+
 type RegisterRequest struct {
-	Email             string `json:"email"`
-	Password          string `json:"password"`
-	PreferredLanguage string `json:"preferred_language,omitempty"`
+	Email             string         `json:"email"`
+	Password          string         `json:"password"`
+	PreferredLanguage string         `json:"preferred_language,omitempty"`
+	Consents          []ConsentInput `json:"consents"`
 }
 
 type LoginRequest struct {
