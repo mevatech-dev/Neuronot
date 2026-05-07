@@ -31,6 +31,7 @@ Client `code` veya `message_key` üzerinden kendi locale'inden çeviri yapar. `m
 | `AUTH_REFRESH_REVOKED` | 401 | `errors.auth.refresh_revoked` | Refresh token iptal edilmiş |
 | `AUTH_RATE_LIMITED` | 429 | `errors.auth.rate_limited` | Çok fazla deneme |
 | `AUTH_AI_CONSENT_REQUIRED` | 422 | `errors.auth.ai_consent_required` | Register call without an `ai_usage` consent set to true. |
+| `AUTH_PASSWORD_INCORRECT` | 401 | `errors.auth.password_incorrect` | Mevcut şifre yanlış |
 
 ---
 
@@ -102,6 +103,23 @@ Client `code` veya `message_key` üzerinden kendi locale'inden çeviri yapar. `m
 | `INSIGHT_AI_UNAVAILABLE` | 503 | `errors.insight.ai_unavailable` | Claude API çağrısı başarısız |
 | `INSIGHT_RATE_LIMITED` | 429 | `errors.insight.rate_limited` | Günde 1 generate hakkı |
 | `INSIGHT_CRISIS_DETECTED` | 200 | `errors.insight.crisis_detected` | Output crisis card; HTTP 200 ama bayrak set |
+| `INSIGHT_CONSENT_REVOKED` | 403 | `errors.insight.consent_revoked` | AI rızası iptal edilmiş veya güncel değil |
+
+---
+
+## Account
+
+| Code | HTTP | message_key | Anlam |
+|---|---|---|---|
+| `ACCOUNT_DELETE_EMAIL_MISMATCH` | 422 | `errors.account.delete_email_mismatch` | Onay e-postası hesap e-postasıyla eşleşmiyor |
+
+---
+
+## Export
+
+| Code | HTTP | message_key | Anlam |
+|---|---|---|---|
+| `EXPORT_FAILED` | 500 | `errors.export.failed` | Veri ihracı oluşturulamadı |
 
 ---
 
