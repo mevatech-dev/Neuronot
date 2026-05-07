@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -39,6 +40,38 @@ func (r *Repository) CreateUser(ctx context.Context, email, passwordHash, lang s
 		return nil, err
 	}
 	return &u, nil
+}
+
+// DBTX is the subset of pgx that both pgxpool.Pool and pgx.Tx satisfy.
+type DBTX interface {
+	Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error)
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+}
+
+// CreateUserTx is the transaction-aware variant of CreateUser. The caller
+// is responsible for committing or rolling back the transaction.
+func (r *Repository) CreateUserTx(ctx context.Context, tx DBTX, email, passwordHash, language string) (*User, error) {
+	var u User
+	err := tx.QueryRow(ctx, `
+		INSERT INTO users (email, password_hash, preferred_language)
+		VALUES ($1, $2, $3)
+		RETURNING id, email, password_hash, preferred_language, created_at, updated_at
+	`, email, passwordHash, language).Scan(&u.ID, &u.Email, &u.PasswordHash, &u.PreferredLanguage, &u.CreatedAt, &u.UpdatedAt)
+	if err != nil {
+		if isUniqueViolation(err) {
+			return nil, ErrEmailTaken
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// Pool returns the connection pool for callers that need to start a
+// transaction spanning more than one repository (e.g., auth + consents
+// during register).
+func (r *Repository) Pool() *pgxpool.Pool {
+	return r.pool
 }
 
 func (r *Repository) FindUserByEmail(ctx context.Context, email string) (*User, error) {
