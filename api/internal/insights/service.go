@@ -19,6 +19,11 @@ const (
 	maxListLimit     = 50
 )
 
+// consentTypeAIUsage matches consents.ConsentTypeAIUsage. We use a string
+// at the interface boundary to keep insights from importing consents; the
+// adapter in main.go bridges the two types.
+const consentTypeAIUsage = "ai_usage"
+
 var (
 	ErrInsufficientData = errors.New("insufficient data for insight")
 	ErrAIUnavailable    = errors.New("insight generator unavailable")
@@ -68,7 +73,7 @@ func NewService(repo repository, generator Generator, filter SafetyFilter, conse
 func (s *Service) Generate(ctx context.Context, userID uuid.UUID, language string) (*Insight, error) {
 	language = normalizeLanguage(language)
 
-	ok, err := s.consents.IsGranted(ctx, userID, "ai_usage")
+	ok, err := s.consents.IsGranted(ctx, userID, consentTypeAIUsage)
 	if err != nil {
 		return nil, err
 	}

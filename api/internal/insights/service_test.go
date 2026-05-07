@@ -142,3 +142,18 @@ func TestGenerateBlockedWhenConsentRevoked(t *testing.T) {
 		t.Fatalf("generator should not be called when consent revoked")
 	}
 }
+
+func TestGenerateSurfacesConsentCheckerError(t *testing.T) {
+	repo := &fakeRepository{}
+	gen := &fakeGenerator{}
+	filter := NewSafetyFilter()
+	bang := errors.New("consent boom")
+	svc := NewService(repo, gen, filter, &fakeConsents{err: bang})
+	_, err := svc.Generate(context.Background(), uuid.New(), "en")
+	if !errors.Is(err, bang) {
+		t.Fatalf("expected boom error to surface, got %v", err)
+	}
+	if gen.called {
+		t.Fatal("generator should not run when consent check errors")
+	}
+}
