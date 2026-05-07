@@ -1,0 +1,48 @@
+{
+  "title": "Settings",
+  "settings_entry": "Settings",
+  "section": {
+    "account_data": "Account & data",
+    "help": "Help",
+    "about": "About"
+  },
+  "rows": {
+    "account": "Account",
+    "data": "My data",
+    "consents": "Consents",
+    "crisis": "Crisis & support",
+    "help": "Contact",
+    "about": "About",
+    "onboarding_redo": "Restart onboarding"
+  },
+  "theme": {
+    "title": "Theme",
+    "system": "Match system",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "language": {
+    "title": "Language",
+    "beta": "Beta"
+  },
+  "reminder": {
+    "title": "Daily reminder",
+    "enabled": "Daily reminder"
+  },
+  "profile": {
+    "edit_action": "Edit profile",
+    "member_since": "Member since {{date}}",
+    "focus_problem": "Focus problem",
+    "intensity": "Intensity",
+    "sleep": "Avg sleep",
+    "caffeine": "Caffeine",
+    "reminder": "Reminder",
+    "yes": "Yes",
+    "no": "No",
+    "reminder_off": "Off"
+  },
+  "onboarding_redo": {
+    "body": "Restarting onboarding will not delete your data, but you'll re-enter your profile preferences.",
+    "action": "Restart"
+  }
+}

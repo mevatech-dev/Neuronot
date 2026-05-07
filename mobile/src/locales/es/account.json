@@ -1,0 +1,19 @@
+{
+  "title": "Account",
+  "password": {
+    "current": "Current password",
+    "new": "New password",
+    "confirm": "Confirm new password",
+    "submit": "Change password",
+    "mismatch": "New password and confirmation do not match",
+    "changed": "Password changed. Other devices will need to sign in again."
+  },
+  "delete": {
+    "open": "Delete my account",
+    "title": "Delete account",
+    "body": "All your data will be removed. This cannot be undone.",
+    "confirm_label": "Type your email to confirm",
+    "confirm_action": "Delete forever",
+    "cancel": "Cancel"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "title": "My data",
+  "export": {
+    "body": "Download a JSON copy of everything we store about you.",
+    "action": "Export my data",
+    "saved": "Export saved and ready to share."
+  },
+  "delete_shortcut": "Delete my account"
+}

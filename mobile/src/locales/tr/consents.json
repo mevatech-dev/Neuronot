@@ -1,0 +1,36 @@
+{
+  "title": "Onaylar",
+  "intro": "Neuronot'un verilerinle ne yapmasına izin verdiğini yönet.",
+  "tos_accept": "Kullanım Şartları'nı kabul ediyorum.",
+  "privacy_accept": "Gizlilik Politikası'nı kabul ediyorum.",
+  "ai_accept": "Yapay zekanın içgörü üretmek için kayıtlarımı analiz etmesine izin veriyorum.",
+  "types": {
+    "ai_usage": "Yapay zeka içgörü analizi",
+    "terms_of_service": "Kullanım Şartları",
+    "privacy_policy": "Gizlilik Politikası"
+  },
+  "status": {
+    "granted": "Verildi",
+    "stale": "Güncelleme gerekli",
+    "revoked": "Geri çekildi"
+  },
+  "actions": {
+    "revoke": "Geri çek"
+  },
+  "reconsent": {
+    "accept": "Kabul et",
+    "dismiss": "Şimdi değil",
+    "ai_usage": {
+      "title": "Yapay zeka onayı gerekli",
+      "body": "Yapay zekanın verilerini nasıl kullandığını güncelledik. Yapay zeka içgörülerini kullanmaya devam etmek için tekrar onay ver."
+    },
+    "terms_of_service": {
+      "title": "Kullanım Şartları güncellendi",
+      "body": "Devam etmek için güncellenen şartları inceleyip kabul et."
+    },
+    "privacy_policy": {
+      "title": "Gizlilik Politikası güncellendi",
+      "body": "Devam etmek için güncellenen gizlilik politikasını inceleyip kabul et."
+    }
+  }
+}

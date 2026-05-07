@@ -1,0 +1,48 @@
+{
+  "title": "Ayarlar",
+  "settings_entry": "Ayarlar",
+  "section": {
+    "account_data": "Hesap ve veri",
+    "help": "Yardım",
+    "about": "Hakkında"
+  },
+  "rows": {
+    "account": "Hesap",
+    "data": "Verilerim",
+    "consents": "Onaylar",
+    "crisis": "Kriz ve destek",
+    "help": "İletişim",
+    "about": "Hakkında",
+    "onboarding_redo": "Onboarding'i yeniden başlat"
+  },
+  "theme": {
+    "title": "Tema",
+    "system": "Sistemi takip et",
+    "light": "Açık",
+    "dark": "Koyu"
+  },
+  "language": {
+    "title": "Dil",
+    "beta": "Beta"
+  },
+  "reminder": {
+    "title": "Günlük hatırlatıcı",
+    "enabled": "Günlük hatırlatıcı"
+  },
+  "profile": {
+    "edit_action": "Profili düzenle",
+    "member_since": "{{date}} tarihinden beri üye",
+    "focus_problem": "Odak sorunu",
+    "intensity": "Yoğunluk",
+    "sleep": "Ort. uyku",
+    "caffeine": "Kafein",
+    "reminder": "Hatırlatıcı",
+    "yes": "Evet",
+    "no": "Hayır",
+    "reminder_off": "Kapalı"
+  },
+  "onboarding_redo": {
+    "body": "Onboarding'i yeniden başlatmak verilerini silmez, ancak profil tercihlerini tekrar girersin.",
+    "action": "Yeniden başlat"
+  }
+}

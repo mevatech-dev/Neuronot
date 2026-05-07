@@ -26,7 +26,8 @@
     "home": "Home",
     "timeline": "Timeline",
     "insights": "Insights",
-    "settings": "Settings"
+    "settings": "Settings",
+    "profile": "Profile"
   },
   "settings": {
     "language": {

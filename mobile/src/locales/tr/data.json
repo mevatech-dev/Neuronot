@@ -1,0 +1,9 @@
+{
+  "title": "Verilerim",
+  "export": {
+    "body": "Hakkında sakladığımız her şeyin JSON kopyasını indir.",
+    "action": "Verilerimi dışa aktar",
+    "saved": "Dışa aktarma kaydedildi ve paylaşmaya hazır."
+  },
+  "delete_shortcut": "Hesabımı sil"
+}

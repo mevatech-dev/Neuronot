@@ -5,7 +5,22 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const localesDir = path.join(root, 'src', 'locales');
 const languages = ['en', 'tr', 'es', 'de', 'fr', 'pt', 'it', 'ar', 'ru', 'ja', 'zh'];
-const namespaces = ['common', 'errors', 'onboarding', 'daily-log', 'events', 'timeline', 'insights', 'crisis'];
+const namespaces = [
+  'common',
+  'errors',
+  'onboarding',
+  'daily-log',
+  'events',
+  'timeline',
+  'insights',
+  'crisis',
+  'settings',
+  'account',
+  'consents',
+  'data',
+  'about',
+  'help',
+];
 
 function readJSON(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));

@@ -1,0 +1,36 @@
+{
+  "title": "Consents",
+  "intro": "Manage what you allow Neuronot to do with your data.",
+  "tos_accept": "I accept the Terms of Service.",
+  "privacy_accept": "I accept the Privacy Policy.",
+  "ai_accept": "I allow AI to analyze my entries to generate insights.",
+  "types": {
+    "ai_usage": "AI insight analysis",
+    "terms_of_service": "Terms of Service",
+    "privacy_policy": "Privacy Policy"
+  },
+  "status": {
+    "granted": "Granted",
+    "stale": "Update required",
+    "revoked": "Revoked"
+  },
+  "actions": {
+    "revoke": "Revoke"
+  },
+  "reconsent": {
+    "accept": "Accept",
+    "dismiss": "Not now",
+    "ai_usage": {
+      "title": "AI consent needed",
+      "body": "We've updated how the AI uses your data. Re-grant consent to keep AI insights enabled."
+    },
+    "terms_of_service": {
+      "title": "Terms of Service updated",
+      "body": "Please review and accept the updated Terms to continue."
+    },
+    "privacy_policy": {
+      "title": "Privacy Policy updated",
+      "body": "Please review and accept the updated Privacy Policy to continue."
+    }
+  }
+}

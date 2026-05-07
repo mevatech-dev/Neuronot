@@ -1,0 +1,19 @@
+{
+  "title": "Hesap",
+  "password": {
+    "current": "Mevcut şifre",
+    "new": "Yeni şifre",
+    "confirm": "Yeni şifreyi onayla",
+    "submit": "Şifreyi değiştir",
+    "mismatch": "Yeni şifre ve onay eşleşmiyor",
+    "changed": "Şifre değiştirildi. Diğer cihazlarda tekrar giriş yapman gerekecek."
+  },
+  "delete": {
+    "open": "Hesabımı sil",
+    "title": "Hesabı sil",
+    "body": "Tüm verilerin kaldırılacak. Bu işlem geri alınamaz.",
+    "confirm_label": "Onaylamak için e-postanı yaz",
+    "confirm_action": "Kalıcı olarak sil",
+    "cancel": "Vazgeç"
+  }
+}

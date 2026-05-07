@@ -26,7 +26,8 @@
     "home": "Главная",
     "timeline": "Лента",
     "insights": "Инсайты",
-    "settings": "Настройки"
+    "settings": "Настройки",
+    "profile": "Profile"
   },
   "settings": {
     "language": {
