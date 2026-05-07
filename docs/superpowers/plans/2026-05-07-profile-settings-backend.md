@@ -563,7 +563,7 @@ func NewRepository(pool *pgxpool.Pool, kek []byte) *Repository {
 // DBTX is the subset of pgx that both pgxpool.Pool and pgx.Tx satisfy. It
 // lets callers (e.g. auth.Register) thread an existing transaction.
 type DBTX interface {
-	Exec(ctx context.Context, sql string, args ...any) (pgx.CommandTag, error)
+	Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error)
 	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
 	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
 }
@@ -1262,11 +1262,14 @@ Read: `api/internal/auth/repository.go`. Locate `CreateUser` and the `*pgxpool.P
 Append to `api/internal/auth/repository.go`:
 
 ```go
-import "github.com/jackc/pgx/v5" // (add if not present)
+import (
+	"github.com/jackc/pgx/v5"          // (add if not present)
+	"github.com/jackc/pgx/v5/pgconn"   // CommandTag lives here in pgx v5
+)
 
 // DBTX is the subset of pgx that both pgxpool.Pool and pgx.Tx satisfy.
 type DBTX interface {
-	Exec(ctx context.Context, sql string, args ...any) (pgx.CommandTag, error)
+	Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error)
 	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
 	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
 }
