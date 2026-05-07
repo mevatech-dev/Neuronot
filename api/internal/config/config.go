@@ -7,20 +7,20 @@ import (
 )
 
 type Config struct {
-	DatabaseURL      string
-	JWTSecret        string
-	AnthropicAPIKey  string
-	Port             string
-	LogLevel         string
+	DatabaseURL  string
+	JWTSecret    string
+	OpenAIAPIKey string
+	Port         string
+	LogLevel     string
 }
 
 func Load() (*Config, error) {
 	cfg := &Config{
-		DatabaseURL:     os.Getenv("DATABASE_URL"),
-		JWTSecret:       os.Getenv("JWT_SECRET"),
-		AnthropicAPIKey: os.Getenv("ANTHROPIC_API_KEY"),
-		Port:            getenv("PORT", "8080"),
-		LogLevel:        getenv("LOG_LEVEL", "info"),
+		DatabaseURL:  os.Getenv("DATABASE_URL"),
+		JWTSecret:    os.Getenv("JWT_SECRET"),
+		OpenAIAPIKey: os.Getenv("OPENAI_API_KEY"),
+		Port:         getenv("PORT", "8080"),
+		LogLevel:     getenv("LOG_LEVEL", "info"),
 	}
 
 	var missing []string

@@ -48,7 +48,7 @@ cd mobile && bun run validate:assets
 cd api && goose -dir migrations postgres "$DATABASE_URL" status
 ```
 
-`.env` lives at `api/.env` (gitignored, copy from `api/.env.example`). Required: `DATABASE_URL`, `JWT_SECRET` (≥32 chars). `ANTHROPIC_API_KEY` becomes required at Hafta 3.
+`.env` lives at `api/.env` (gitignored, copy from `api/.env.example`). Required: `DATABASE_URL`, `JWT_SECRET` (≥32 chars). `OPENAI_API_KEY` is required for `/v1/insights/generate` (the AI insight pipeline).
 
 Verification runbooks are per-week and authoritative for the smoke test that should pass when work claims "done": `docs/HAFTA1_VERIFICATION.md`, `docs/HAFTA2_VERIFICATION.md`, `docs/HAFTA3_VERIFICATION.md`, `docs/HAFTA4_VERIFICATION.md`, etc.
 
@@ -61,11 +61,11 @@ Verification runbooks are per-week and authoritative for the smoke test that sho
 │  - Zustand      │                  │    slices       │                │  - daily_logs   │
 │  - TanStack Q   │                  │  - 3-layer      │                │  - events       │
 │  - i18next      │                  │    h/s/r        │                │  - insights*    │
-│  - Theme tokens │                  │  - Anthropic    │                └─────────────────┘
+│  - Theme tokens │                  │  - OpenAI       │                └─────────────────┘
 └─────────────────┘                  │    SDK (sync)*  │
                                      └─────────────────┘
                                               │
-                                       Anthropic Claude API*
+                                       OpenAI Chat Completions*
                                        (Hafta 3+: insight gen)
 
 worker/  ─── README only, deferred (batch insight, queue)

@@ -68,7 +68,7 @@ func main() {
 	timelineHandler := timeline.NewHandler(timelineSvc)
 
 	insightsRepo := insights.NewRepository(pool)
-	insightsGenerator := insights.NewAnthropicGenerator(cfg.AnthropicAPIKey)
+	insightsGenerator := insights.NewOpenAIGenerator(cfg.OpenAIAPIKey)
 	insightsSvc := insights.NewService(insightsRepo, insightsGenerator, insights.NewSafetyFilter())
 	insightsHandler := insights.NewHandler(insightsSvc)
 
