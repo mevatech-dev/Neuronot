@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"os"
@@ -10,6 +11,7 @@ type Config struct {
 	DatabaseURL  string
 	JWTSecret    string
 	OpenAIAPIKey string
+	ConsentKEK   []byte
 	Port         string
 	LogLevel     string
 }
@@ -30,12 +32,24 @@ func Load() (*Config, error) {
 	if cfg.JWTSecret == "" {
 		missing = append(missing, "JWT_SECRET")
 	}
+	rawKEK := os.Getenv("CONSENT_KEK")
+	if rawKEK == "" {
+		missing = append(missing, "CONSENT_KEK")
+	}
 	if len(missing) > 0 {
 		return nil, fmt.Errorf("missing required env vars: %v", missing)
 	}
 	if len(cfg.JWTSecret) < 32 {
 		return nil, errors.New("JWT_SECRET must be at least 32 characters")
 	}
+	kek, err := base64.StdEncoding.DecodeString(rawKEK)
+	if err != nil {
+		return nil, fmt.Errorf("CONSENT_KEK: %w", err)
+	}
+	if len(kek) != 32 {
+		return nil, errors.New("CONSENT_KEK must decode to exactly 32 bytes (AES-256)")
+	}
+	cfg.ConsentKEK = kek
 
 	return cfg, nil
 }
