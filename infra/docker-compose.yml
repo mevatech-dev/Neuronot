@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - neuronot_pg_data:/var/lib/postgresql/data
+      - neuronot_pg_data:/var/lib/postgresql
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U neuronot -d neuronot"]
