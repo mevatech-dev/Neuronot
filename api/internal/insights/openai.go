@@ -13,8 +13,7 @@ import (
 
 // OpenAIGenerator implements `Generator` against OpenAI Chat Completions
 // with Structured Outputs. The model is asked to return JSON conforming to
-// `insightSchema`; `strict: true` enforces it server-side, so we don't need
-// the fence-stripping the Anthropic adapter used to do.
+// `insightSchema`; `strict: true` enforces it server-side.
 type OpenAIGenerator struct {
 	client openai.Client
 	model  shared.ChatModel
@@ -38,8 +37,8 @@ var insightSchema = map[string]any{
 
 func NewOpenAIGenerator(apiKey string, opts ...option.RequestOption) *OpenAIGenerator {
 	if strings.TrimSpace(apiKey) == "" {
-		// Empty key → Generate returns ErrAIUnavailable. Mirrors the
-		// Anthropic adapter so config can boot without a key in dev.
+		// Empty key → Generate returns ErrAIUnavailable, so config
+		// can boot without a key in dev.
 		return &OpenAIGenerator{}
 	}
 	allOpts := append([]option.RequestOption{option.WithAPIKey(apiKey)}, opts...)

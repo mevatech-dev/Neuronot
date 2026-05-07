@@ -11,7 +11,7 @@ Kişisel zihinsel farkındalık uygulaması. Kullanıcının günlük bilişsel 
 - **Mobile**: Expo SDK 52+ + React Native + TypeScript
 - **API**: Go 1.22+, `chi`, `pgx`, `goose`
 - **DB**: PostgreSQL 18
-- **AI**: Anthropic Claude (Sonnet 4.6)
+- **AI**: OpenAI (gpt-4.1-mini, Structured Outputs JSON schema)
 - **i18n**: 11 dil (en, tr native; es, de, fr, pt, it, ru, ja, zh ML+review; ar Beta)
 
 ---
@@ -29,7 +29,7 @@ make db-up
 
 # 3. .env oluştur
 cp api/.env.example api/.env
-# DATABASE_URL, JWT_SECRET, ANTHROPIC_API_KEY doldur
+# DATABASE_URL, JWT_SECRET, OPENAI_API_KEY doldur
 
 # 4. Migrations
 export $(cat api/.env | xargs)

@@ -32,7 +32,7 @@ Neuronot bir tanı veya tedavi sistemi değildir. Sistem yalnızca kullanıcın�
 | Mobile | Expo SDK 52+ + React Native + TypeScript |
 | API | Go 1.22+, `chi` router, `pgx`, `goose` migration |
 | DB | PostgreSQL 18 |
-| AI | Anthropic API, API katmanından senkron çağrı |
+| AI | OpenAI API (gpt-4.1-mini, Structured Outputs), API katmanından senkron çağrı |
 | i18n | `i18next` + `react-i18next` + `expo-localization` |
 | Local infra | Docker Compose: postgres + api |
 
@@ -200,7 +200,7 @@ JWT + refresh token. Access 15 dk, refresh 30 gün. Refresh token DB'de saklanı
 
 ## 10. AI Integration
 
-MVP'de **senkron**. Kullanıcı log yazar, son 7 günün özet datası Claude API'ye gider, response insight olarak yazılır + ekrana basılır. Tipik süre 3-8 saniye.
+MVP'de **senkron**. Kullanıcı log yazar, son 7 günün özet datası OpenAI Chat Completions API'ye gider, response insight olarak yazılır + ekrana basılır. Tipik süre 3-8 saniye.
 
 ### Prompt Discipline
 
@@ -210,7 +210,7 @@ System prompt sabit, repo'da `internal/insights/prompts.go` içinde versiyonlu.
 
 System prompt **çok dilli** — kullanıcının `preferred_language` değeri prompta enjekte edilir.
 
-Output format **structured** — Claude'dan JSON iste, parse edemezsen "şu an üretemedim" göster.
+Output format **structured** — OpenAI Structured Outputs (`response_format: json_schema`, `strict: true`) ile JSON şeması server-side enforce edilir; parse edemezsen "şu an üretemedim" göster.
 
 ### Safety Filter
 
@@ -359,7 +359,7 @@ API hata mesajları **çevrilmez** — `error.code` + `error.message_key` döner
 
 ### AI Insight Dili
 
-Kullanıcının `preferred_language` değeri sistem prompt'a enjekte edilir, Claude o dilde JSON cevap verir. Insight DB'ye o dilde yazılır.
+Kullanıcının `preferred_language` değeri sistem prompt'a enjekte edilir, OpenAI o dilde JSON cevap verir. Insight DB'ye o dilde yazılır.
 
 ---
 
@@ -411,7 +411,7 @@ Kullanıcının `preferred_language` değeri sistem prompt'a enjekte edilir, Cla
 | 1 | API iskelet + auth + Postgres + theme tokens + i18n setup + en/tr |
 | 2 | Daily-log + events + timeline + onboarding |
 | 3 | AI insight + multilingual prompt + safety filter + 11 dil kriz keyword'leri |
-| 4 | 9 dilin Claude-asistanlı çevirisi + native review + RTL test |
+| 4 | 9 dilin LLM-asistanlı çevirisi + native review + RTL test |
 | 5 | Polish + bug fix + TestFlight + 10 davetli |
 
 ---

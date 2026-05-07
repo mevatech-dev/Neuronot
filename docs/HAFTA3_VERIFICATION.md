@@ -4,7 +4,7 @@ Hafta 3: AI insight + multilingual prompt + safety filter + crisis boundary smok
 
 ## Ön Koşul
 
-Hafta 2 verification başarıyla tamamlanmış olmalı. `api/.env` içinde `DATABASE_URL`, `JWT_SECRET`, opsiyonel olarak `ANTHROPIC_API_KEY` bulunmalı.
+Hafta 2 verification başarıyla tamamlanmış olmalı. `api/.env` içinde `DATABASE_URL`, `JWT_SECRET`, opsiyonel olarak `OPENAI_API_KEY` bulunmalı.
 
 ## 1. Migration
 
@@ -55,7 +55,7 @@ Beklenen: 7 günde 3'ten az daily log varsa `INSIGHT_INSUFFICIENT_DATA`.
 
 ## 5. AI Unavailable Case
 
-`ANTHROPIC_API_KEY` boşken ve kullanıcıda en az 3 daily log varken:
+`OPENAI_API_KEY` boşken ve kullanıcıda en az 3 daily log varken:
 
 ```bash
 curl -s -X POST localhost:8080/v1/insights/generate \

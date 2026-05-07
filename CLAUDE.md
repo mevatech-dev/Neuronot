@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What Neuronot is — and is not
 
-Neuronot is a mobile-first **personal awareness** app: users log cognitive state (focus, energy, forgetfulness, stress, sleep, headache, brain fog) and Claude generates short pattern insights from the last 7 days. It is **not** a diagnosis, treatment, or medical decision tool. This boundary shapes data, UI copy, and AI output — see `docs/PRD.md` (especially §6 Non-Goals, §15 AI Safety Boundary, §16 Emergency Boundary).
+Neuronot is a mobile-first **personal awareness** app: users log cognitive state (focus, energy, forgetfulness, stress, sleep, headache, brain fog) and an LLM (OpenAI gpt-4.1-mini) generates short pattern insights from the last 7 days. It is **not** a diagnosis, treatment, or medical decision tool. This boundary shapes data, UI copy, and AI output — see `docs/PRD.md` (especially §6 Non-Goals, §15 AI Safety Boundary, §16 Emergency Boundary).
 
 When in doubt about *what to build*, read `docs/PRD.md`. When in doubt about *how to build it*, read `docs/ARCHITECTURE.md`. These two are the source of truth — this file summarizes the rules; the docs explain why.
 
@@ -154,7 +154,7 @@ Mobile mirrors syncable tables (daily_logs, events, insights, profile) into a lo
 
 ## i18n — hardcoded strings are forbidden
 
-11 languages (`mobile/src/i18n/index.ts`, resources in `mobile/src/i18n/resources.ts`): `en`, `tr` are native-quality; `es de fr` planned for native review; `pt it ru ja zh` Claude-translated + skim review; `ar` is RTL and ships with a Beta marker. All UI strings go through `t('namespace.key')`. The lint rule `i18next/no-literal-string` (configured in `mobile/eslint.config.js`) blocks raw text in JSX.
+11 languages (`mobile/src/i18n/index.ts`, resources in `mobile/src/i18n/resources.ts`): `en`, `tr` are native-quality; `es de fr` planned for native review; `pt it ru ja zh` LLM-translated + skim review; `ar` is RTL and ships with a Beta marker. All UI strings go through `t('namespace.key')`. The lint rule `i18next/no-literal-string` (configured in `mobile/eslint.config.js`) blocks raw text in JSX.
 
 Namespaces are per-feature: `common`, `errors`, `onboarding`, `daily-log`, `events`, `timeline`, `insights`, `crisis`. Each feature owns one JSON file per locale. When adding a feature, create the namespace in **en first** as the source of truth, then add `tr` natively and fill the other supported locales before shipping. Run `cd mobile && bun run validate:i18n` after locale changes.
 
@@ -164,11 +164,11 @@ RTL: only `ar` flips today. Use `marginStart`/`marginEnd`, never `marginLeft`/`m
 
 ## AI integration (Hafta 3+)
 
-System prompt is a versioned constant in `api/internal/insights/prompts.go`. The user's `preferred_language` is injected into the prompt; Claude returns JSON in that language and the insight is persisted with the language tag. Pipeline order (in `service.go`):
+System prompt is a versioned constant in `api/internal/insights/prompts.go`. The user's `preferred_language` is injected into the prompt; the model returns JSON in that language and the insight is persisted with the language tag. Pipeline order (in `service.go`):
 
 1. Aggregate last 7 days into a structured payload — **PII-free**: only categorized symptom counts and averages, never email, name, or location.
 2. Crisis keyword pre-check on user notes (input side) using `crisis_keywords/<lang>.go`.
-3. Claude call (Sonnet 4.6, `max_tokens` 800, `temperature` 0.4, 30s timeout, 1 retry).
+3. OpenAI Chat Completions call (`gpt-4.1-mini` with Structured Outputs, `max_tokens` 800, `temperature` 0.4, 30s timeout, 1 retry).
 4. JSON parse — fail → return generic "couldn't generate" in user's locale.
 5. If output `{"crisis": true}`, bypass content and return crisis-card response.
 6. Post-LLM safety filter (`safety_filter.go`) — regex + category list rejects disease names, drug names, "you have X" patterns. Filtered output is replaced with generic insight + logged.
