@@ -38,8 +38,14 @@ func TestEncryptDecryptRoundTrip(t *testing.T) {
 func TestEncryptProducesDifferentCiphertextForSamePlaintext(t *testing.T) {
 	key := newKey(t)
 	pt := []byte("203.0.113.42")
-	a, _ := Encrypt(key, pt)
-	b, _ := Encrypt(key, pt)
+	a, err := Encrypt(key, pt)
+	if err != nil {
+		t.Fatalf("encrypt a: %v", err)
+	}
+	b, err := Encrypt(key, pt)
+	if err != nil {
+		t.Fatalf("encrypt b: %v", err)
+	}
 	if bytes.Equal(a, b) {
 		t.Fatal("two encryptions of same plaintext produced identical ciphertext (nonce reuse?)")
 	}
@@ -47,15 +53,23 @@ func TestEncryptProducesDifferentCiphertextForSamePlaintext(t *testing.T) {
 
 func TestDecryptRejectsTamperedCiphertext(t *testing.T) {
 	key := newKey(t)
-	ct, _ := Encrypt(key, []byte("hello"))
+	ct, err := Encrypt(key, []byte("hello"))
+	if err != nil {
+		t.Fatalf("encrypt: %v", err)
+	}
 	ct[len(ct)-1] ^= 0x01
 	if _, err := Decrypt(key, ct); err == nil {
 		t.Fatal("decrypt of tampered ciphertext should fail")
 	}
 }
 
-func TestEncryptRejectsShortKey(t *testing.T) {
+func TestRejectsShortKey(t *testing.T) {
 	if _, err := Encrypt(make([]byte, 16), []byte("x")); err == nil {
-		t.Fatal("expected error for short key")
+		t.Fatal("Encrypt: expected error for short key")
+	}
+	// 12-byte nonce + 16-byte tag = 28-byte minimum valid ciphertext.
+	dummyCT := make([]byte, 28)
+	if _, err := Decrypt(make([]byte, 16), dummyCT); err == nil {
+		t.Fatal("Decrypt: expected error for short key")
 	}
 }
