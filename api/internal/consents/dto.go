@@ -8,12 +8,11 @@ type ConsentResponse struct {
 	Granted        bool        `json:"granted"`
 	Version        string      `json:"version"`
 	CurrentVersion string      `json:"current_version"`
-	Source         Source      `json:"source"`
-	OccurredAt     time.Time   `json:"occurred_at"`
+	Source         Source      `json:"source,omitempty"`
+	OccurredAt     *time.Time  `json:"occurred_at"`
 }
 
 type GrantRequest struct {
 	Type    ConsentType `json:"type"`
 	Granted bool        `json:"granted"`
-	Version string      `json:"version"`
 }

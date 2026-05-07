@@ -499,14 +499,13 @@ type ConsentResponse struct {
 	Granted        bool        `json:"granted"`
 	Version        string      `json:"version"`
 	CurrentVersion string      `json:"current_version"`
-	Source         Source      `json:"source"`
-	OccurredAt     time.Time   `json:"occurred_at"`
+	Source         Source      `json:"source,omitempty"`
+	OccurredAt     *time.Time  `json:"occurred_at"`
 }
 
 type GrantRequest struct {
 	Type    ConsentType `json:"type"`
 	Granted bool        `json:"granted"`
-	Version string      `json:"version"`
 }
 ```
 
@@ -728,7 +727,7 @@ func NewService(repo repository) *Service {
 // IsGranted returns true only when the latest row is granted=true AND its
 // version matches the current canonical version.
 func (s *Service) IsGranted(ctx context.Context, userID uuid.UUID, t ConsentType) (bool, error) {
-	if !t.Valid() {
+	if !t.IsValid() {
 		return false, ErrUnknownType
 	}
 	c, err := s.repo.Latest(ctx, userID, t)
@@ -746,7 +745,7 @@ func (s *Service) IsGranted(ctx context.Context, userID uuid.UUID, t ConsentType
 
 // Grant records a granted=true row for the user.
 func (s *Service) Grant(ctx context.Context, userID uuid.UUID, t ConsentType, rc RecordContext) error {
-	if !t.Valid() {
+	if !t.IsValid() {
 		return ErrUnknownType
 	}
 	return s.repo.Record(ctx, userID, t, true, CurrentVersions[t], rc)
@@ -754,7 +753,7 @@ func (s *Service) Grant(ctx context.Context, userID uuid.UUID, t ConsentType, rc
 
 // Revoke records a granted=false row.
 func (s *Service) Revoke(ctx context.Context, userID uuid.UUID, t ConsentType, rc RecordContext) error {
-	if !t.Valid() {
+	if !t.IsValid() {
 		return ErrUnknownType
 	}
 	return s.repo.Record(ctx, userID, t, false, CurrentVersions[t], rc)
@@ -763,7 +762,7 @@ func (s *Service) Revoke(ctx context.Context, userID uuid.UUID, t ConsentType, r
 // GrantTx is used during registration to bundle inserts into the same tx
 // that creates the user.
 func (s *Service) GrantTx(ctx context.Context, tx DBTX, userID uuid.UUID, t ConsentType, rc RecordContext) error {
-	if !t.Valid() {
+	if !t.IsValid() {
 		return ErrUnknownType
 	}
 	return s.repo.RecordTx(ctx, tx, userID, t, true, CurrentVersions[t], rc)
@@ -1050,7 +1049,7 @@ func (h *Handler) grant(w http.ResponseWriter, r *http.Request) {
 		httpx.ValidationFailed(w, "invalid json body")
 		return
 	}
-	if !req.Type.Valid() {
+	if !req.Type.IsValid() {
 		httpx.WriteError(w, http.StatusUnprocessableEntity, "CONSENT_UNKNOWN_TYPE", "errors.consent.unknown_type", "Unknown consent type")
 		return
 	}
@@ -1075,7 +1074,7 @@ func (h *Handler) revoke(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	t := ConsentType(chi.URLParam(r, "type"))
-	if !t.Valid() {
+	if !t.IsValid() {
 		httpx.WriteError(w, http.StatusUnprocessableEntity, "CONSENT_UNKNOWN_TYPE", "errors.consent.unknown_type", "Unknown consent type")
 		return
 	}

@@ -40,7 +40,7 @@ var AllTypes = []ConsentType{
 	ConsentTypeAIUsage,
 }
 
-func (t ConsentType) Valid() bool {
+func (t ConsentType) IsValid() bool {
 	_, ok := CurrentVersions[t]
 	return ok
 }
