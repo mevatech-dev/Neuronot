@@ -55,10 +55,19 @@ func (f *fakeGenerator) Generate(context.Context, PromptPayload) (GeneratedInsig
 	return f.out, nil
 }
 
+type fakeConsents struct {
+	granted bool
+	err     error
+}
+
+func (f *fakeConsents) IsGranted(_ context.Context, _ uuid.UUID, _ string) (bool, error) {
+	return f.granted, f.err
+}
+
 func TestGenerateRequiresAtLeastThreeDailyLogs(t *testing.T) {
 	repo := &fakeRepository{summary: Summary{DailyLogCount: 2}}
 	gen := &fakeGenerator{}
-	svc := NewService(repo, gen, NewSafetyFilter())
+	svc := NewService(repo, gen, NewSafetyFilter(), &fakeConsents{granted: true})
 
 	_, err := svc.Generate(context.Background(), uuid.New(), "en")
 
@@ -78,7 +87,7 @@ func TestGenerateBypassesAIWhenCrisisNoteDetected(t *testing.T) {
 		},
 	}
 	gen := &fakeGenerator{}
-	svc := NewService(repo, gen, NewSafetyFilter())
+	svc := NewService(repo, gen, NewSafetyFilter(), &fakeConsents{granted: true})
 
 	insight, err := svc.Generate(context.Background(), uuid.New(), "en")
 
@@ -102,7 +111,7 @@ func TestGeneratePersistsSafeGeneratedInsight(t *testing.T) {
 		Title:   "Uyku ve odak birlikte değişiyor",
 		Content: "Son günlerde düşük uyku kalitesi ile odak düşüşü aynı günlerde artmış görünüyor.",
 	}}
-	svc := NewService(repo, gen, NewSafetyFilter())
+	svc := NewService(repo, gen, NewSafetyFilter(), &fakeConsents{granted: true})
 
 	insight, err := svc.Generate(context.Background(), uuid.New(), "tr")
 
@@ -117,5 +126,19 @@ func TestGeneratePersistsSafeGeneratedInsight(t *testing.T) {
 	}
 	if insight.Language != "tr" {
 		t.Fatalf("expected language tr, got %q", insight.Language)
+	}
+}
+
+func TestGenerateBlockedWhenConsentRevoked(t *testing.T) {
+	repo := &fakeRepository{}
+	gen := &fakeGenerator{}
+	filter := NewSafetyFilter()
+	svc := NewService(repo, gen, filter, &fakeConsents{granted: false})
+	_, err := svc.Generate(context.Background(), uuid.New(), "en")
+	if !errors.Is(err, ErrConsentRevoked) {
+		t.Fatalf("got %v, want ErrConsentRevoked", err)
+	}
+	if gen.called {
+		t.Fatalf("generator should not be called when consent revoked")
 	}
 }

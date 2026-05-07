@@ -23,6 +23,7 @@ var (
 	ErrInsufficientData = errors.New("insufficient data for insight")
 	ErrAIUnavailable    = errors.New("insight generator unavailable")
 	ErrRateLimited      = errors.New("insight already generated today")
+	ErrConsentRevoked   = errors.New("ai consent revoked or stale")
 )
 
 type repository interface {
@@ -37,24 +38,44 @@ type Generator interface {
 	Generate(ctx context.Context, payload PromptPayload) (GeneratedInsight, error)
 }
 
+// consentChecker is the auth-narrow view of the consents service. We only
+// need IsGranted; the gate runs once per insight generation.
+//
+// String type instead of consents.ConsentType to avoid an import cycle if
+// the consents package ever needs anything from insights.
+type consentChecker interface {
+	IsGranted(ctx context.Context, userID uuid.UUID, t string) (bool, error)
+}
+
 type Service struct {
 	repo      repository
 	generator Generator
 	filter    SafetyFilter
+	consents  consentChecker
 	now       func() time.Time
 }
 
-func NewService(repo repository, generator Generator, filter SafetyFilter) *Service {
+func NewService(repo repository, generator Generator, filter SafetyFilter, consents consentChecker) *Service {
 	return &Service{
 		repo:      repo,
 		generator: generator,
 		filter:    filter,
+		consents:  consents,
 		now:       func() time.Time { return time.Now().UTC() },
 	}
 }
 
 func (s *Service) Generate(ctx context.Context, userID uuid.UUID, language string) (*Insight, error) {
 	language = normalizeLanguage(language)
+
+	ok, err := s.consents.IsGranted(ctx, userID, "ai_usage")
+	if err != nil {
+		return nil, err
+	}
+	if !ok {
+		return nil, ErrConsentRevoked
+	}
+
 	now := s.now()
 
 	generated, err := s.repo.HasGeneratedToday(ctx, userID, now)
