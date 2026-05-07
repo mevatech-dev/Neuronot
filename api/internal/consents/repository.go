@@ -21,7 +21,24 @@ type Repository struct {
 	kek  []byte
 }
 
+const consentColumns = `id, user_id, type, granted, version, source, COALESCE(user_agent, ''), occurred_at`
+
+// scanConsent reads a row produced by SELECT consentColumns into c. Used by
+// both single-row and multi-row reads.
+func scanConsent(row pgx.Row, c *Consent) error {
+	var typ, src string
+	if err := row.Scan(&c.ID, &c.UserID, &typ, &c.Granted, &c.Version, &src, &c.UserAgent, &c.OccurredAt); err != nil {
+		return err
+	}
+	c.Type = ConsentType(typ)
+	c.Source = Source(src)
+	return nil
+}
+
 func NewRepository(pool *pgxpool.Pool, kek []byte) *Repository {
+	if len(kek) != 32 {
+		panic("consents.NewRepository: kek must be exactly 32 bytes")
+	}
 	return &Repository{pool: pool, kek: kek}
 }
 
@@ -83,8 +100,7 @@ func (r *Repository) RecordTx(
 // the given user. Types with no history are absent from the slice.
 func (r *Repository) LatestPerType(ctx context.Context, userID uuid.UUID) ([]Consent, error) {
 	rows, err := r.pool.Query(ctx, `
-		SELECT DISTINCT ON (type)
-		       id, user_id, type, granted, version, source, COALESCE(user_agent, ''), occurred_at
+		SELECT DISTINCT ON (type) `+consentColumns+`
 		  FROM consents
 		 WHERE user_id = $1
 		 ORDER BY type, occurred_at DESC
@@ -97,12 +113,9 @@ func (r *Repository) LatestPerType(ctx context.Context, userID uuid.UUID) ([]Con
 	out := make([]Consent, 0, 3)
 	for rows.Next() {
 		var c Consent
-		var typ, src string
-		if err := rows.Scan(&c.ID, &c.UserID, &typ, &c.Granted, &c.Version, &src, &c.UserAgent, &c.OccurredAt); err != nil {
+		if err := scanConsent(rows, &c); err != nil {
 			return nil, err
 		}
-		c.Type = ConsentType(typ)
-		c.Source = Source(src)
 		out = append(out, c)
 	}
 	return out, rows.Err()
@@ -111,21 +124,18 @@ func (r *Repository) LatestPerType(ctx context.Context, userID uuid.UUID) ([]Con
 // Latest returns the most recent row of a specific type, or ErrNotFound.
 func (r *Repository) Latest(ctx context.Context, userID uuid.UUID, t ConsentType) (*Consent, error) {
 	row := r.pool.QueryRow(ctx, `
-		SELECT id, user_id, type, granted, version, source, COALESCE(user_agent, ''), occurred_at
+		SELECT `+consentColumns+`
 		  FROM consents
 		 WHERE user_id = $1 AND type = $2
 		 ORDER BY occurred_at DESC
 		 LIMIT 1
 	`, userID, string(t))
 	var c Consent
-	var typ, src string
-	if err := row.Scan(&c.ID, &c.UserID, &typ, &c.Granted, &c.Version, &src, &c.UserAgent, &c.OccurredAt); err != nil {
+	if err := scanConsent(row, &c); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
-	c.Type = ConsentType(typ)
-	c.Source = Source(src)
 	return &c, nil
 }
