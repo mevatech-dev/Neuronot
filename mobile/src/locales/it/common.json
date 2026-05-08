@@ -20,7 +20,17 @@
     "logout": "Esci",
     "no_account": "Non hai un account?",
     "have_account": "Hai già un account?",
-    "loading": "Un momento…"
+    "loading": "Un momento…",
+    "continue_with_apple": "Continua con Apple",
+    "continue_with_google": "Continua con Google",
+    "sign_up_email": "Registrati con email",
+    "sign_in_email": "Accedi con email",
+    "continue_without_account": "Continua senza account",
+    "legal_intro": "Continuando accetti i nostri",
+    "tos_link": "Termini",
+    "legal_and": "e la",
+    "privacy_link": "Informativa sulla privacy",
+    "welcome_subtitle": "Riconosci i tuoi schemi. Rimani lucido."
   },
   "tabs": {
     "home": "Home",

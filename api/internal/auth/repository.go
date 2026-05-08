@@ -14,9 +14,36 @@ import (
 var (
 	ErrUserNotFound          = errors.New("user not found")
 	ErrEmailTaken            = errors.New("email taken")
+	ErrAppleSubTaken         = errors.New("apple subject taken")
+	ErrGoogleSubTaken        = errors.New("google subject taken")
 	ErrRefreshTokenNotFound  = errors.New("refresh token not found")
 	ErrRefreshTokenInvalid   = errors.New("refresh token invalid")
 )
+
+// userColumns is the canonical projection used by every user SELECT in
+// this repo. We COALESCE nullable identity columns to empty strings so
+// the User struct fields stay non-pointer; callers check for "" when they
+// need to distinguish.
+const userColumns = `
+    id,
+    COALESCE(email, '')         AS email,
+    COALESCE(password_hash, '') AS password_hash,
+    preferred_language,
+    is_anonymous,
+    COALESCE(apple_sub, '')     AS apple_sub,
+    COALESCE(google_sub, '')    AS google_sub,
+    created_at,
+    updated_at
+`
+
+// userScan applies the canonical projection above into a User.
+func userScan(scanner interface{ Scan(...any) error }, u *User) error {
+	return scanner.Scan(
+		&u.ID, &u.Email, &u.PasswordHash, &u.PreferredLanguage,
+		&u.IsAnonymous, &u.AppleSub, &u.GoogleSub,
+		&u.CreatedAt, &u.UpdatedAt,
+	)
+}
 
 type Repository struct {
 	pool *pgxpool.Pool
@@ -28,18 +55,234 @@ func NewRepository(pool *pgxpool.Pool) *Repository {
 
 func (r *Repository) CreateUser(ctx context.Context, email, passwordHash, lang string) (*User, error) {
 	var u User
-	err := r.pool.QueryRow(ctx, `
+	row := r.pool.QueryRow(ctx, `
 		INSERT INTO users (email, password_hash, preferred_language)
 		VALUES ($1, $2, $3)
-		RETURNING id, email, password_hash, preferred_language, created_at, updated_at
-	`, email, passwordHash, lang).Scan(&u.ID, &u.Email, &u.PasswordHash, &u.PreferredLanguage, &u.CreatedAt, &u.UpdatedAt)
-	if err != nil {
+		RETURNING `+userColumns, email, passwordHash, lang)
+	if err := userScan(row, &u); err != nil {
 		if isUniqueViolation(err) {
 			return nil, ErrEmailTaken
 		}
 		return nil, err
 	}
 	return &u, nil
+}
+
+// CreateAnonymousUser inserts a user with no email or password and
+// is_anonymous = true. Used by /v1/auth/anonymous.
+func (r *Repository) CreateAnonymousUser(ctx context.Context, tx DBTX, lang string) (*User, error) {
+	var u User
+	row := tx.QueryRow(ctx, `
+		INSERT INTO users (preferred_language, is_anonymous)
+		VALUES ($1, true)
+		RETURNING `+userColumns, lang)
+	if err := userScan(row, &u); err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
+
+// CreateUserWithApple inserts a user keyed only by their Apple subject.
+// Email is optional (Apple may or may not provide it).
+func (r *Repository) CreateUserWithApple(ctx context.Context, tx DBTX, appleSub, email, lang string) (*User, error) {
+	var emailArg any
+	if email != "" {
+		emailArg = email
+	}
+	var u User
+	row := tx.QueryRow(ctx, `
+		INSERT INTO users (apple_sub, email, preferred_language)
+		VALUES ($1, $2, $3)
+		RETURNING `+userColumns, appleSub, emailArg, lang)
+	if err := userScan(row, &u); err != nil {
+		if isUniqueViolation(err) {
+			// Determine which constraint hit; pgx exposes the constraint name.
+			return nil, classifySocialUniqueViolation(err)
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// CreateUserWithGoogle is the Google-side mirror of CreateUserWithApple.
+func (r *Repository) CreateUserWithGoogle(ctx context.Context, tx DBTX, googleSub, email, lang string) (*User, error) {
+	var emailArg any
+	if email != "" {
+		emailArg = email
+	}
+	var u User
+	row := tx.QueryRow(ctx, `
+		INSERT INTO users (google_sub, email, preferred_language)
+		VALUES ($1, $2, $3)
+		RETURNING `+userColumns, googleSub, emailArg, lang)
+	if err := userScan(row, &u); err != nil {
+		if isUniqueViolation(err) {
+			return nil, classifySocialUniqueViolation(err)
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// FindUserByAppleSub looks up an existing user by their Apple subject.
+func (r *Repository) FindUserByAppleSub(ctx context.Context, sub string) (*User, error) {
+	var u User
+	row := r.pool.QueryRow(ctx, `SELECT `+userColumns+` FROM users WHERE apple_sub = $1`, sub)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// FindUserByGoogleSub looks up an existing user by their Google subject.
+func (r *Repository) FindUserByGoogleSub(ctx context.Context, sub string) (*User, error) {
+	var u User
+	row := r.pool.QueryRow(ctx, `SELECT `+userColumns+` FROM users WHERE google_sub = $1`, sub)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// UpgradeAnonymousToEmail flips an anonymous user into an email/password
+// account. The WHERE guard `is_anonymous = true` ensures the operation is
+// idempotent: a non-anon user calling this gets ErrUserNotFound (handler
+// maps to 409 NOT_ANONYMOUS — see service layer).
+func (r *Repository) UpgradeAnonymousToEmail(ctx context.Context, userID uuid.UUID, email, passwordHash string) (*User, error) {
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET email = $1, password_hash = $2, is_anonymous = false, updated_at = now()
+        WHERE id = $3 AND is_anonymous = true
+        RETURNING `+userColumns, email, passwordHash, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, ErrEmailTaken
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// UpgradeAnonymousToApple attaches an Apple subject (and optional email
+// from the Apple claim) to an anonymous user, lifting is_anonymous.
+func (r *Repository) UpgradeAnonymousToApple(ctx context.Context, userID uuid.UUID, appleSub, email string) (*User, error) {
+	var emailArg any
+	if email != "" {
+		emailArg = email
+	}
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET apple_sub = $1,
+            email = COALESCE(email, $2),
+            is_anonymous = false,
+            updated_at = now()
+        WHERE id = $3 AND is_anonymous = true
+        RETURNING `+userColumns, appleSub, emailArg, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, classifySocialUniqueViolation(err)
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+func (r *Repository) UpgradeAnonymousToGoogle(ctx context.Context, userID uuid.UUID, googleSub, email string) (*User, error) {
+	var emailArg any
+	if email != "" {
+		emailArg = email
+	}
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET google_sub = $1,
+            email = COALESCE(email, $2),
+            is_anonymous = false,
+            updated_at = now()
+        WHERE id = $3 AND is_anonymous = true
+        RETURNING `+userColumns, googleSub, emailArg, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, classifySocialUniqueViolation(err)
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// LinkApple attaches an Apple subject to an existing user. The WHERE
+// guard `apple_sub IS NULL` prevents silently overwriting an existing
+// link — callers must DELETE first if they want to swap.
+func (r *Repository) LinkApple(ctx context.Context, userID uuid.UUID, appleSub string) (*User, error) {
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET apple_sub = $1, updated_at = now()
+        WHERE id = $2 AND apple_sub IS NULL
+        RETURNING `+userColumns, appleSub, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, ErrAppleSubTaken
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// LinkGoogle is the Google mirror of LinkApple.
+func (r *Repository) LinkGoogle(ctx context.Context, userID uuid.UUID, googleSub string) (*User, error) {
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET google_sub = $1, updated_at = now()
+        WHERE id = $2 AND google_sub IS NULL
+        RETURNING `+userColumns, googleSub, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, ErrGoogleSubTaken
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// UnlinkApple clears apple_sub. The service is responsible for refusing
+// to leave the user without any identity method (see Service.Unlink).
+func (r *Repository) UnlinkApple(ctx context.Context, userID uuid.UUID) error {
+	_, err := r.pool.Exec(ctx, `
+        UPDATE users SET apple_sub = NULL, updated_at = now() WHERE id = $1
+    `, userID)
+	return err
+}
+
+func (r *Repository) UnlinkGoogle(ctx context.Context, userID uuid.UUID) error {
+	_, err := r.pool.Exec(ctx, `
+        UPDATE users SET google_sub = NULL, updated_at = now() WHERE id = $1
+    `, userID)
+	return err
 }
 
 // DBTX is the subset of pgx that both pgxpool.Pool and pgx.Tx satisfy.
@@ -53,12 +296,11 @@ type DBTX interface {
 // is responsible for committing or rolling back the transaction.
 func (r *Repository) CreateUserTx(ctx context.Context, tx DBTX, email, passwordHash, language string) (*User, error) {
 	var u User
-	err := tx.QueryRow(ctx, `
+	row := tx.QueryRow(ctx, `
 		INSERT INTO users (email, password_hash, preferred_language)
 		VALUES ($1, $2, $3)
-		RETURNING id, email, password_hash, preferred_language, created_at, updated_at
-	`, email, passwordHash, language).Scan(&u.ID, &u.Email, &u.PasswordHash, &u.PreferredLanguage, &u.CreatedAt, &u.UpdatedAt)
-	if err != nil {
+		RETURNING `+userColumns, email, passwordHash, language)
+	if err := userScan(row, &u); err != nil {
 		if isUniqueViolation(err) {
 			return nil, ErrEmailTaken
 		}
@@ -74,13 +316,12 @@ func (r *Repository) Pool() *pgxpool.Pool {
 	return r.pool
 }
 
+// FindUserByEmail only matches non-null emails; anonymous accounts and
+// social-only users (no email) return ErrUserNotFound.
 func (r *Repository) FindUserByEmail(ctx context.Context, email string) (*User, error) {
 	var u User
-	err := r.pool.QueryRow(ctx, `
-		SELECT id, email, password_hash, preferred_language, created_at, updated_at
-		FROM users WHERE email = $1
-	`, email).Scan(&u.ID, &u.Email, &u.PasswordHash, &u.PreferredLanguage, &u.CreatedAt, &u.UpdatedAt)
-	if err != nil {
+	row := r.pool.QueryRow(ctx, `SELECT `+userColumns+` FROM users WHERE email = $1`, email)
+	if err := userScan(row, &u); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrUserNotFound
 		}
@@ -91,11 +332,8 @@ func (r *Repository) FindUserByEmail(ctx context.Context, email string) (*User, 
 
 func (r *Repository) FindUserByID(ctx context.Context, id uuid.UUID) (*User, error) {
 	var u User
-	err := r.pool.QueryRow(ctx, `
-		SELECT id, email, password_hash, preferred_language, created_at, updated_at
-		FROM users WHERE id = $1
-	`, id).Scan(&u.ID, &u.Email, &u.PasswordHash, &u.PreferredLanguage, &u.CreatedAt, &u.UpdatedAt)
-	if err != nil {
+	row := r.pool.QueryRow(ctx, `SELECT `+userColumns+` FROM users WHERE id = $1`, id)
+	if err := userScan(row, &u); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrUserNotFound
 		}
@@ -152,4 +390,21 @@ func isUniqueViolation(err error) bool {
 		return pgErr.SQLState() == "23505"
 	}
 	return false
+}
+
+// classifySocialUniqueViolation reads the constraint name from a pgx
+// integrity error and maps it to a domain error. Falls back to
+// ErrEmailTaken for the email unique index, which is the catch-all for
+// "this account already exists, please link instead".
+func classifySocialUniqueViolation(err error) error {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) {
+		switch pgErr.ConstraintName {
+		case "users_apple_sub_key", "users_apple_sub_idx":
+			return ErrAppleSubTaken
+		case "users_google_sub_key", "users_google_sub_idx":
+			return ErrGoogleSubTaken
+		}
+	}
+	return ErrEmailTaken
 }

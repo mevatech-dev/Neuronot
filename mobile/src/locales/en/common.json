@@ -20,7 +20,17 @@
     "logout": "Log out",
     "no_account": "Don't have an account?",
     "have_account": "Already have an account?",
-    "loading": "Just a moment…"
+    "loading": "Just a moment…",
+    "continue_with_apple": "Continue with Apple",
+    "continue_with_google": "Continue with Google",
+    "sign_up_email": "Sign up with email",
+    "sign_in_email": "Sign in with email",
+    "continue_without_account": "Continue without account",
+    "legal_intro": "By continuing you agree to our",
+    "tos_link": "Terms",
+    "legal_and": "and",
+    "privacy_link": "Privacy Policy",
+    "welcome_subtitle": "Notice your patterns. Stay grounded."
   },
   "tabs": {
     "home": "Home",

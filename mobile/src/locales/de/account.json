@@ -15,5 +15,31 @@
     "confirm_label": "Type your email to confirm",
     "confirm_action": "Delete forever",
     "cancel": "Cancel"
+  },
+  "save": {
+    "title": "Konto sichern",
+    "body": "Du nutzt Neuronot anonym. Füge eine Anmeldemethode hinzu, damit deine Daten beim Gerätewechsel erhalten bleiben.",
+    "email_action": "E-Mail und Passwort hinzufügen",
+    "apple_action": "Mit Apple fortfahren",
+    "google_action": "Mit Google fortfahren",
+    "saved": "Konto gespeichert. Nutze diese Methode beim nächsten Mal.",
+    "email_form_title": "E-Mail und Passwort hinzufügen",
+    "email_field": "E-Mail",
+    "password_field": "Passwort (mind. 8 Zeichen)",
+    "confirm_field": "Passwort bestätigen",
+    "mismatch": "Passwörter stimmen nicht überein",
+    "submit": "Konto sichern",
+    "cancel": "Abbrechen"
+  },
+  "link": {
+    "section_title": "Verknüpfte Anmeldemethoden",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Verknüpft",
+    "not_connected": "Nicht verknüpft",
+    "connect": "Verknüpfen",
+    "disconnect": "Trennen",
+    "linked": "Anmeldemethode verknüpft.",
+    "unlinked": "Anmeldemethode entfernt."
   }
 }

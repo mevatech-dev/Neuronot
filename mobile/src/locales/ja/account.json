@@ -15,5 +15,31 @@
     "confirm_label": "Type your email to confirm",
     "confirm_action": "Delete forever",
     "cancel": "Cancel"
+  },
+  "save": {
+    "title": "アカウントを保存",
+    "body": "匿名で Neuronot を使っています。端末を変えてもデータを失わないよう、サインイン方法を追加してください。",
+    "email_action": "メールとパスワードを追加",
+    "apple_action": "Apple で続ける",
+    "google_action": "Google で続ける",
+    "saved": "アカウントを保存しました。次回からこの方法でサインインしてください。",
+    "email_form_title": "メールとパスワードを追加",
+    "email_field": "メール",
+    "password_field": "パスワード（8 文字以上）",
+    "confirm_field": "パスワード（確認）",
+    "mismatch": "パスワードが一致しません",
+    "submit": "アカウントを保存",
+    "cancel": "キャンセル"
+  },
+  "link": {
+    "section_title": "連携済みのサインイン方法",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "連携済み",
+    "not_connected": "未連携",
+    "connect": "連携",
+    "disconnect": "解除",
+    "linked": "サインイン方法を連携しました。",
+    "unlinked": "サインイン方法を削除しました。"
   }
 }

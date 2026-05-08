@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -14,6 +15,11 @@ type Config struct {
 	ConsentKEK   []byte
 	Port         string
 	LogLevel     string
+
+	// Optional OIDC providers. Empty means the provider is disabled and
+	// the corresponding /v1/auth/{apple,google} endpoint will return 503.
+	AppleBundleID   string
+	GoogleAudiences []string
 }
 
 func Load() (*Config, error) {
@@ -50,6 +56,15 @@ func Load() (*Config, error) {
 		return nil, errors.New("CONSENT_KEK must decode to exactly 32 bytes (AES-256)")
 	}
 	cfg.ConsentKEK = kek
+
+	cfg.AppleBundleID = os.Getenv("APPLE_BUNDLE_ID")
+	if raw := os.Getenv("GOOGLE_OAUTH_AUDIENCES"); raw != "" {
+		for _, a := range strings.Split(raw, ",") {
+			if v := strings.TrimSpace(a); v != "" {
+				cfg.GoogleAudiences = append(cfg.GoogleAudiences, v)
+			}
+		}
+	}
 
 	return cfg, nil
 }

@@ -15,5 +15,31 @@
     "confirm_label": "Onaylamak için e-postanı yaz",
     "confirm_action": "Kalıcı olarak sil",
     "cancel": "Vazgeç"
+  },
+  "save": {
+    "title": "Hesabını kaydet",
+    "body": "Neuronot'u anonim kullanıyorsun. Cihaz değiştirdiğinde verilerini kaybetmemek için bir giriş yöntemi ekle.",
+    "email_action": "E-posta ve şifre ekle",
+    "apple_action": "Apple ile devam et",
+    "google_action": "Google ile devam et",
+    "saved": "Hesap kaydedildi. Bir dahaki girişinde bu yöntemi kullan.",
+    "email_form_title": "E-posta ve şifre ekle",
+    "email_field": "E-posta",
+    "password_field": "Şifre (en az 8 karakter)",
+    "confirm_field": "Şifreyi doğrula",
+    "mismatch": "Şifreler eşleşmiyor",
+    "submit": "Hesabı kaydet",
+    "cancel": "Vazgeç"
+  },
+  "link": {
+    "section_title": "Bağlı giriş yöntemleri",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Bağlı",
+    "not_connected": "Bağlı değil",
+    "connect": "Bağla",
+    "disconnect": "Kaldır",
+    "linked": "Giriş yöntemi bağlandı.",
+    "unlinked": "Giriş yöntemi kaldırıldı."
   }
 }

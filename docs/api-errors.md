@@ -32,6 +32,17 @@ Client `code` veya `message_key` üzerinden kendi locale'inden çeviri yapar. `m
 | `AUTH_RATE_LIMITED` | 429 | `errors.auth.rate_limited` | Çok fazla deneme |
 | `AUTH_AI_CONSENT_REQUIRED` | 422 | `errors.auth.ai_consent_required` | Register call without an `ai_usage` consent set to true. |
 | `AUTH_PASSWORD_INCORRECT` | 401 | `errors.auth.password_incorrect` | Mevcut şifre yanlış |
+| `AUTH_CONSENT_REQUIRED` | 422 | `errors.auth.consent_required` | ToS veya Privacy onayı eksik (anonim/Apple/Google girişlerinde zorunlu) |
+| `AUTH_APPLE_TOKEN_INVALID` | 401 | `errors.auth.apple_invalid` | Apple identity token signature/claim hatası |
+| `AUTH_APPLE_NONCE_MISMATCH` | 401 | `errors.auth.apple_nonce` | Apple nonce hash uyuşmuyor |
+| `AUTH_GOOGLE_TOKEN_INVALID` | 401 | `errors.auth.google_invalid` | Google ID token signature/claim hatası |
+| `AUTH_GOOGLE_EMAIL_UNVERIFIED` | 401 | `errors.auth.google_email_unverified` | Google `email_verified=false` döndü |
+| `AUTH_LINK_REQUIRED` | 409 | `errors.auth.link_required` | Bu email ile zaten password hesabı var; sosyal login bağlanmadan önce email ile giriş gerek |
+| `AUTH_PROVIDER_DISABLED` | 503 | `errors.auth.provider_disabled` | İlgili sosyal sağlayıcı sunucuda config'lenmemiş |
+| `AUTH_NOT_ANONYMOUS` | 409 | `errors.auth.not_anonymous` | Hesap zaten kalıcı (email/sosyal); upgrade endpoint'i yalnızca anon hesaplar için |
+| `AUTH_ALREADY_LINKED` | 409 | `errors.auth.already_linked` | Sağlayıcı zaten bu hesaba bağlı |
+| `AUTH_DETACH_LAST` | 422 | `errors.auth.detach_last` | Son kimlik yöntemi sökülemez; önce başka bir yöntem ekle |
+| `AUTH_UNKNOWN_PROVIDER` | 422 | `errors.auth.unknown_provider` | Geçersiz provider parametresi |
 
 ---
 

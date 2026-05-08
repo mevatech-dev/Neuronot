@@ -20,7 +20,17 @@
     "logout": "Se déconnecter",
     "no_account": "Vous n’avez pas de compte ?",
     "have_account": "Vous avez déjà un compte ?",
-    "loading": "Un instant…"
+    "loading": "Un instant…",
+    "continue_with_apple": "Continuer avec Apple",
+    "continue_with_google": "Continuer avec Google",
+    "sign_up_email": "Créer un compte par e-mail",
+    "sign_in_email": "Se connecter par e-mail",
+    "continue_without_account": "Continuer sans compte",
+    "legal_intro": "En continuant, tu acceptes nos",
+    "tos_link": "Conditions d'utilisation",
+    "legal_and": "et notre",
+    "privacy_link": "Politique de confidentialité",
+    "welcome_subtitle": "Remarque tes schémas. Reste ancré."
   },
   "tabs": {
     "home": "Accueil",

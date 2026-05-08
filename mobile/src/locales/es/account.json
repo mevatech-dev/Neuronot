@@ -15,5 +15,31 @@
     "confirm_label": "Type your email to confirm",
     "confirm_action": "Delete forever",
     "cancel": "Cancel"
+  },
+  "save": {
+    "title": "Guarda tu cuenta",
+    "body": "Estás usando Neuronot de forma anónima. Añade un método de inicio de sesión para no perder tus datos al cambiar de dispositivo.",
+    "email_action": "Añadir correo y contraseña",
+    "apple_action": "Continuar con Apple",
+    "google_action": "Continuar con Google",
+    "saved": "Cuenta guardada. Usa este método la próxima vez.",
+    "email_form_title": "Añadir correo y contraseña",
+    "email_field": "Correo",
+    "password_field": "Contraseña (mín. 8 caracteres)",
+    "confirm_field": "Confirmar contraseña",
+    "mismatch": "Las contraseñas no coinciden",
+    "submit": "Guardar cuenta",
+    "cancel": "Cancelar"
+  },
+  "link": {
+    "section_title": "Métodos de inicio de sesión vinculados",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Vinculado",
+    "not_connected": "No vinculado",
+    "connect": "Vincular",
+    "disconnect": "Desvincular",
+    "linked": "Método de inicio de sesión vinculado.",
+    "unlinked": "Método de inicio de sesión eliminado."
   }
 }

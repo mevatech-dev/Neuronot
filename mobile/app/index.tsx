@@ -15,7 +15,7 @@ export default function Index() {
     staleTime: 60_000,
   });
 
-  if (!accessToken) return <Redirect href="/(auth)/login" />;
+  if (!accessToken) return <Redirect href="/(auth)/welcome" />;
   if (profile.isLoading) return null;
 
   if (profile.data && !profile.data.onboarding_completed_at) {

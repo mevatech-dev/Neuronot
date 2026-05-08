@@ -20,7 +20,17 @@
     "logout": "تسجيل الخروج",
     "no_account": "ليس لديك حساب؟",
     "have_account": "هل لديك حساب بالفعل؟",
-    "loading": "لحظة من فضلك…"
+    "loading": "لحظة من فضلك…",
+    "continue_with_apple": "المتابعة باستخدام Apple",
+    "continue_with_google": "المتابعة باستخدام Google",
+    "sign_up_email": "التسجيل بالبريد الإلكتروني",
+    "sign_in_email": "تسجيل الدخول بالبريد الإلكتروني",
+    "continue_without_account": "المتابعة بدون حساب",
+    "legal_intro": "بالمتابعة، فإنك توافق على",
+    "tos_link": "الشروط",
+    "legal_and": "و",
+    "privacy_link": "سياسة الخصوصية",
+    "welcome_subtitle": "لاحظ أنماطك وكن ثابتاً."
   },
   "tabs": {
     "home": "الرئيسية",

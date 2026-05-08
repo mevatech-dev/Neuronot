@@ -8,7 +8,18 @@
     "token_invalid": "你的会话不再有效。",
     "refresh_expired": "会话已过期。",
     "refresh_revoked": "会话已被撤销。",
-    "rate_limited": "尝试次数过多，请稍等一分钟。"
+    "rate_limited": "尝试次数过多，请稍等一分钟。",
+    "consent_required": "请接受服务条款和隐私政策以继续。",
+    "apple_invalid": "无法验证您的 Apple 登录。请重试。",
+    "apple_nonce": "无法确认 Apple 登录。请重试。",
+    "google_invalid": "无法验证您的 Google 登录。请重试。",
+    "google_email_unverified": "您的 Google 邮箱尚未验证。",
+    "link_required": "该邮箱已注册。请先用密码登录，然后在“设置”中关联此登录方式。",
+    "provider_disabled": "此登录方式当前不可用。",
+    "not_anonymous": "此账号已保存，请使用常规方式登录。",
+    "already_linked": "此登录方式已与您的账号关联。",
+    "detach_last": "请先添加另一种登录方式，再移除当前方式。",
+    "unknown_provider": "未知的登录方式。"
   },
   "daily_log": {
     "duplicate": "今天已经记录过了。",
