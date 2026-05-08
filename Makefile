@@ -1,5 +1,12 @@
 .PHONY: help db-up db-down db-migrate db-rollback db-reset api-dev api-build api-test mobile-dev lint test ci
 
+# Auto-load api/.env so DATABASE_URL, JWT_SECRET, CONSENT_KEK, etc. are
+# present for every recipe (api-dev, db-migrate, …) without manual export.
+ifneq (,$(wildcard api/.env))
+include api/.env
+export
+endif
+
 help:
 	@echo "Neuronot — make targets:"
 	@echo "  db-up         Start postgres (docker-compose)"

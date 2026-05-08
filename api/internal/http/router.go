@@ -52,12 +52,29 @@ func NewRouter(d Deps) http.Handler {
 	})
 
 	r.Route("/v1", func(v1 chi.Router) {
-		// Public — no auth.
-		if d.AuthRoutes != nil {
-			v1.Route("/auth", d.AuthRoutes)
-		}
+		// /v1/auth/* — single mount; chi disallows mounting the same prefix
+		// twice. Public routes (login/register/refresh/...) and authenticated
+		// routes (password/upgrade/links) share this subtree, with auth
+		// middleware applied per-Group.
+		v1.Route("/auth", func(authR chi.Router) {
+			if d.AuthRoutes != nil {
+				d.AuthRoutes(authR) // public: /login, /register, /refresh, ...
+			}
+			authR.Group(func(priv chi.Router) {
+				priv.Use(middleware.RequireAuth(d.JWTSecret))
+				if d.AccountPasswordRoutes != nil {
+					priv.Route("/password", d.AccountPasswordRoutes)
+				}
+				if d.AuthUpgradeRoutes != nil {
+					priv.Route("/upgrade", d.AuthUpgradeRoutes)
+				}
+				if d.AuthLinksRoutes != nil {
+					d.AuthLinksRoutes(priv) // /links, /link/apple, /link/google, /link/{provider}
+				}
+			})
+		})
 
-		// Authenticated section.
+		// Authenticated section (everything except /auth/*).
 		v1.Group(func(p chi.Router) {
 			p.Use(middleware.RequireAuth(d.JWTSecret))
 			if d.ProfileRoutes != nil {
@@ -83,23 +100,6 @@ func NewRouter(d Deps) http.Handler {
 			}
 			if d.SyncRoutes != nil {
 				p.Route("/sync", d.SyncRoutes)
-			}
-
-			// /v1/auth/password is authenticated (unlike login/register).
-			if d.AccountPasswordRoutes != nil {
-				p.Route("/auth/password", d.AccountPasswordRoutes)
-			}
-
-			// /v1/auth/upgrade/* is authenticated — anon-account upgrade flow.
-			if d.AuthUpgradeRoutes != nil {
-				p.Route("/auth/upgrade", d.AuthUpgradeRoutes)
-			}
-
-			// /v1/auth/links + /v1/auth/link/* are authenticated — read
-			// the calling user's linked-provider summary and connect or
-			// disconnect Apple/Google identities.
-			if d.AuthLinksRoutes != nil {
-				p.Route("/auth", d.AuthLinksRoutes)
 			}
 
 			// All /me/* lives in one block so future extensions stay together.

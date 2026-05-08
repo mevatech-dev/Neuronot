@@ -45,7 +45,7 @@ jobs:
           working-directory: api
       - name: Test
         env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/neuronot_test?sslmode=disable
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/neuronot?sslmode=disable
           JWT_SECRET: test_secret_for_ci_only_not_for_prod
         run: go test ./...
 

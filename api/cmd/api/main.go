@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 
 	"github.com/neuronot/api/internal/account"
 	"github.com/neuronot/api/internal/auth"
@@ -51,6 +52,11 @@ func (a *accountTokenRevoker) RevokeAllForUser(ctx context.Context, userID uuid.
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
 	slog.SetDefault(logger)
+
+	// Best-effort load of .env from the working dir or one above (so both
+	// `cd api && go run ./cmd/api` and `make api-dev` from repo root work).
+	// Real envs (CI, prod) set vars directly and the missing-file error is ignored.
+	_ = godotenv.Load(".env", "api/.env")
 
 	cfg, err := config.Load()
 	if err != nil {
