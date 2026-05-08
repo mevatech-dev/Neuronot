@@ -8,6 +8,8 @@ Neuronot is a mobile-first **personal awareness** app: users log cognitive state
 
 When in doubt about *what to build*, read `docs/PRD.md`. When in doubt about *how to build it*, read `docs/ARCHITECTURE.md`. These two are the source of truth — this file summarizes the rules; the docs explain why.
 
+**v1 module scope:** only `obesity` and `hypertension` are active in v1. Other module code (cognitive-only flows, additional symptom modules) is soft-deactivated, not deleted — preserved for v2. **Do not "clean up" legacy module code** unless an ADR explicitly retires it.
+
 ## Common commands
 
 All `make` targets run from the repo root.
@@ -50,7 +52,7 @@ cd api && goose -dir migrations postgres "$DATABASE_URL" status
 
 `.env` lives at `api/.env` (gitignored, copy from `api/.env.example`). Required: `DATABASE_URL`, `JWT_SECRET` (≥32 chars). `OPENAI_API_KEY` is required for `/v1/insights/generate` (the AI insight pipeline).
 
-Verification runbooks are per-week and authoritative for the smoke test that should pass when work claims "done": `docs/HAFTA1_VERIFICATION.md`, `docs/HAFTA2_VERIFICATION.md`, `docs/HAFTA3_VERIFICATION.md`, `docs/HAFTA4_VERIFICATION.md`, etc.
+Verification runbooks are per-week and authoritative for the smoke test that should pass when work claims "done": `docs/HAFTA{N}_VERIFICATION.md` (N = 1..9 currently). The runbook for the latest finished week is the bar for `make test` plus a manual scenario.
 
 ## Architecture in one diagram
 
@@ -88,6 +90,8 @@ auth/
 ```
 
 Five files. No `usecase.go`, no `mapper.go`, no DI container. The reference implementation is `api/internal/auth/` (Hafta 1) — copy its shape when adding a new feature. The cross-feature aggregator pattern (timeline) lives in `api/internal/timeline/` and only depends on *services* of other slices, never repositories.
+
+Current backend slices (`api/internal/`): `auth`, `account`, `consents`, `profile`, `dailylog`, `events`, `insights`, `summary`, `stats`, `timeline`, `dataexport`. Plus infrastructure (non-slice): `config`, `crypto`, `db`, `http`, `sync`. Mobile feature slices (`mobile/src/features/`) currently include `auth`, `account`, `consents`, `profile`, `settings`, `daily-log`, `events`, `insights`, `summary`, `timeline`, `dataexport`, `crisis`, `onboarding`, `about`, `help`. Some mobile features (`crisis`, `onboarding`, `about`, `help`, `settings`) are local/static and have no backend counterpart — that asymmetry is intentional.
 
 Layer rules — **violating these is a review block**:
 
@@ -127,6 +131,21 @@ Every response — success or error — has the same shape (`api/internal/http/r
 
 `message_key` is the i18n lookup the client uses; `message` is an English fallback. Error codes are catalogued in `docs/api-errors.md` — add new ones there before using them. Mobile reads `error.message_key` via `t(key, { ns: 'errors' })`; never let server English text reach the user UI.
 
+Mutation endpoints that don't need a body (account delete, consent revoke, etc.) return a true `204 No Content` — no envelope. The mobile client (`mobile/src/services/api/client/client.ts`) detects this (`res.status === 204 || !res.data`) and resolves `request<T>()` with `null as T`. **Don't return a JSON null envelope for these endpoints** — keep the 204; both sides are aligned on it.
+
+## Mobile request headers & startup sequence
+
+Every request from the mobile client carries `X-Device-Id`, a SecureStore-backed UUIDv4 generated on first launch (`mobile/src/services/device/deviceId.ts`). The header is injected in the request interceptor at `mobile/src/services/api/client/client.ts:24` from `getCachedDeviceId()`.
+
+Because the header must be present on the very first request, `mobile/app/_layout.tsx` enforces this startup order:
+
+1. `await` device-ID seed → set `deviceReady`
+2. `hydrate()` auth from SecureStore
+3. `useSyncLifecycle(deviceReady ? userId : null)` — gated; sync never fires before the header is wired
+4. Splash stays up until `hydrated && fontsLoaded && deviceReady`; the screen tree returns `null` otherwise
+
+Don't remove the `deviceReady` gate, don't move sync above it, and don't issue API calls from `hydrate()` (it must stay SecureStore-only). The backend does not yet require `X-Device-Id` for auth, but treat it as part of the wire contract — endpoints will start using it for session/device telemetry.
+
 ## Mobile theme — semantic tokens only
 
 Theme has two layers (`mobile/src/theme/`):
@@ -156,7 +175,7 @@ Mobile mirrors syncable tables (daily_logs, events, insights, profile) into a lo
 
 11 languages (`mobile/src/i18n/index.ts`, resources in `mobile/src/i18n/resources.ts`): `en`, `tr` are native-quality; `es de fr` planned for native review; `pt it ru ja zh` LLM-translated + skim review; `ar` is RTL and ships with a Beta marker. All UI strings go through `t('namespace.key')`. The lint rule `i18next/no-literal-string` (configured in `mobile/eslint.config.js`) blocks raw text in JSX.
 
-Namespaces are per-feature: `common`, `errors`, `onboarding`, `daily-log`, `events`, `timeline`, `insights`, `crisis`. Each feature owns one JSON file per locale. When adding a feature, create the namespace in **en first** as the source of truth, then add `tr` natively and fill the other supported locales before shipping. Run `cd mobile && bun run validate:i18n` after locale changes.
+Namespaces are per-feature and registered in `mobile/src/i18n/index.ts`. Current set: `common`, `errors`, `onboarding`, `daily-log`, `events`, `timeline`, `insights`, `crisis`, `settings`, `account`, `consents`, `data`, `about`, `help`. Each feature owns one JSON file per locale. When adding a feature, register the namespace in `index.ts`, create it in **en first** as the source of truth, then add `tr` natively and fill the other supported locales before shipping. Run `cd mobile && bun run validate:i18n` after locale changes.
 
 Dates, numbers, and relative times use `Intl.*Format` (see `mobile/src/features/timeline/utils.ts`). Manual format strings are wrong in some locales — don't write them.
 
