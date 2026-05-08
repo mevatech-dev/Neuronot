@@ -45,11 +45,14 @@ export default function IntroOnboardingScreen() {
   const transition = useSlideTransition(typeof phase === 'number' ? phase : phase === 'welcome' ? -1 : QUESTION_STEPS + 1);
 
   const update = (patch: Partial<OnboardingState>) => {
-    setState((prev) => {
-      const next = { ...prev, ...patch };
-      setAnswersStore(next);
-      return next;
-    });
+    // Compute next from the latest state then push to both React state
+    // and the zustand store outside the React state-updater function —
+    // calling setAnswersStore inside the updater triggered a "cannot
+    // update component while rendering" warning because the store
+    // selector subscribes this component back into its own render.
+    const next = { ...state, ...patch };
+    setState(next);
+    setAnswersStore(next);
   };
 
   const finish = () => {
