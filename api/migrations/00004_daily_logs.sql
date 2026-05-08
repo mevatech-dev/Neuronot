@@ -1,7 +1,6 @@
 -- +goose Up
--- +goose StatementBegin
 CREATE TABLE daily_logs (
-    id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    id             uuid PRIMARY KEY DEFAULT uuidv7(),
     user_id        uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     focus          int  NOT NULL CHECK (focus BETWEEN 1 AND 5),
     energy         int  NOT NULL CHECK (energy BETWEEN 1 AND 5),
@@ -18,9 +17,6 @@ CREATE INDEX daily_logs_user_logged_idx ON daily_logs (user_id, logged_at DESC);
 -- enforces the "günde bir log" rule from PRD §10.
 CREATE UNIQUE INDEX daily_logs_user_day_uniq
     ON daily_logs (user_id, ((logged_at AT TIME ZONE 'UTC')::date));
--- +goose StatementEnd
 
 -- +goose Down
--- +goose StatementBegin
 DROP TABLE IF EXISTS daily_logs;
--- +goose StatementEnd

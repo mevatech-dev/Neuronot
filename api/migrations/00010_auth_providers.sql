@@ -21,20 +21,20 @@ ALTER TABLE users
         OR google_sub IS NOT NULL
     );
 
--- Lookups by social subject — UNIQUE already creates an index but we name
--- them for clarity in EXPLAIN output.
+-- Partial indexes for the social-subject lookups. The implicit UNIQUE
+-- index on each column already covers all rows; these add a smaller
+-- non-NULL slice that the auth lookup queries hit directly.
 CREATE INDEX IF NOT EXISTS users_apple_sub_idx  ON users (apple_sub)  WHERE apple_sub  IS NOT NULL;
 CREATE INDEX IF NOT EXISTS users_google_sub_idx ON users (google_sub) WHERE google_sub IS NOT NULL;
 
 -- +goose StatementEnd
 
 -- +goose Down
+-- StatementBegin/End is required around the DO block because its body
+-- contains semicolons that goose's default splitter would otherwise
+-- treat as statement terminators.
 -- +goose StatementBegin
-
--- Refuse to roll back if any rows would violate the restored NOT NULLs or
--- if any social/anonymous-only accounts exist; this prevents silent data
--- loss in environments that already used the new flows.
-DO $$
+DO $
 BEGIN
     IF EXISTS (
         SELECT 1 FROM users
@@ -46,13 +46,13 @@ BEGIN
     ) THEN
         RAISE EXCEPTION 'cannot roll back 00010: rows depend on nullable email/password or social subjects';
     END IF;
-END $$;
+END $;
+-- +goose StatementEnd
 
 DROP INDEX IF EXISTS users_google_sub_idx;
 DROP INDEX IF EXISTS users_apple_sub_idx;
 
-ALTER TABLE users
-    DROP CONSTRAINT IF EXISTS users_identity_required;
+ALTER TABLE users DROP CONSTRAINT IF EXISTS users_identity_required;
 
 ALTER TABLE users
     DROP COLUMN IF EXISTS google_sub,
@@ -62,5 +62,3 @@ ALTER TABLE users
 ALTER TABLE users
     ALTER COLUMN password_hash SET NOT NULL,
     ALTER COLUMN email SET NOT NULL;
-
--- +goose StatementEnd

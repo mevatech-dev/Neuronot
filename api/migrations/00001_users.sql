@@ -1,7 +1,13 @@
 -- +goose Up
--- +goose StatementBegin
+
+-- citext is loaded here (in addition to infra/postgres/init.sql) so the
+-- migration runs on managed Postgres deployments where init.sql is not
+-- executed. CREATE EXTENSION IF NOT EXISTS is idempotent and self-service
+-- on the major managed providers (Neon, Supabase, RDS, Hetzner).
+CREATE EXTENSION IF NOT EXISTS citext;
+
 CREATE TABLE users (
-    id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    id                 uuid PRIMARY KEY DEFAULT uuidv7(),
     email              citext UNIQUE NOT NULL,
     password_hash      text NOT NULL,
     preferred_language text NOT NULL DEFAULT 'en',
@@ -10,9 +16,6 @@ CREATE TABLE users (
 );
 
 CREATE INDEX users_created_at_idx ON users (created_at DESC);
--- +goose StatementEnd
 
 -- +goose Down
--- +goose StatementBegin
 DROP TABLE IF EXISTS users;
--- +goose StatementEnd

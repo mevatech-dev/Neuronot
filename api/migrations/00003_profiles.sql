@@ -1,5 +1,4 @@
 -- +goose Up
--- +goose StatementBegin
 CREATE TABLE profiles (
     user_id                 uuid PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     focus_problem           text CHECK (focus_problem IN ('focus','energy','headache','sleep','forgetfulness') OR focus_problem IS NULL),
@@ -10,9 +9,6 @@ CREATE TABLE profiles (
     created_at              timestamptz NOT NULL DEFAULT now(),
     updated_at              timestamptz NOT NULL DEFAULT now()
 );
--- +goose StatementEnd
 
 -- +goose Down
--- +goose StatementBegin
 DROP TABLE IF EXISTS profiles;
--- +goose StatementEnd
