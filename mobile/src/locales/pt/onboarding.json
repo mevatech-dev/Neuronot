@@ -8,6 +8,7 @@
   "progress": "Step {{current}} of {{total}}",
   "step1": {
     "title": "Com o que tens mais dificuldade?",
+    "subtitle": "Escolha tudo o que se aplica — vamos acompanhar o que importa para você.",
     "options": {
       "focus": "Concentração",
       "energy": "Energia",

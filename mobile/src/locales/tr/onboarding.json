@@ -12,13 +12,14 @@
   "finish": "Başla",
   "progress": "Adım {{current}} / {{total}}",
   "step1": {
-    "title": "En çok zorlandığın hangisi?",
+    "title": "Seni bugünlerde ne yoruyor?",
+    "subtitle": "Birden fazla seçebilirsin — sana göre takip edeceğiz.",
     "options": {
-      "focus": "Odak",
-      "energy": "Enerji",
-      "headache": "Baş ağrısı",
-      "sleep": "Uyku",
-      "forgetfulness": "Unutkanlık"
+      "focus": "Odaklanmakta zorlanıyorum",
+      "energy": "Sürekli yorgun hissediyorum",
+      "headache": "Sık baş ağrım oluyor",
+      "sleep": "Uykum dağınık",
+      "forgetfulness": "Çok şey unutuyorum"
     }
   },
   "step2": {

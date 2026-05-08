@@ -1,9 +1,15 @@
 import * as Localization from 'expo-localization';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { NeuroMascot, type NeuroMood } from '@/components/brand/NeuroMascot';
 import { ProgressBar } from '@/features/onboarding/ProgressBar';
@@ -44,6 +50,28 @@ export default function IntroOnboardingScreen() {
   const [state, setState] = useState<OnboardingState>(persistedAnswers);
   const transition = useSlideTransition(typeof phase === 'number' ? phase : phase === 'welcome' ? -1 : QUESTION_STEPS + 1);
 
+  // Mascot breathing — gentle, runs across all steps
+  const breath = useSharedValue(0);
+  const float = useSharedValue(0);
+  useEffect(() => {
+    breath.value = withRepeat(
+      withTiming(1, { duration: 2600, easing: Easing.inOut(Easing.sin) }),
+      -1,
+      true,
+    );
+    float.value = withRepeat(
+      withTiming(1, { duration: 4200, easing: Easing.inOut(Easing.sin) }),
+      -1,
+      true,
+    );
+  }, [breath, float]);
+  const mascotAnim = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: -4 + float.value * 8 },
+      { scale: 1 + breath.value * 0.035 },
+    ],
+  }));
+
   const update = (patch: Partial<OnboardingState>) => {
     // Compute next from the latest state then push to both React state
     // and the zustand store outside the React state-updater function —
@@ -79,7 +107,7 @@ export default function IntroOnboardingScreen() {
   }
 
   const canAdvance =
-    (phase === 1 && !!state.focusProblem) ||
+    (phase === 1 && (state.concerns?.length ?? 0) > 0) ||
     (phase === 2 && !!state.intensityLevel) ||
     (phase === 3 && state.avgSleepHours !== undefined && state.avgSleepHours > 0) ||
     phase === 4 ||
@@ -104,21 +132,30 @@ export default function IntroOnboardingScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.surface.primary }}>
-      <ScrollView contentContainerStyle={{ padding: theme.space[6], flexGrow: 1, gap: theme.space[5] }}>
+      <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: theme.space[6],
+          paddingTop: theme.space[6],
+          paddingBottom: theme.space[4],
+          gap: theme.space[5],
+        }}
+      >
         <Text style={{ ...theme.typography.micro, color: theme.colors.text.muted }}>
           {t('progress', { current: phase, total: QUESTION_STEPS })}
         </Text>
         <ProgressBar current={phase} total={QUESTION_STEPS} />
 
-        <View style={{ alignItems: 'center', paddingVertical: theme.space[2] }}>
-          <NeuroMascot mood={STEP_MOOD[phase]} size={120} />
+        <View style={{ alignItems: 'center', paddingVertical: theme.space[3] }}>
+          <Animated.View style={mascotAnim}>
+            <NeuroMascot mood={STEP_MOOD[phase]} size={200} />
+          </Animated.View>
         </View>
 
         <Animated.View style={transition}>
           {phase === 1 && (
             <Step1FocusProblem
-              value={state.focusProblem}
-              onChange={(focusProblem) => update({ focusProblem })}
+              value={state.concerns}
+              onChange={(concerns) => update({ concerns })}
             />
           )}
           {phase === 2 && (
@@ -153,46 +190,57 @@ export default function IntroOnboardingScreen() {
             />
           )}
         </Animated.View>
+      </ScrollView>
 
-        <View style={{ flex: 1 }} />
-
-        <View style={{ flexDirection: 'row', gap: theme.space[2] }}>
+      {/* Sticky bottom action bar */}
+      <View
+        style={{
+          flexDirection: 'row',
+          gap: theme.space[3],
+          paddingHorizontal: theme.space[5],
+          paddingTop: theme.space[3],
+          paddingBottom: theme.space[3],
+          borderTopWidth: 1,
+          borderTopColor: theme.colors.border.subtle,
+          backgroundColor: theme.colors.surface.primary,
+        }}
+      >
+        <Pressable
+          onPress={goBack}
+          style={{
+            flex: 1,
+            paddingVertical: theme.space[4],
+            borderRadius: theme.radius.full,
+            alignItems: 'center',
+            backgroundColor: theme.colors.accent.muted,
+            borderWidth: 2,
+            borderColor: theme.colors.accent.default,
+          }}
+        >
+          <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.accent.onAccent }}>
+            {t('back')}
+          </Text>
+        </Pressable>
+        <Animated.View style={[{ flex: 1 }, press.style]}>
           <Pressable
-            onPress={goBack}
+            onPress={goNext}
+            onPressIn={press.onPressIn}
+            onPressOut={press.onPressOut}
+            disabled={!canAdvance}
             style={{
-              flex: 1,
               paddingVertical: theme.space[4],
-              borderRadius: theme.radius.md,
+              borderRadius: theme.radius.full,
               alignItems: 'center',
-              backgroundColor: theme.colors.surface.elevated,
-              borderWidth: 1,
-              borderColor: theme.colors.border.subtle,
+              backgroundColor: canAdvance ? theme.colors.accent.default : theme.colors.accent.muted,
+              opacity: canAdvance ? 1 : 0.6,
             }}
           >
-            <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.text.primary }}>
-              {t('back')}
+            <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.accent.onAccent }}>
+              {t('next')}
             </Text>
           </Pressable>
-          <Animated.View style={[{ flex: 1 }, press.style]}>
-            <Pressable
-              onPress={goNext}
-              onPressIn={press.onPressIn}
-              onPressOut={press.onPressOut}
-              disabled={!canAdvance}
-              style={{
-                paddingVertical: theme.space[4],
-                borderRadius: theme.radius.md,
-                alignItems: 'center',
-                backgroundColor: canAdvance ? theme.colors.accent.default : theme.colors.accent.muted,
-              }}
-            >
-              <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.accent.onAccent }}>
-                {t('next')}
-              </Text>
-            </Pressable>
-          </Animated.View>
-        </View>
-      </ScrollView>
+        </Animated.View>
+      </View>
     </SafeAreaView>
   );
 }

@@ -8,6 +8,7 @@
   "progress": "第 {{current}} / {{total}} 步",
   "step1": {
     "title": "你最常被哪一项困扰？",
+    "subtitle": "选择所有适合的项 — 我们会关注对你重要的事情。",
     "options": {
       "focus": "专注",
       "energy": "活力",

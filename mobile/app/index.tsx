@@ -25,7 +25,9 @@ export default function Index() {
   const sync = useMutation({
     mutationFn: () =>
       patchProfile({
-        focus_problem: answers.focusProblem,
+        // Backend stores a single focus_problem; ship the first picked
+        // concern until the API contract widens to an array.
+        focus_problem: answers.concerns?.[0],
         intensity_level: answers.intensityLevel,
         avg_sleep_hours: answers.avgSleepHours,
         caffeine_daily: answers.caffeineDaily,

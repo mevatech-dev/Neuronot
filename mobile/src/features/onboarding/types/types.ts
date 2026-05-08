@@ -9,7 +9,10 @@ export const FOCUS_PROBLEMS: FocusProblem[] = [
 ];
 
 export type OnboardingState = {
-  focusProblem?: FocusProblem;
+  // Multi-select; first item is sent to backend as the legacy `focus_problem`
+  // string until the API contract is widened. UI activates fields based on
+  // membership in this list.
+  concerns?: FocusProblem[];
   intensityLevel?: number;
   avgSleepHours?: number;
   caffeineDaily?: boolean;

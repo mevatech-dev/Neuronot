@@ -8,6 +8,7 @@
   "progress": "Step {{current}} of {{total}}",
   "step1": {
     "title": "Con cosa fai più fatica?",
+    "subtitle": "Scegli tutto ciò che ti riguarda — seguiremo ciò che conta per te.",
     "options": {
       "focus": "Concentrazione",
       "energy": "Energia",

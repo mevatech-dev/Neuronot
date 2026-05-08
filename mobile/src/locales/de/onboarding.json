@@ -8,6 +8,7 @@
   "progress": "Schritt {{current}} von {{total}}",
   "step1": {
     "title": "Womit hast du am meisten zu kämpfen?",
+    "subtitle": "Wähle alles, was zutrifft — wir verfolgen, was dir wichtig ist.",
     "options": {
       "focus": "Fokus",
       "energy": "Energie",

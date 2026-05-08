@@ -8,6 +8,7 @@
   "progress": "Étape {{current}} sur {{total}}",
   "step1": {
     "title": "Avec quoi as-tu le plus de mal?",
+    "subtitle": "Choisis tout ce qui s'applique — nous suivrons ce qui compte pour toi.",
     "options": {
       "focus": "Concentration",
       "energy": "Énergie",

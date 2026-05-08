@@ -8,6 +8,7 @@
   "progress": "الخطوة {{current}} من {{total}}",
   "step1": {
     "title": "ما الذي يثقل عليك أكثر؟",
+    "subtitle": "اختر كل ما ينطبق — سنتتبع ما يهمك.",
     "options": {
       "focus": "التركيز",
       "energy": "الطاقة",

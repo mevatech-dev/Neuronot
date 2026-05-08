@@ -12,13 +12,14 @@
   "finish": "Get started",
   "progress": "Step {{current}} of {{total}}",
   "step1": {
-    "title": "What do you struggle with most?",
+    "title": "What's wearing you down lately?",
+    "subtitle": "Pick everything that fits — we'll track what matters to you.",
     "options": {
-      "focus": "Focus",
-      "energy": "Energy",
-      "headache": "Headaches",
-      "sleep": "Sleep",
-      "forgetfulness": "Forgetfulness"
+      "focus": "I struggle to focus",
+      "energy": "I'm always tired",
+      "headache": "I get headaches a lot",
+      "sleep": "My sleep is off",
+      "forgetfulness": "I forget things easily"
     }
   },
   "step2": {

@@ -8,6 +8,7 @@
   "progress": "{{total}}中{{current}}ステップ",
   "step1": {
     "title": "一番つらいのはどれですか？",
+    "subtitle": "当てはまるものをすべて選んでください — 大切なことを一緒に追います。",
     "options": {
       "focus": "集中力",
       "energy": "エネルギー",
