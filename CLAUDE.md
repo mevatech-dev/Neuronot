@@ -182,9 +182,11 @@ Crisis keyword files live in `api/internal/insights/crisis_keywords/{lang}.go`. 
 
 PostgreSQL 18, migrations in `api/migrations/` via goose, format `NNNNN_name.sql` with `-- +goose Up` / `-- +goose Down` blocks. Both directions must be filled — irreversible migrations require an ADR.
 
-Standard columns: `id uuid PK DEFAULT gen_random_uuid()`, `user_id uuid REFERENCES users(id) ON DELETE CASCADE`, `created_at timestamptz NOT NULL DEFAULT now()`. Time-series tables index `(user_id, <time> DESC)` — that's what timeline and pagination scan.
+Standard columns: `id uuid PK DEFAULT uuidv7()`, `user_id uuid REFERENCES users(id) ON DELETE CASCADE`, `created_at timestamptz NOT NULL DEFAULT now()`. Time-series tables index `(user_id, <time> DESC)` — that's what timeline and pagination scan.
 
-`pgcrypto` and `citext` extensions are loaded in `infra/postgres/init.sql`. Email columns are `citext` for case-insensitive lookup; password is `bcrypt` cost 10.
+UUIDs are **v7** (PostgreSQL 18 native `uuidv7()` — no extension needed). The 48-bit timestamp prefix means new rows cluster at the right edge of the B-tree, which keeps INSERT cost flat as tables grow. The column type stays `uuid` (16 bytes); cursor pagination still uses the `(occurred_at, id)` tuple — the timestamp prefix is a bonus, not the primary sort. Don't switch back to `gen_random_uuid()`; don't reach for ULID strings.
+
+The only Postgres extension we install is `citext` (`infra/postgres/init.sql`) for case-insensitive email lookup. `pgcrypto` is intentionally absent: encrypted audit columns are encrypted in Go (AES-256-GCM, see `internal/crypto/aesgcm`), and bcrypt cost-10 password hashes come from `golang.org/x/crypto/bcrypt`.
 
 ## Deferred / out of scope
 

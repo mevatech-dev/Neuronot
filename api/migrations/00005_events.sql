@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE events (
-    id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    id           uuid PRIMARY KEY DEFAULT uuidv7(),
     user_id      uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     type         text NOT NULL CHECK (type IN ('headache','brain_fog','forgetfulness','distraction','mental_fatigue')),
     intensity    int  NOT NULL CHECK (intensity BETWEEN 1 AND 5),

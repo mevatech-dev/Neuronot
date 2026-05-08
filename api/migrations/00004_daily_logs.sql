@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE daily_logs (
-    id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    id             uuid PRIMARY KEY DEFAULT uuidv7(),
     user_id        uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     focus          int  NOT NULL CHECK (focus BETWEEN 1 AND 5),
     energy         int  NOT NULL CHECK (energy BETWEEN 1 AND 5),

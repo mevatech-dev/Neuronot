@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE consents (
-  id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id                  uuid PRIMARY KEY DEFAULT uuidv7(),
   user_id             uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   type                text NOT NULL CHECK (type IN ('ai_usage','terms_of_service','privacy_policy')),
   granted             boolean NOT NULL,

@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE users (
-    id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    id                 uuid PRIMARY KEY DEFAULT uuidv7(),
     email              citext UNIQUE NOT NULL,
     password_hash      text NOT NULL,
     preferred_language text NOT NULL DEFAULT 'en',
