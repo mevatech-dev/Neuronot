@@ -1,5 +1,4 @@
 -- +goose Up
--- +goose StatementBegin
 CREATE TABLE insights (
     id               uuid PRIMARY KEY DEFAULT uuidv7(),
     user_id          uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -13,9 +12,6 @@ CREATE TABLE insights (
 );
 
 CREATE INDEX insights_user_generated_idx ON insights (user_id, generated_at DESC);
--- +goose StatementEnd
 
 -- +goose Down
--- +goose StatementBegin
 DROP TABLE IF EXISTS insights;
--- +goose StatementEnd
