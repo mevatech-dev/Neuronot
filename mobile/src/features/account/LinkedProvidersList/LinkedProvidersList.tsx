@@ -6,7 +6,8 @@ import { Pressable, Text, View } from 'react-native';
 import { LoadingDots } from '@/components/feedback/LoadingDots';
 import { Skeleton } from '@/components/feedback/Skeleton';
 import { useToast } from '@/components/feedback/Toast';
-import { linksQuery, useLinkApple, useLinkGoogle, useUnlinkProvider } from '@/features/account/links';
+import { useLinkApple, useLinkGoogle, useUnlinkProvider } from '@/features/account/mutations';
+import { linksQuery } from '@/features/account/queries';
 import { ApiError } from '@/services/api/client';
 import {
   isAppleSignInLikelyAvailable,
@@ -31,16 +32,18 @@ export function LinkedProvidersList() {
 
   const links = useQuery(linksQuery(userId));
 
-  const onError = (err: unknown) => {
+  const showError = (err: unknown) => {
     const key = err instanceof ApiError ? err.messageKey : 'errors.generic.network';
     toast.show({ messageKey: key, tone: 'danger' });
   };
   const onLinked = () => toast.show({ messageKey: 'account:link.linked', tone: 'success' });
   const onUnlinked = () => toast.show({ messageKey: 'account:link.unlinked', tone: 'info' });
 
-  const linkAppleMut = useLinkApple({ onSuccess: onLinked, onError });
-  const linkGoogleMut = useLinkGoogle({ onSuccess: onLinked, onError });
-  const unlinkMut = useUnlinkProvider({ onSuccess: onUnlinked, onError });
+  // Hooks only own success-side effects; errors are handled by the local
+  // try/catch via mutateAsync. Mixing both surfaces would double-toast.
+  const linkAppleMut = useLinkApple({ onSuccess: onLinked });
+  const linkGoogleMut = useLinkGoogle({ onSuccess: onLinked });
+  const unlinkMut = useUnlinkProvider({ onSuccess: onUnlinked });
 
   const google = useGoogleSignIn();
 
@@ -56,7 +59,7 @@ export function LinkedProvidersList() {
         rawNonce: result.rawNonce,
       });
     } catch (err) {
-      onError(err);
+      showError(err);
     } finally {
       setPending(null);
     }
@@ -69,17 +72,21 @@ export function LinkedProvidersList() {
       if (!result) return;
       await linkGoogleMut.mutateAsync(result.idToken);
     } catch (err) {
-      onError(err);
+      showError(err);
     } finally {
       setPending(null);
     }
   };
 
-  const handleUnlink = (provider: Provider) => {
+  const handleUnlink = async (provider: Provider) => {
     setPending(provider);
-    unlinkMut.mutate(provider, {
-      onSettled: () => setPending(null),
-    });
+    try {
+      await unlinkMut.mutateAsync(provider);
+    } catch (err) {
+      showError(err);
+    } finally {
+      setPending(null);
+    }
   };
 
   if (links.isLoading) {

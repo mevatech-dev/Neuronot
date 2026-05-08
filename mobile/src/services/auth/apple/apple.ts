@@ -9,37 +9,40 @@ export type AppleSignInResult = {
   fullName: string | null;
 };
 
-// generateRawNonce returns a URL-safe random string. The hash of this
-// nonce is what we pass to Apple; the raw value goes to our server which
-// hashes and compares it against the JWT claim. This protects against
-// replay attacks.
-async function generateRawNonce(): Promise<string> {
-  const bytes = await Crypto.getRandomBytesAsync(32);
+// base64url encodes Uint8Array bytes per RFC 4648 §5 (no padding). expo-
+// crypto only ships BASE64 (with padding); we strip it and swap the
+// alt alphabet here so both nonce generation and hashing share one path.
+function bytesToBase64Url(bytes: Uint8Array): string {
   let s = '';
   for (let i = 0; i < bytes.length; i++) {
     s += String.fromCharCode(bytes[i]!);
   }
-  // base64url without padding
   return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
+function base64ToBase64Url(b64: string): string {
+  return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+// generateRawNonce returns a 32-byte URL-safe random string. The raw
+// value travels to our server (verified against the JWT claim); the
+// SHA-256 hash travels to Apple. Both sides must agree on the encoding.
+async function generateRawNonce(): Promise<string> {
+  const bytes = await Crypto.getRandomBytesAsync(32);
+  return bytesToBase64Url(bytes);
+}
+
+// hashNonce mirrors the server-side oidc.hashNonce: base64url(sha256(raw)).
+// Mobile passes this hash to Apple; Apple round-trips it into the
+// identityToken's `nonce` claim; the server recomputes from rawNonce
+// and compares.
 async function hashNonce(raw: string): Promise<string> {
-  const hex = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, raw);
-  // expo-crypto returns hex; Apple wants the hashed nonce as a string and
-  // server hashes raw with SHA256 → base64url. We pass hex to Apple here
-  // because Apple just round-trips the value into the `nonce` claim, and
-  // our server does its own SHA256(rawNonce) compare against the claim.
-  // To keep both sides consistent we compare server-side as base64url(sha256(raw)).
-  // So we encode the hex to bytes → base64url here.
-  const bytes = new Uint8Array(hex.length / 2);
-  for (let i = 0; i < bytes.length; i++) {
-    bytes[i] = parseInt(hex.substring(i * 2, i * 2 + 2), 16);
-  }
-  let s = '';
-  for (let i = 0; i < bytes.length; i++) {
-    s += String.fromCharCode(bytes[i]!);
-  }
-  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const b64 = await Crypto.digestStringAsync(
+    Crypto.CryptoDigestAlgorithm.SHA256,
+    raw,
+    { encoding: Crypto.CryptoEncoding.BASE64 },
+  );
+  return base64ToBase64Url(b64);
 }
 
 // isAvailable mirrors AppleAuthentication.isAvailableAsync(). We expose

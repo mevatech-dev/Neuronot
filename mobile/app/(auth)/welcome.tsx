@@ -59,12 +59,18 @@ export default function WelcomeScreen() {
     { type: 'privacy_policy', granted: true, version: CONSENT_VERSION },
   ];
 
-  const handle = async (label: 'apple' | 'google' | 'anon', fn: () => Promise<void>) => {
+  const handle = async (label: 'apple' | 'google' | 'anon', fn: () => Promise<boolean>) => {
     setPending(label);
     setErrorKey(null);
     try {
-      await fn();
-      router.replace('/(tabs)/home');
+      const ok = await fn();
+      // Cancel paths (Apple/Google sheet dismiss) return false. Stay on
+      // welcome — we have no token to navigate with.
+      if (!ok) return;
+      // Route to root index — it gates onboarding vs. home based on the
+      // user's profile state (onboarding_completed_at). Hard-coding
+      // /(tabs)/home would skip first-run onboarding for new users.
+      router.replace('/');
     } catch (err) {
       const key = err instanceof ApiError ? err.messageKey : 'errors.generic.network';
       setErrorKey(key);
@@ -76,20 +82,23 @@ export default function WelcomeScreen() {
   const onApple = () =>
     handle('apple', async () => {
       const result = await signInWithAppleNative();
-      if (!result) return;
+      if (!result) return false;
       await signInWithApple(result.identityToken, result.rawNonce, i18n.language, baseConsents);
+      return true;
     });
 
   const onGoogle = () =>
     handle('google', async () => {
       const result = await google.signIn();
-      if (!result) return;
+      if (!result) return false;
       await signInWithGoogle(result.idToken, i18n.language, baseConsents);
+      return true;
     });
 
   const onAnon = () =>
     handle('anon', async () => {
       await signInAnonymous(i18n.language, baseConsents);
+      return true;
     });
 
   const onEmail = () => router.push('/(auth)/register');
@@ -120,7 +129,10 @@ export default function WelcomeScreen() {
           {appleAvailable && (
             <SocialButton
               variant="apple"
-              icon=""
+              // U+F8FF — Apple logo glyph. Renders correctly on iOS;
+              // harmless box character on the rare Android path that
+              // even surfaces this button.
+              icon=""
               label={t('common:auth.continue_with_apple')}
               onPress={onApple}
               pending={pending === 'apple'}
