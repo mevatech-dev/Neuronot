@@ -30,5 +30,16 @@
     "mismatch": "Passwörter stimmen nicht überein",
     "submit": "Konto sichern",
     "cancel": "Abbrechen"
+  },
+  "link": {
+    "section_title": "Verknüpfte Anmeldemethoden",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Verknüpft",
+    "not_connected": "Nicht verknüpft",
+    "connect": "Verknüpfen",
+    "disconnect": "Trennen",
+    "linked": "Anmeldemethode verknüpft.",
+    "unlinked": "Anmeldemethode entfernt."
   }
 }

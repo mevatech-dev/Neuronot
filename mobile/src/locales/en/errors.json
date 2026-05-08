@@ -16,7 +16,10 @@
     "google_email_unverified": "Your Google email is not verified yet.",
     "link_required": "An account with this email already exists. Sign in with your password, then link this provider from Settings.",
     "provider_disabled": "This sign-in method is not available right now.",
-    "not_anonymous": "This account is already saved. Sign in normally instead."
+    "not_anonymous": "This account is already saved. Sign in normally instead.",
+    "already_linked": "This sign-in method is already linked to your account.",
+    "detach_last": "Add another sign-in method before removing this one.",
+    "unknown_provider": "Unknown sign-in provider."
   },
   "daily_log": {
     "duplicate": "You've already logged today.",

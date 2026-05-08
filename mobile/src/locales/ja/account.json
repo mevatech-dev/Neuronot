@@ -30,5 +30,16 @@
     "mismatch": "パスワードが一致しません",
     "submit": "アカウントを保存",
     "cancel": "キャンセル"
+  },
+  "link": {
+    "section_title": "連携済みのサインイン方法",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "連携済み",
+    "not_connected": "未連携",
+    "connect": "連携",
+    "disconnect": "解除",
+    "linked": "サインイン方法を連携しました。",
+    "unlinked": "サインイン方法を削除しました。"
   }
 }

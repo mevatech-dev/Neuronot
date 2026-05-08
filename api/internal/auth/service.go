@@ -49,6 +49,9 @@ var (
 	ErrLinkRequired             = errors.New("link required: email already in use")
 	ErrProviderDisabled         = errors.New("auth provider disabled by config")
 	ErrNotAnonymous             = errors.New("user is not anonymous")
+	ErrDetachLastIdentity       = errors.New("cannot detach last identity method")
+	ErrUnknownProvider          = errors.New("unknown auth provider")
+	ErrAlreadyLinked            = errors.New("provider already linked to this user")
 )
 
 // consentService is the auth-local view of the consents service. We keep
@@ -482,6 +485,113 @@ func (s *Service) UpgradeToApple(ctx context.Context, userID uuid.UUID, req Upgr
 		return nil, fmt.Errorf("revoke old refresh tokens: %w", err)
 	}
 	return s.issueTokens(ctx, user)
+}
+
+// Links returns a summary of the calling user's identity methods. Used
+// by the mobile Settings → Account screen to render connect/disconnect
+// rows for each provider.
+func (s *Service) Links(ctx context.Context, userID uuid.UUID) (*LinksResponse, error) {
+	user, err := s.repo.FindUserByID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	return &LinksResponse{
+		HasPassword: user.PasswordHash != "",
+		HasApple:    user.AppleSub != "",
+		HasGoogle:   user.GoogleSub != "",
+		IsAnonymous: user.IsAnonymous,
+	}, nil
+}
+
+// LinkApple attaches an Apple identity to an already-authenticated user.
+// Verifies the token first; refuses if the apple_sub is already on
+// another account (returns ErrLinkRequired so the client can prompt the
+// user to sign in with the other account instead).
+func (s *Service) LinkApple(ctx context.Context, userID uuid.UUID, req LinkAppleRequest) error {
+	if s.verifier == nil {
+		return ErrProviderDisabled
+	}
+	claims, err := s.verifier.VerifyApple(ctx, req.IdentityToken, req.Nonce)
+	if err != nil {
+		return mapAppleVerifyErr(err)
+	}
+	if _, err := s.repo.LinkApple(ctx, userID, claims.Subject); err != nil {
+		switch {
+		case errors.Is(err, ErrUserNotFound):
+			// Either the user doesn't exist (shouldn't happen given JWT
+			// middleware) or apple_sub was already populated. Latter is
+			// the only realistic case at this layer.
+			return ErrAlreadyLinked
+		case errors.Is(err, ErrAppleSubTaken):
+			return ErrLinkRequired
+		}
+		return err
+	}
+	return nil
+}
+
+func (s *Service) LinkGoogle(ctx context.Context, userID uuid.UUID, req LinkGoogleRequest) error {
+	if s.verifier == nil {
+		return ErrProviderDisabled
+	}
+	claims, err := s.verifier.VerifyGoogle(ctx, req.IDToken)
+	if err != nil {
+		return mapGoogleVerifyErr(err)
+	}
+	if _, err := s.repo.LinkGoogle(ctx, userID, claims.Subject); err != nil {
+		switch {
+		case errors.Is(err, ErrUserNotFound):
+			return ErrAlreadyLinked
+		case errors.Is(err, ErrGoogleSubTaken):
+			return ErrLinkRequired
+		}
+		return err
+	}
+	return nil
+}
+
+// Unlink removes a social provider from the current user. Refuses if it
+// would leave the user with no way to sign in (no password, no other
+// social, not anonymous).
+func (s *Service) Unlink(ctx context.Context, userID uuid.UUID, provider string) error {
+	user, err := s.repo.FindUserByID(ctx, userID)
+	if err != nil {
+		return err
+	}
+
+	// Project the post-unlink identity state and refuse if it leaves
+	// nothing behind. Anonymous accounts shouldn't reach this code path
+	// at all (they have no social links), but guard anyway.
+	hasPassword := user.PasswordHash != ""
+	hasApple := user.AppleSub != ""
+	hasGoogle := user.GoogleSub != ""
+
+	switch provider {
+	case "apple":
+		if !hasApple {
+			return ErrAlreadyLinked // already detached; idempotent feel
+		}
+		hasApple = false
+	case "google":
+		if !hasGoogle {
+			return ErrAlreadyLinked
+		}
+		hasGoogle = false
+	default:
+		return ErrUnknownProvider
+	}
+
+	if !hasPassword && !hasApple && !hasGoogle && !user.IsAnonymous {
+		return ErrDetachLastIdentity
+	}
+
+	switch provider {
+	case "apple":
+		return s.repo.UnlinkApple(ctx, userID)
+	case "google":
+		return s.repo.UnlinkGoogle(ctx, userID)
+	}
+	return ErrUnknownProvider
 }
 
 // UpgradeToGoogle is the Google mirror of UpgradeToApple.

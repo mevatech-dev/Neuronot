@@ -40,6 +40,9 @@ Client `code` veya `message_key` üzerinden kendi locale'inden çeviri yapar. `m
 | `AUTH_LINK_REQUIRED` | 409 | `errors.auth.link_required` | Bu email ile zaten password hesabı var; sosyal login bağlanmadan önce email ile giriş gerek |
 | `AUTH_PROVIDER_DISABLED` | 503 | `errors.auth.provider_disabled` | İlgili sosyal sağlayıcı sunucuda config'lenmemiş |
 | `AUTH_NOT_ANONYMOUS` | 409 | `errors.auth.not_anonymous` | Hesap zaten kalıcı (email/sosyal); upgrade endpoint'i yalnızca anon hesaplar için |
+| `AUTH_ALREADY_LINKED` | 409 | `errors.auth.already_linked` | Sağlayıcı zaten bu hesaba bağlı |
+| `AUTH_DETACH_LAST` | 422 | `errors.auth.detach_last` | Son kimlik yöntemi sökülemez; önce başka bir yöntem ekle |
+| `AUTH_UNKNOWN_PROVIDER` | 422 | `errors.auth.unknown_provider` | Geçersiz provider parametresi |
 
 ---
 

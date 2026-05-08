@@ -16,6 +16,7 @@ type Deps struct {
 	// instead of growing one big router file.
 	AuthRoutes            func(chi.Router)
 	AuthUpgradeRoutes     func(chi.Router)
+	AuthLinksRoutes       func(chi.Router)
 	ProfileRoutes         func(chi.Router)
 	DailyLogRoutes        func(chi.Router)
 	EventsRoutes          func(chi.Router)
@@ -92,6 +93,13 @@ func NewRouter(d Deps) http.Handler {
 			// /v1/auth/upgrade/* is authenticated — anon-account upgrade flow.
 			if d.AuthUpgradeRoutes != nil {
 				p.Route("/auth/upgrade", d.AuthUpgradeRoutes)
+			}
+
+			// /v1/auth/links + /v1/auth/link/* are authenticated — read
+			// the calling user's linked-provider summary and connect or
+			// disconnect Apple/Google identities.
+			if d.AuthLinksRoutes != nil {
+				p.Route("/auth", d.AuthLinksRoutes)
 			}
 
 			// All /me/* lives in one block so future extensions stay together.

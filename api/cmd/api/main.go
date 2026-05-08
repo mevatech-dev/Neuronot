@@ -138,6 +138,7 @@ func main() {
 		JWTSecret:             jwtSecret,
 		AuthRoutes:            func(r chi.Router) { authHandler.Mount(r) },
 		AuthUpgradeRoutes:     func(r chi.Router) { authHandler.MountUpgrade(r) },
+		AuthLinksRoutes:       func(r chi.Router) { authHandler.MountLinks(r) },
 		ProfileRoutes:         func(r chi.Router) { profileHandler.Mount(r) },
 		DailyLogRoutes:        func(r chi.Router) { dailyLogHandler.Mount(r) },
 		EventsRoutes:          func(r chi.Router) { eventsHandler.Mount(r) },

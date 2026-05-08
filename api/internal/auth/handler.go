@@ -37,6 +37,15 @@ func (h *Handler) MountUpgrade(r chi.Router) {
 	r.Post("/google", h.upgradeGoogle)
 }
 
+// MountLinks mounts the authenticated link/unlink + summary routes under
+// /v1/auth (so paths come out as /v1/auth/links and /v1/auth/link/...).
+func (h *Handler) MountLinks(r chi.Router) {
+	r.Get("/links", h.links)
+	r.Post("/link/apple", h.linkApple)
+	r.Post("/link/google", h.linkGoogle)
+	r.Delete("/link/{provider}", h.unlink)
+}
+
 func (h *Handler) register(w http.ResponseWriter, r *http.Request) {
 	var req RegisterRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -196,6 +205,62 @@ func (h *Handler) upgradeGoogle(w http.ResponseWriter, r *http.Request) {
 	httpx.WriteJSON(w, http.StatusOK, resp)
 }
 
+func (h *Handler) links(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	resp, err := h.svc.Links(r.Context(), uid)
+	if err != nil {
+		writeAuthError(w, err)
+		return
+	}
+	httpx.WriteJSON(w, http.StatusOK, resp)
+}
+
+func (h *Handler) linkApple(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	var req LinkAppleRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httpx.ValidationFailed(w, "invalid json body")
+		return
+	}
+	if req.IdentityToken == "" {
+		httpx.ValidationFailed(w, "identity_token is required")
+		return
+	}
+	if err := h.svc.LinkApple(r.Context(), uid, req); err != nil {
+		writeAuthError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Handler) linkGoogle(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	var req LinkGoogleRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httpx.ValidationFailed(w, "invalid json body")
+		return
+	}
+	if req.IDToken == "" {
+		httpx.ValidationFailed(w, "id_token is required")
+		return
+	}
+	if err := h.svc.LinkGoogle(r.Context(), uid, req); err != nil {
+		writeAuthError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Handler) unlink(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	provider := chi.URLParam(r, "provider")
+	if err := h.svc.Unlink(r.Context(), uid, provider); err != nil {
+		writeAuthError(w, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func (h *Handler) logout(w http.ResponseWriter, r *http.Request) {
 	var req LogoutRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -241,6 +306,12 @@ func writeAuthError(w http.ResponseWriter, err error) {
 		httpx.WriteError(w, http.StatusServiceUnavailable, "AUTH_PROVIDER_DISABLED", "errors.auth.provider_disabled", "This sign-in method is not configured")
 	case errors.Is(err, ErrNotAnonymous):
 		httpx.WriteError(w, http.StatusConflict, "AUTH_NOT_ANONYMOUS", "errors.auth.not_anonymous", "This account is not anonymous and cannot be upgraded")
+	case errors.Is(err, ErrDetachLastIdentity):
+		httpx.WriteError(w, http.StatusUnprocessableEntity, "AUTH_DETACH_LAST", "errors.auth.detach_last", "Add another sign-in method before removing this one")
+	case errors.Is(err, ErrAlreadyLinked):
+		httpx.WriteError(w, http.StatusConflict, "AUTH_ALREADY_LINKED", "errors.auth.already_linked", "This provider is already linked to your account")
+	case errors.Is(err, ErrUnknownProvider):
+		httpx.WriteError(w, http.StatusUnprocessableEntity, "AUTH_UNKNOWN_PROVIDER", "errors.auth.unknown_provider", "Unknown auth provider")
 	default:
 		httpx.InternalError(w)
 	}

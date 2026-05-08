@@ -16,7 +16,10 @@
     "google_email_unverified": "Google e-postan henüz doğrulanmamış.",
     "link_required": "Bu e-posta ile zaten bir hesap var. Önce şifrenle giriş yap, sonra Ayarlar'dan bu sağlayıcıyı bağla.",
     "provider_disabled": "Bu giriş yöntemi şu anda kullanılamıyor.",
-    "not_anonymous": "Bu hesap zaten kayıtlı. Normal giriş yap."
+    "not_anonymous": "Bu hesap zaten kayıtlı. Normal giriş yap.",
+    "already_linked": "Bu giriş yöntemi zaten hesabına bağlı.",
+    "detach_last": "Bunu kaldırmadan önce başka bir giriş yöntemi ekle.",
+    "unknown_provider": "Bilinmeyen giriş yöntemi."
   },
   "daily_log": {
     "duplicate": "Bugünün kaydını zaten girdin.",

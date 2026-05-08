@@ -30,5 +30,16 @@
     "mismatch": "As senhas não coincidem",
     "submit": "Salvar conta",
     "cancel": "Cancelar"
+  },
+  "link": {
+    "section_title": "Métodos de login vinculados",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Vinculado",
+    "not_connected": "Não vinculado",
+    "connect": "Vincular",
+    "disconnect": "Desvincular",
+    "linked": "Método de login vinculado.",
+    "unlinked": "Método de login removido."
   }
 }

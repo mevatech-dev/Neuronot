@@ -30,5 +30,16 @@
     "mismatch": "Şifreler eşleşmiyor",
     "submit": "Hesabı kaydet",
     "cancel": "Vazgeç"
+  },
+  "link": {
+    "section_title": "Bağlı giriş yöntemleri",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Bağlı",
+    "not_connected": "Bağlı değil",
+    "connect": "Bağla",
+    "disconnect": "Kaldır",
+    "linked": "Giriş yöntemi bağlandı.",
+    "unlinked": "Giriş yöntemi kaldırıldı."
   }
 }

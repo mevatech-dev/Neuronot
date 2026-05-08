@@ -30,5 +30,16 @@
     "mismatch": "كلمتا المرور غير متطابقتين",
     "submit": "حفظ الحساب",
     "cancel": "إلغاء"
+  },
+  "link": {
+    "section_title": "طرق تسجيل الدخول المرتبطة",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "مرتبط",
+    "not_connected": "غير مرتبط",
+    "connect": "ربط",
+    "disconnect": "إلغاء الربط",
+    "linked": "تم ربط طريقة تسجيل الدخول.",
+    "unlinked": "تمت إزالة طريقة تسجيل الدخول."
   }
 }

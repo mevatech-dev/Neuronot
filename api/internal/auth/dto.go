@@ -58,6 +58,28 @@ type UpgradeGoogleRequest struct {
 	IDToken string `json:"id_token"`
 }
 
+// LinkAppleRequest / LinkGoogleRequest match the sign-in shape minus the
+// consent block (the user is already authenticated and has consents on
+// record).
+type LinkAppleRequest struct {
+	IdentityToken string `json:"identity_token"`
+	Nonce         string `json:"nonce"`
+}
+
+type LinkGoogleRequest struct {
+	IDToken string `json:"id_token"`
+}
+
+// LinksResponse summarizes which identity methods the current user has.
+// Drives the "Linked: Apple ✓ / Google ✗ / Email ✓" block in Settings →
+// Account.
+type LinksResponse struct {
+	HasPassword bool `json:"has_password"`
+	HasApple    bool `json:"has_apple"`
+	HasGoogle   bool `json:"has_google"`
+	IsAnonymous bool `json:"is_anonymous"`
+}
+
 type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`

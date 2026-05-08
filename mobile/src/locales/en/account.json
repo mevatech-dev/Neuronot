@@ -30,5 +30,16 @@
     "mismatch": "Passwords do not match",
     "submit": "Save account",
     "cancel": "Cancel"
+  },
+  "link": {
+    "section_title": "Linked sign-in methods",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Connected",
+    "not_connected": "Not connected",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "linked": "Sign-in method linked.",
+    "unlinked": "Sign-in method removed."
   }
 }

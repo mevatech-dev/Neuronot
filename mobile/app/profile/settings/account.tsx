@@ -5,6 +5,7 @@ import { Pressable, SafeAreaView, ScrollView, Text } from 'react-native';
 
 import { ChangePasswordForm } from '@/features/account/ChangePasswordForm';
 import { DeleteAccountSheet } from '@/features/account/DeleteAccountSheet';
+import { LinkedProvidersList } from '@/features/account/LinkedProvidersList';
 import { SaveAccountCard } from '@/features/account/SaveAccountCard';
 import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
@@ -29,6 +30,7 @@ export default function AccountScreen() {
           ) : (
             <>
               <ChangePasswordForm />
+              <LinkedProvidersList />
               <Pressable
                 onPress={() => setDel(true)}
                 style={{

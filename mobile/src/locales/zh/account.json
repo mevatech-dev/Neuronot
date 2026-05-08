@@ -30,5 +30,16 @@
     "mismatch": "两次密码不一致",
     "submit": "保存账号",
     "cancel": "取消"
+  },
+  "link": {
+    "section_title": "已关联的登录方式",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "已关联",
+    "not_connected": "未关联",
+    "connect": "关联",
+    "disconnect": "解除",
+    "linked": "登录方式已关联。",
+    "unlinked": "登录方式已移除。"
   }
 }

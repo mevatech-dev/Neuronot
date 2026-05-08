@@ -16,7 +16,10 @@
     "google_email_unverified": "L'adresse e-mail Google n'est pas encore vérifiée.",
     "link_required": "Un compte existe déjà avec cette adresse e-mail. Connectez-vous avec votre mot de passe, puis liez ce fournisseur depuis les Paramètres.",
     "provider_disabled": "Ce mode de connexion n'est pas disponible pour le moment.",
-    "not_anonymous": "Ce compte est déjà enregistré. Connecte-toi normalement."
+    "not_anonymous": "Ce compte est déjà enregistré. Connecte-toi normalement.",
+    "already_linked": "Cette méthode de connexion est déjà liée à ton compte.",
+    "detach_last": "Ajoute une autre méthode de connexion avant de supprimer celle-ci.",
+    "unknown_provider": "Fournisseur de connexion inconnu."
   },
   "daily_log": {
     "duplicate": "Vous avez déjà enregistré la journée.",

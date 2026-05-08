@@ -30,5 +30,16 @@
     "mismatch": "Les mots de passe ne correspondent pas",
     "submit": "Enregistrer le compte",
     "cancel": "Annuler"
+  },
+  "link": {
+    "section_title": "Méthodes de connexion liées",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Liée",
+    "not_connected": "Non liée",
+    "connect": "Lier",
+    "disconnect": "Délier",
+    "linked": "Méthode de connexion liée.",
+    "unlinked": "Méthode de connexion supprimée."
   }
 }

@@ -30,5 +30,16 @@
     "mismatch": "Le password non corrispondono",
     "submit": "Salva account",
     "cancel": "Annulla"
+  },
+  "link": {
+    "section_title": "Metodi di accesso collegati",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Collegato",
+    "not_connected": "Non collegato",
+    "connect": "Collega",
+    "disconnect": "Scollega",
+    "linked": "Metodo di accesso collegato.",
+    "unlinked": "Metodo di accesso rimosso."
   }
 }

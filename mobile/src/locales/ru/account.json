@@ -30,5 +30,16 @@
     "mismatch": "Пароли не совпадают",
     "submit": "Сохранить аккаунт",
     "cancel": "Отмена"
+  },
+  "link": {
+    "section_title": "Привязанные способы входа",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Привязан",
+    "not_connected": "Не привязан",
+    "connect": "Привязать",
+    "disconnect": "Отвязать",
+    "linked": "Способ входа привязан.",
+    "unlinked": "Способ входа удалён."
   }
 }

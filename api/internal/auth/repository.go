@@ -227,6 +227,64 @@ func (r *Repository) UpgradeAnonymousToGoogle(ctx context.Context, userID uuid.U
 	return &u, nil
 }
 
+// LinkApple attaches an Apple subject to an existing user. The WHERE
+// guard `apple_sub IS NULL` prevents silently overwriting an existing
+// link — callers must DELETE first if they want to swap.
+func (r *Repository) LinkApple(ctx context.Context, userID uuid.UUID, appleSub string) (*User, error) {
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET apple_sub = $1, updated_at = now()
+        WHERE id = $2 AND apple_sub IS NULL
+        RETURNING `+userColumns, appleSub, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, ErrAppleSubTaken
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// LinkGoogle is the Google mirror of LinkApple.
+func (r *Repository) LinkGoogle(ctx context.Context, userID uuid.UUID, googleSub string) (*User, error) {
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET google_sub = $1, updated_at = now()
+        WHERE id = $2 AND google_sub IS NULL
+        RETURNING `+userColumns, googleSub, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, ErrGoogleSubTaken
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// UnlinkApple clears apple_sub. The service is responsible for refusing
+// to leave the user without any identity method (see Service.Unlink).
+func (r *Repository) UnlinkApple(ctx context.Context, userID uuid.UUID) error {
+	_, err := r.pool.Exec(ctx, `
+        UPDATE users SET apple_sub = NULL, updated_at = now() WHERE id = $1
+    `, userID)
+	return err
+}
+
+func (r *Repository) UnlinkGoogle(ctx context.Context, userID uuid.UUID) error {
+	_, err := r.pool.Exec(ctx, `
+        UPDATE users SET google_sub = NULL, updated_at = now() WHERE id = $1
+    `, userID)
+	return err
+}
+
 // DBTX is the subset of pgx that both pgxpool.Pool and pgx.Tx satisfy.
 type DBTX interface {
 	Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error)

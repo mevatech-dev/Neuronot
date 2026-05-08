@@ -219,7 +219,57 @@ Email upgrade çakışması: aynı email zaten kayıtlıysa danger toast `errors
 - Apple App Store Review Guideline 4.8: Apple Sign-In en az diğer sağlayıcılarla **eşit görünürlükte**. ✓ üstte ve aynı yükseklikte/genişlikte.
 - "By continuing you agree to..." metni butonların altında, ToS ve Privacy linkleri tıklanabilir.
 
-## 12. Token rotation after upgrade
+## 12. Linked providers (link / unlink)
+
+> Apple flow için iOS cihaz; Google flow için emulator/iOS gerekir. Backend doğrulaması için sahte JWT'lerle integration test cmd-line'dan da denenebilir.
+
+### 12.1 Links summary
+
+```bash
+TOKEN=$(curl -s -X POST http://localhost:8080/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"alice@neuronot.app","password":"changeme123"}' \
+  | jq -r .data.access_token)
+
+curl -s http://localhost:8080/v1/auth/links \
+  -H "Authorization: Bearer $TOKEN" | jq
+```
+
+Beklenen 200:
+```json
+{ "data": { "has_password": true, "has_apple": false, "has_google": false, "is_anonymous": false } }
+```
+
+### 12.2 Link Apple (mobile cihazda)
+
+1. Settings → Account ekranında **"Linked sign-in methods"** bölümü görünür.
+2. iOS cihazda Apple satırı → "Connect" butonu.
+3. Tap → Apple sheet açılır → kullanıcı onaylar.
+4. Mobile `/v1/auth/link/apple` POST'lar, 204 alır.
+5. UI satırı "Connected" yeşiline döner; "Connect" → "Disconnect".
+6. `/v1/auth/links` çağrısında `has_apple: true`.
+
+Aynı Apple subject başka bir hesapta varsa: `AUTH_LINK_REQUIRED`, danger toast.
+
+### 12.3 Unlink Apple
+
+1. "Disconnect" butonuna tap.
+2. Mobile `DELETE /v1/auth/link/apple` çağırır, 204 alır.
+3. Satır "Not connected" griye döner.
+
+Edge: kullanıcı sadece Apple'a bağlıysa (password ve google yok), unlink → 422 `AUTH_DETACH_LAST`. UI danger toast `errors.auth.detach_last` gösterir.
+
+### 12.4 Google link/unlink
+
+Aynı akış Google için: Settings → Account → Google satırı → Connect → expo-auth-session web sheet → 204.
+Disconnect aynı şekilde; son kimlik kontrolü uygulanır.
+
+### 12.5 Provider gizleme
+
+- Android cihazda Apple satırı görünmez (`isAppleSignInLikelyAvailable`).
+- Google client id `app.json`'da boşsa Google satırı görünmez.
+
+## 13. Token rotation after upgrade
 
 Anon token'la `/v1/me`'i çağırırsın → 200. Upgrade et → eski refresh token revoked olmalı:
 
@@ -244,3 +294,7 @@ Beklenen 401, `AUTH_TOKEN_INVALID`. Yeni access ile devam.
 - [ ] Welcome ekranı doğru sırada butonları render eder; RTL'de hizalama doğru.
 - [ ] Anon kullanıcı için Settings → Account "Save your account" kartı; upgrade sonrası kart kaybolur.
 - [ ] Upgrade sonrası eski anon refresh token revoked.
+- [ ] `/v1/auth/links` doğru summary döner; UI satırlarda yeşil/gri durum doğru.
+- [ ] Apple/Google link → 204; satır "Connected"'a döner.
+- [ ] Aynı subject başka hesaba bağlıysa link → `AUTH_LINK_REQUIRED`.
+- [ ] Son kimlik unlink → `AUTH_DETACH_LAST`, UI danger toast.

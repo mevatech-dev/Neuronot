@@ -144,3 +144,40 @@ export function upgradeWithGoogle(idToken: string) {
     data: { id_token: idToken },
   });
 }
+
+export type LinksResponse = {
+  has_password: boolean;
+  has_apple: boolean;
+  has_google: boolean;
+  is_anonymous: boolean;
+};
+
+export function fetchLinks() {
+  return request<LinksResponse>({
+    method: 'GET',
+    url: '/v1/auth/links',
+  });
+}
+
+export function linkApple(identityToken: string, rawNonce: string) {
+  return request<null>({
+    method: 'POST',
+    url: '/v1/auth/link/apple',
+    data: { identity_token: identityToken, nonce: rawNonce },
+  });
+}
+
+export function linkGoogle(idToken: string) {
+  return request<null>({
+    method: 'POST',
+    url: '/v1/auth/link/google',
+    data: { id_token: idToken },
+  });
+}
+
+export function unlinkProvider(provider: 'apple' | 'google') {
+  return request<null>({
+    method: 'DELETE',
+    url: `/v1/auth/link/${provider}`,
+  });
+}

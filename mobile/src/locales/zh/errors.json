@@ -16,7 +16,10 @@
     "google_email_unverified": "您的 Google 邮箱尚未验证。",
     "link_required": "该邮箱已注册。请先用密码登录，然后在“设置”中关联此登录方式。",
     "provider_disabled": "此登录方式当前不可用。",
-    "not_anonymous": "此账号已保存，请使用常规方式登录。"
+    "not_anonymous": "此账号已保存，请使用常规方式登录。",
+    "already_linked": "此登录方式已与您的账号关联。",
+    "detach_last": "请先添加另一种登录方式，再移除当前方式。",
+    "unknown_provider": "未知的登录方式。"
   },
   "daily_log": {
     "duplicate": "今天已经记录过了。",

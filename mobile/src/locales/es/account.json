@@ -30,5 +30,16 @@
     "mismatch": "Las contraseñas no coinciden",
     "submit": "Guardar cuenta",
     "cancel": "Cancelar"
+  },
+  "link": {
+    "section_title": "Métodos de inicio de sesión vinculados",
+    "apple_label": "Apple",
+    "google_label": "Google",
+    "connected": "Vinculado",
+    "not_connected": "No vinculado",
+    "connect": "Vincular",
+    "disconnect": "Desvincular",
+    "linked": "Método de inicio de sesión vinculado.",
+    "unlinked": "Método de inicio de sesión eliminado."
   }
 }
