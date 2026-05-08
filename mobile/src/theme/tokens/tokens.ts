@@ -39,6 +39,61 @@ export const colors = {
     400: '#F07A7A',
     500: '#E15454',
   },
+
+  // ── Brand palette ────────────────────────────────────────────────────
+  // Sunflower Meadow Glow (light theme primaries)
+  // Soft pastel cream → honey → sage. Calm, low cognitive load.
+  sunflower: {
+    50: '#FEFCF6',   // warm off-white surface
+    100: '#FAF6EB',  // pale cream
+    200: '#F0E5C5',  // soft honey
+    300: '#E5C778',  // honey
+    400: '#D4A82A',  // mustard / goldenrod
+    500: '#B59340',  // deep mustard
+  },
+  // Meadow greens (mid accents, success states)
+  meadow: {
+    100: '#E3F0DB',  // mint mist
+    200: '#C8E6C9',  // soft sage
+    300: '#9BC79B',  // medium sage
+    400: '#6B8E3C',  // olive meadow
+    500: '#4A6B2A',  // deep olive
+  },
+  // Emerald Green Fields (action / link / dark theme surfaces)
+  forest: {
+    400: '#3F7A4F',
+    500: '#2C5F3F',  // forest green — primary action on light
+    600: '#1F4A30',
+    700: '#15321F',
+    800: '#0F2F1F',  // deep forest
+    900: '#0E1611',  // mossy black — dark theme surface base
+    950: '#080F0B',  // deepest, used sparingly
+  },
+  // Mascot yellow-green (focus rings, dark theme accent default)
+  bloom: {
+    300: '#D4E89A',
+    400: '#A8C26A',  // mascot tone — vibrant against dark surfaces
+    500: '#8AA84A',
+  },
+  // Gentle Evening Mist (dark theme surfaces)
+  // Deep midnight purple-blue → soft lavender. Calm, contemplative.
+  midnight: {
+    100: '#E8E4F2',  // lavender-tinted off-white
+    200: '#C7BFDA',
+    300: '#8C82A6',
+    700: '#3A2E5C',
+    800: '#2C1F5A',  // raised surface
+    850: '#221547',  // elevated surface
+    900: '#1A0E2E',  // base surface — soft, never pure black
+    950: '#120822',  // deepest, sparingly
+  },
+  // Teal anchor (focus rings on dark, info accents)
+  teal: {
+    400: '#4DA697',
+    500: '#3D8B7A',
+    600: '#2D7062',
+  },
+
   white: '#FFFFFF',
   black: '#000000',
   transparent: 'transparent',

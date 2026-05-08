@@ -8,7 +8,6 @@ import { useOnboardingStore } from '@/store/onboarding';
 
 export default function Index() {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const introSeen = useOnboardingStore((s) => s.introSeen);
   const completedLocally = useOnboardingStore((s) => s.completedLocally);
   const syncedAt = useOnboardingStore((s) => s.syncedAt);
   const answers = useOnboardingStore((s) => s.answers);
@@ -59,7 +58,6 @@ export default function Index() {
 
   // No token yet — drive the pre-auth intro funnel.
   if (!accessToken) {
-    if (!introSeen) return <Redirect href="/(intro)/get-started" />;
     if (!completedLocally) return <Redirect href="/(intro)/onboarding" />;
     return <Redirect href="/(auth)/welcome" />;
   }

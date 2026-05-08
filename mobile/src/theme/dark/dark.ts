@@ -38,44 +38,46 @@ export type SemanticColors = {
 };
 
 /**
- * Soft dark theme — default per PRD §19.
+ * Dark theme — Gentle Evening Mist.
  *
- * Surface uses gray.950 as the deepest layer, never pure black.
- * Text contrasts at high but soft level — never pure white.
+ * Companion to the Sunflower Meadow Glow light theme: deep midnight
+ * purple-blue surfaces (PRD §19 — soft dark, never pure black). The
+ * mascot's bloom yellow-green stays the accent so the brand survives
+ * the day/night switch; teal carries focus rings, goldenrod warnings.
  */
 export const darkSemanticColors: SemanticColors = {
   surface: {
-    primary: colors.gray[950],
-    elevated: colors.gray[900],
-    raised: colors.gray[800],
-    overlay: 'rgba(15,17,21,0.78)',
+    primary: colors.midnight[900],   // deep midnight — soft, never pure black
+    elevated: colors.midnight[850],
+    raised: colors.midnight[800],
+    overlay: 'rgba(26,14,46,0.82)',
   },
   text: {
-    primary: '#E6E8EC',
-    secondary: colors.gray[300],
-    muted: colors.gray[400],
-    inverse: colors.gray[950],
+    primary: colors.midnight[100],   // lavender-tinted off-white
+    secondary: colors.midnight[200],
+    muted: colors.midnight[300],
+    inverse: colors.midnight[900],
   },
   border: {
-    subtle: colors.gray[800],
-    strong: colors.gray[700],
-    focus: colors.blue[500],
+    subtle: colors.midnight[800],
+    strong: colors.midnight[700],
+    focus: colors.teal[500],
   },
   accent: {
-    default: colors.blue[500],
-    muted: colors.blue[400],
-    onAccent: colors.white,
+    default: colors.bloom[400],      // mascot tone — brand cohesion across modes
+    muted: colors.bloom[300],
+    onAccent: colors.midnight[900],
   },
   danger: {
     default: colors.red[500],
     muted: colors.red[400],
   },
   success: {
-    default: colors.green[500],
-    muted: colors.green[400],
+    default: colors.bloom[400],
+    muted: colors.bloom[300],
   },
   warning: {
-    default: colors.amber[500],
-    muted: colors.amber[400],
+    default: colors.sunflower[400],
+    muted: colors.sunflower[300],
   },
 };
