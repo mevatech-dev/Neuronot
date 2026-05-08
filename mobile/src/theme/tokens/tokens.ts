@@ -75,6 +75,19 @@ export const colors = {
     400: '#A8C26A',  // mascot tone — vibrant against dark surfaces
     500: '#8AA84A',
   },
+  // Electric lime (light theme — surfaces + primary action)
+  // Surface tones (50/75) are barely-tinted yellow-green off-whites;
+  // accent (400) is the vivid CTA. Pairs with forest[800] text on accent.
+  lime: {
+    50: '#FAFFEB',   // warm yellow-green off-white — primary surface
+    75: '#F4FBD4',   // pale chartreuse — raised surface
+    100: '#F2FFCC',  // palest lime tint — muted bg
+    200: '#E0FF99',  // soft lime — borders / muted accents
+    300: '#D6FF66',  // bright tint
+    400: '#CCFF33',  // primary — electric lime (button)
+    500: '#B8E62E',  // pressed / hover
+    600: '#9CC424',  // deepest lime
+  },
   // Gentle Evening Mist (dark theme surfaces)
   // Deep midnight purple-blue → soft lavender. Calm, contemplative.
   midnight: {
