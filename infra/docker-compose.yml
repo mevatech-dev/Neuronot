@@ -1,11 +1,11 @@
 services:
   postgres:
     image: postgres:18-alpine
-    container_name: neuronot_postgres
+    container_name: local_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: neuronot
-      POSTGRES_PASSWORD: neuronot_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: neuronot
     ports:
       - "5432:5432"
@@ -13,7 +13,7 @@ services:
       - neuronot_pg_data:/var/lib/postgresql
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U neuronot -d neuronot"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d neuronot"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -25,11 +25,14 @@ services:
     container_name: neuronot_api
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgres://neuronot:neuronot_dev@postgres:5432/neuronot?sslmode=disable
-      JWT_SECRET: ${JWT_SECRET:-dev_secret_change_me}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      DATABASE_URL: ${DATABASE_URL:-postgres://postgres:postgres@postgres:5432/neuronot?sslmode=disable}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET required}
+      CONSENT_KEK: ${CONSENT_KEK:?CONSENT_KEK required}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      APPLE_BUNDLE_ID: ${APPLE_BUNDLE_ID:-}
+      GOOGLE_OAUTH_AUDIENCES: ${GOOGLE_OAUTH_AUDIENCES:-}
       PORT: "8080"
-      LOG_LEVEL: info
+      LOG_LEVEL: ${LOG_LEVEL:-info}
     ports:
       - "8080:8080"
     depends_on:
