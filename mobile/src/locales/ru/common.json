@@ -20,7 +20,17 @@
     "logout": "Выйти",
     "no_account": "Нет аккаунта?",
     "have_account": "Уже есть аккаунт?",
-    "loading": "Момент…"
+    "loading": "Момент…",
+    "continue_with_apple": "Продолжить с Apple",
+    "continue_with_google": "Продолжить с Google",
+    "sign_up_email": "Регистрация по почте",
+    "sign_in_email": "Вход по почте",
+    "continue_without_account": "Продолжить без аккаунта",
+    "legal_intro": "Продолжая, вы принимаете наши",
+    "tos_link": "Условия",
+    "legal_and": "и",
+    "privacy_link": "Политику конфиденциальности",
+    "welcome_subtitle": "Замечайте свои закономерности. Оставайтесь в центре."
   },
   "tabs": {
     "home": "Главная",

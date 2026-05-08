@@ -20,7 +20,17 @@
     "logout": "退出登录",
     "no_account": "还没有账户？",
     "have_account": "已经有账户？",
-    "loading": "请稍等…"
+    "loading": "请稍等…",
+    "continue_with_apple": "使用 Apple 继续",
+    "continue_with_google": "使用 Google 继续",
+    "sign_up_email": "使用邮箱注册",
+    "sign_in_email": "使用邮箱登录",
+    "continue_without_account": "不创建账号继续",
+    "legal_intro": "继续即表示你接受我们的",
+    "tos_link": "使用条款",
+    "legal_and": "和",
+    "privacy_link": "隐私政策",
+    "welcome_subtitle": "觉察你的规律，保持稳定。"
   },
   "tabs": {
     "home": "首页",

@@ -20,7 +20,17 @@
     "logout": "Sair",
     "no_account": "Não tem uma conta?",
     "have_account": "Já tem uma conta?",
-    "loading": "Um momento…"
+    "loading": "Um momento…",
+    "continue_with_apple": "Continuar com Apple",
+    "continue_with_google": "Continuar com Google",
+    "sign_up_email": "Cadastrar com e-mail",
+    "sign_in_email": "Entrar com e-mail",
+    "continue_without_account": "Continuar sem conta",
+    "legal_intro": "Ao continuar você aceita nossos",
+    "tos_link": "Termos",
+    "legal_and": "e",
+    "privacy_link": "Política de Privacidade",
+    "welcome_subtitle": "Note seus padrões. Mantenha-se centrado."
   },
   "tabs": {
     "home": "Início",

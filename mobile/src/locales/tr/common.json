@@ -20,7 +20,17 @@
     "logout": "Çıkış yap",
     "no_account": "Hesabın yok mu?",
     "have_account": "Hesabın var mı?",
-    "loading": "Bir saniye…"
+    "loading": "Bir saniye…",
+    "continue_with_apple": "Apple ile devam et",
+    "continue_with_google": "Google ile devam et",
+    "sign_up_email": "E-posta ile kaydol",
+    "sign_in_email": "E-posta ile giriş yap",
+    "continue_without_account": "Hesap olmadan devam et",
+    "legal_intro": "Devam ederek",
+    "tos_link": "Kullanım Şartları",
+    "legal_and": "ve",
+    "privacy_link": "Gizlilik Politikası",
+    "welcome_subtitle": "Örüntülerini fark et. Sakin kal."
   },
   "tabs": {
     "home": "Anasayfa",

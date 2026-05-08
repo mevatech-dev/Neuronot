@@ -20,7 +20,17 @@
     "logout": "ログアウト",
     "no_account": "アカウントをお持ちでないですか？",
     "have_account": "すでにアカウントがありますか？",
-    "loading": "少々お待ちください…"
+    "loading": "少々お待ちください…",
+    "continue_with_apple": "Apple で続ける",
+    "continue_with_google": "Google で続ける",
+    "sign_up_email": "メールで登録",
+    "sign_in_email": "メールでサインイン",
+    "continue_without_account": "アカウントなしで続ける",
+    "legal_intro": "続行することで、",
+    "tos_link": "利用規約",
+    "legal_and": "と",
+    "privacy_link": "プライバシーポリシー",
+    "welcome_subtitle": "自分のパターンに気づく。落ち着いて続ける。"
   },
   "tabs": {
     "home": "ホーム",

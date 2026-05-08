@@ -20,7 +20,17 @@
     "logout": "Cerrar sesión",
     "no_account": "¿No tienes cuenta?",
     "have_account": "¿Ya tienes cuenta?",
-    "loading": "Un momento…"
+    "loading": "Un momento…",
+    "continue_with_apple": "Continuar con Apple",
+    "continue_with_google": "Continuar con Google",
+    "sign_up_email": "Registrarse con correo",
+    "sign_in_email": "Iniciar sesión con correo",
+    "continue_without_account": "Continuar sin cuenta",
+    "legal_intro": "Al continuar aceptas nuestros",
+    "tos_link": "Términos",
+    "legal_and": "y",
+    "privacy_link": "Política de Privacidad",
+    "welcome_subtitle": "Reconoce tus patrones. Mantente sereno."
   },
   "tabs": {
     "home": "Inicio",

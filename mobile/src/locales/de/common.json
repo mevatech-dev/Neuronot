@@ -20,7 +20,17 @@
     "logout": "Ausloggen",
     "no_account": "Noch kein Konto?",
     "have_account": "Schon ein Konto?",
-    "loading": "Einen Moment…"
+    "loading": "Einen Moment…",
+    "continue_with_apple": "Mit Apple fortfahren",
+    "continue_with_google": "Mit Google fortfahren",
+    "sign_up_email": "Mit E-Mail registrieren",
+    "sign_in_email": "Mit E-Mail anmelden",
+    "continue_without_account": "Ohne Konto fortfahren",
+    "legal_intro": "Durch Fortfahren akzeptierst du unsere",
+    "tos_link": "Nutzungsbedingungen",
+    "legal_and": "und",
+    "privacy_link": "Datenschutzerklärung",
+    "welcome_subtitle": "Erkenne deine Muster. Bleib geerdet."
   },
   "tabs": {
     "home": "Start",
