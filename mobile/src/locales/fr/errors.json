@@ -15,7 +15,8 @@
     "google_invalid": "Nous n'avons pas pu vérifier votre connexion Google. Veuillez réessayer.",
     "google_email_unverified": "L'adresse e-mail Google n'est pas encore vérifiée.",
     "link_required": "Un compte existe déjà avec cette adresse e-mail. Connectez-vous avec votre mot de passe, puis liez ce fournisseur depuis les Paramètres.",
-    "provider_disabled": "Ce mode de connexion n'est pas disponible pour le moment."
+    "provider_disabled": "Ce mode de connexion n'est pas disponible pour le moment.",
+    "not_anonymous": "Ce compte est déjà enregistré. Connecte-toi normalement."
   },
   "daily_log": {
     "duplicate": "Vous avez déjà enregistré la journée.",

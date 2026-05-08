@@ -15,5 +15,20 @@
     "confirm_label": "Type your email to confirm",
     "confirm_action": "Delete forever",
     "cancel": "Cancel"
+  },
+  "save": {
+    "title": "احفظ حسابك",
+    "body": "تستخدم Neuronot بشكل مجهول. أضف طريقة تسجيل دخول حتى لا تفقد بياناتك عند تبديل الجهاز.",
+    "email_action": "إضافة بريد وكلمة مرور",
+    "apple_action": "المتابعة باستخدام Apple",
+    "google_action": "المتابعة باستخدام Google",
+    "saved": "تم حفظ الحساب. استخدم هذه الطريقة في المرة القادمة.",
+    "email_form_title": "إضافة بريد وكلمة مرور",
+    "email_field": "البريد الإلكتروني",
+    "password_field": "كلمة المرور (8 أحرف على الأقل)",
+    "confirm_field": "تأكيد كلمة المرور",
+    "mismatch": "كلمتا المرور غير متطابقتين",
+    "submit": "حفظ الحساب",
+    "cancel": "إلغاء"
   }
 }

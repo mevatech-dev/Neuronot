@@ -48,6 +48,7 @@ var (
 	ErrGoogleEmailUnverified    = errors.New("google email unverified")
 	ErrLinkRequired             = errors.New("link required: email already in use")
 	ErrProviderDisabled         = errors.New("auth provider disabled by config")
+	ErrNotAnonymous             = errors.New("user is not anonymous")
 )
 
 // consentService is the auth-local view of the consents service. We keep
@@ -422,6 +423,93 @@ func mapGoogleVerifyErr(err error) error {
 	default:
 		return err
 	}
+}
+
+// UpgradeToEmail converts the calling anonymous user into an email/password
+// account. user_id stays the same so all daily_logs/events/insights move
+// with the user. Caller must hold the JWT for the anon account.
+func (s *Service) UpgradeToEmail(ctx context.Context, userID uuid.UUID, req UpgradeEmailRequest) (*TokenResponse, error) {
+	email, err := normalizeEmail(req.Email)
+	if err != nil {
+		return nil, ErrInvalidEmail
+	}
+	if len(req.Password) < minPasswordLength {
+		return nil, ErrWeakPassword
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcryptCost)
+	if err != nil {
+		return nil, fmt.Errorf("hash password: %w", err)
+	}
+	user, err := s.repo.UpgradeAnonymousToEmail(ctx, userID, email, string(hash))
+	if err != nil {
+		if errors.Is(err, ErrUserNotFound) {
+			return nil, ErrNotAnonymous
+		}
+		return nil, err
+	}
+	// Rotate refresh tokens — the previous anon refresh tokens stay revoked
+	// so the upgraded user starts a clean family.
+	if err := s.repo.RevokeAllForUser(ctx, user.ID); err != nil {
+		return nil, fmt.Errorf("revoke old refresh tokens: %w", err)
+	}
+	return s.issueTokens(ctx, user)
+}
+
+// UpgradeToApple attaches an Apple identity to the calling anonymous user.
+// The token must verify; we never auto-link to a non-anon account.
+func (s *Service) UpgradeToApple(ctx context.Context, userID uuid.UUID, req UpgradeAppleRequest) (*TokenResponse, error) {
+	if s.verifier == nil {
+		return nil, ErrProviderDisabled
+	}
+	claims, err := s.verifier.VerifyApple(ctx, req.IdentityToken, req.Nonce)
+	if err != nil {
+		return nil, mapAppleVerifyErr(err)
+	}
+	email := strings.ToLower(strings.TrimSpace(claims.Email))
+	user, err := s.repo.UpgradeAnonymousToApple(ctx, userID, claims.Subject, email)
+	if err != nil {
+		switch {
+		case errors.Is(err, ErrUserNotFound):
+			return nil, ErrNotAnonymous
+		case errors.Is(err, ErrAppleSubTaken):
+			return nil, ErrLinkRequired
+		case errors.Is(err, ErrEmailTaken):
+			return nil, ErrLinkRequired
+		}
+		return nil, err
+	}
+	if err := s.repo.RevokeAllForUser(ctx, user.ID); err != nil {
+		return nil, fmt.Errorf("revoke old refresh tokens: %w", err)
+	}
+	return s.issueTokens(ctx, user)
+}
+
+// UpgradeToGoogle is the Google mirror of UpgradeToApple.
+func (s *Service) UpgradeToGoogle(ctx context.Context, userID uuid.UUID, req UpgradeGoogleRequest) (*TokenResponse, error) {
+	if s.verifier == nil {
+		return nil, ErrProviderDisabled
+	}
+	claims, err := s.verifier.VerifyGoogle(ctx, req.IDToken)
+	if err != nil {
+		return nil, mapGoogleVerifyErr(err)
+	}
+	email := strings.ToLower(strings.TrimSpace(claims.Email))
+	user, err := s.repo.UpgradeAnonymousToGoogle(ctx, userID, claims.Subject, email)
+	if err != nil {
+		switch {
+		case errors.Is(err, ErrUserNotFound):
+			return nil, ErrNotAnonymous
+		case errors.Is(err, ErrGoogleSubTaken):
+			return nil, ErrLinkRequired
+		case errors.Is(err, ErrEmailTaken):
+			return nil, ErrLinkRequired
+		}
+		return nil, err
+	}
+	if err := s.repo.RevokeAllForUser(ctx, user.ID); err != nil {
+		return nil, fmt.Errorf("revoke old refresh tokens: %w", err)
+	}
+	return s.issueTokens(ctx, user)
 }
 
 func normalizeLanguage(raw string) string {

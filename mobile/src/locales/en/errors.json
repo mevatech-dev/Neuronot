@@ -15,7 +15,8 @@
     "google_invalid": "We couldn't verify your Google sign-in. Please try again.",
     "google_email_unverified": "Your Google email is not verified yet.",
     "link_required": "An account with this email already exists. Sign in with your password, then link this provider from Settings.",
-    "provider_disabled": "This sign-in method is not available right now."
+    "provider_disabled": "This sign-in method is not available right now.",
+    "not_anonymous": "This account is already saved. Sign in normally instead."
   },
   "daily_log": {
     "duplicate": "You've already logged today.",

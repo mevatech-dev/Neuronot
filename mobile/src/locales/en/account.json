@@ -15,5 +15,20 @@
     "confirm_label": "Type your email to confirm",
     "confirm_action": "Delete forever",
     "cancel": "Cancel"
+  },
+  "save": {
+    "title": "Save your account",
+    "body": "You're using Neuronot anonymously. Add a sign-in method so you don't lose your data when you switch devices.",
+    "email_action": "Add email & password",
+    "apple_action": "Continue with Apple",
+    "google_action": "Continue with Google",
+    "saved": "Account saved. Use this method next time you sign in.",
+    "email_form_title": "Add email & password",
+    "email_field": "Email",
+    "password_field": "Password (min 8 chars)",
+    "confirm_field": "Confirm password",
+    "mismatch": "Passwords do not match",
+    "submit": "Save account",
+    "cancel": "Cancel"
   }
 }

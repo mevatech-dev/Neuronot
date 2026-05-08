@@ -15,6 +15,7 @@ type Deps struct {
 	// Each feature mounts its own routes — keeps wiring near features
 	// instead of growing one big router file.
 	AuthRoutes            func(chi.Router)
+	AuthUpgradeRoutes     func(chi.Router)
 	ProfileRoutes         func(chi.Router)
 	DailyLogRoutes        func(chi.Router)
 	EventsRoutes          func(chi.Router)
@@ -86,6 +87,11 @@ func NewRouter(d Deps) http.Handler {
 			// /v1/auth/password is authenticated (unlike login/register).
 			if d.AccountPasswordRoutes != nil {
 				p.Route("/auth/password", d.AccountPasswordRoutes)
+			}
+
+			// /v1/auth/upgrade/* is authenticated — anon-account upgrade flow.
+			if d.AuthUpgradeRoutes != nil {
+				p.Route("/auth/upgrade", d.AuthUpgradeRoutes)
 			}
 
 			// All /me/* lives in one block so future extensions stay together.

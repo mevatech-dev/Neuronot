@@ -15,5 +15,20 @@
     "confirm_label": "Type your email to confirm",
     "confirm_action": "Delete forever",
     "cancel": "Cancel"
+  },
+  "save": {
+    "title": "Сохранить аккаунт",
+    "body": "Вы используете Neuronot анонимно. Добавьте способ входа, чтобы не потерять данные при смене устройства.",
+    "email_action": "Добавить почту и пароль",
+    "apple_action": "Продолжить с Apple",
+    "google_action": "Продолжить с Google",
+    "saved": "Аккаунт сохранён. Используйте этот способ при следующем входе.",
+    "email_form_title": "Добавить почту и пароль",
+    "email_field": "Почта",
+    "password_field": "Пароль (мин. 8 символов)",
+    "confirm_field": "Повторите пароль",
+    "mismatch": "Пароли не совпадают",
+    "submit": "Сохранить аккаунт",
+    "cancel": "Отмена"
   }
 }

@@ -150,6 +150,83 @@ func (r *Repository) FindUserByGoogleSub(ctx context.Context, sub string) (*User
 	return &u, nil
 }
 
+// UpgradeAnonymousToEmail flips an anonymous user into an email/password
+// account. The WHERE guard `is_anonymous = true` ensures the operation is
+// idempotent: a non-anon user calling this gets ErrUserNotFound (handler
+// maps to 409 NOT_ANONYMOUS — see service layer).
+func (r *Repository) UpgradeAnonymousToEmail(ctx context.Context, userID uuid.UUID, email, passwordHash string) (*User, error) {
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET email = $1, password_hash = $2, is_anonymous = false, updated_at = now()
+        WHERE id = $3 AND is_anonymous = true
+        RETURNING `+userColumns, email, passwordHash, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, ErrEmailTaken
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+// UpgradeAnonymousToApple attaches an Apple subject (and optional email
+// from the Apple claim) to an anonymous user, lifting is_anonymous.
+func (r *Repository) UpgradeAnonymousToApple(ctx context.Context, userID uuid.UUID, appleSub, email string) (*User, error) {
+	var emailArg any
+	if email != "" {
+		emailArg = email
+	}
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET apple_sub = $1,
+            email = COALESCE(email, $2),
+            is_anonymous = false,
+            updated_at = now()
+        WHERE id = $3 AND is_anonymous = true
+        RETURNING `+userColumns, appleSub, emailArg, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, classifySocialUniqueViolation(err)
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
+func (r *Repository) UpgradeAnonymousToGoogle(ctx context.Context, userID uuid.UUID, googleSub, email string) (*User, error) {
+	var emailArg any
+	if email != "" {
+		emailArg = email
+	}
+	var u User
+	row := r.pool.QueryRow(ctx, `
+        UPDATE users
+        SET google_sub = $1,
+            email = COALESCE(email, $2),
+            is_anonymous = false,
+            updated_at = now()
+        WHERE id = $3 AND is_anonymous = true
+        RETURNING `+userColumns, googleSub, emailArg, userID)
+	if err := userScan(row, &u); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		if isUniqueViolation(err) {
+			return nil, classifySocialUniqueViolation(err)
+		}
+		return nil, err
+	}
+	return &u, nil
+}
+
 // DBTX is the subset of pgx that both pgxpool.Pool and pgx.Tx satisfy.
 type DBTX interface {
 	Exec(ctx context.Context, sql string, args ...any) (pgconn.CommandTag, error)

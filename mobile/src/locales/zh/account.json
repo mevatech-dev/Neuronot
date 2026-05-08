@@ -15,5 +15,20 @@
     "confirm_label": "Type your email to confirm",
     "confirm_action": "Delete forever",
     "cancel": "Cancel"
+  },
+  "save": {
+    "title": "保存账号",
+    "body": "你正以匿名方式使用 Neuronot。添加登录方式以便更换设备时不会丢失数据。",
+    "email_action": "添加邮箱和密码",
+    "apple_action": "使用 Apple 继续",
+    "google_action": "使用 Google 继续",
+    "saved": "账号已保存，下次请使用此方式登录。",
+    "email_form_title": "添加邮箱和密码",
+    "email_field": "邮箱",
+    "password_field": "密码（至少 8 位）",
+    "confirm_field": "确认密码",
+    "mismatch": "两次密码不一致",
+    "submit": "保存账号",
+    "cancel": "取消"
   }
 }

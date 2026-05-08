@@ -115,3 +115,32 @@ export function logout(refreshToken: string) {
     data: { refresh_token: refreshToken },
   });
 }
+
+// upgrade* endpoints attach a permanent identity to the calling anonymous
+// account. user_id is preserved server-side so all daily_logs/events/insights
+// stay with the user. The server returns a fresh TokenResponse with
+// is_anonymous=false; the caller must persist the new tokens.
+
+export function upgradeWithEmail(email: string, password: string) {
+  return request<TokenResponse>({
+    method: 'POST',
+    url: '/v1/auth/upgrade/email',
+    data: { email, password },
+  });
+}
+
+export function upgradeWithApple(identityToken: string, rawNonce: string) {
+  return request<TokenResponse>({
+    method: 'POST',
+    url: '/v1/auth/upgrade/apple',
+    data: { identity_token: identityToken, nonce: rawNonce },
+  });
+}
+
+export function upgradeWithGoogle(idToken: string) {
+  return request<TokenResponse>({
+    method: 'POST',
+    url: '/v1/auth/upgrade/google',
+    data: { id_token: idToken },
+  });
+}

@@ -15,7 +15,8 @@
     "google_invalid": "No pudimos verificar tu inicio de sesión con Google. Inténtalo de nuevo.",
     "google_email_unverified": "Tu correo de Google aún no está verificado.",
     "link_required": "Ya existe una cuenta con este correo. Inicia sesión con tu contraseña y luego vincula este proveedor en Ajustes.",
-    "provider_disabled": "Este método de inicio de sesión no está disponible ahora."
+    "provider_disabled": "Este método de inicio de sesión no está disponible ahora.",
+    "not_anonymous": "Esta cuenta ya está guardada. Inicia sesión normalmente."
   },
   "daily_log": {
     "duplicate": "Ya registraste el día de hoy.",

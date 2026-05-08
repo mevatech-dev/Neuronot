@@ -15,7 +15,8 @@
     "google_invalid": "Não conseguimos verificar seu login Google. Tente novamente.",
     "google_email_unverified": "Seu e-mail do Google ainda não foi verificado.",
     "link_required": "Já existe uma conta com este e-mail. Entre com sua senha e depois vincule este provedor em Configurações.",
-    "provider_disabled": "Este método de login não está disponível no momento."
+    "provider_disabled": "Este método de login não está disponível no momento.",
+    "not_anonymous": "Esta conta já foi salva. Faça login normalmente."
   },
   "daily_log": {
     "duplicate": "Você já registrou o dia de hoje.",

@@ -15,7 +15,8 @@
     "google_invalid": "Google ile girişini doğrulayamadık. Lütfen tekrar dene.",
     "google_email_unverified": "Google e-postan henüz doğrulanmamış.",
     "link_required": "Bu e-posta ile zaten bir hesap var. Önce şifrenle giriş yap, sonra Ayarlar'dan bu sağlayıcıyı bağla.",
-    "provider_disabled": "Bu giriş yöntemi şu anda kullanılamıyor."
+    "provider_disabled": "Bu giriş yöntemi şu anda kullanılamıyor.",
+    "not_anonymous": "Bu hesap zaten kayıtlı. Normal giriş yap."
   },
   "daily_log": {
     "duplicate": "Bugünün kaydını zaten girdin.",

@@ -15,7 +15,8 @@
     "google_invalid": "Non siamo riusciti a verificare il tuo accesso Google. Riprova.",
     "google_email_unverified": "La tua email Google non è ancora verificata.",
     "link_required": "Esiste già un account con questa email. Accedi con la password, poi collega questo provider dalle Impostazioni.",
-    "provider_disabled": "Questo metodo di accesso non è al momento disponibile."
+    "provider_disabled": "Questo metodo di accesso non è al momento disponibile.",
+    "not_anonymous": "Questo account è già salvato. Accedi normalmente."
   },
   "daily_log": {
     "duplicate": "Hai già registrato la giornata di oggi.",

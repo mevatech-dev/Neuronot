@@ -15,7 +15,8 @@
     "google_invalid": "Wir konnten deine Google-Anmeldung nicht verifizieren. Bitte versuche es erneut.",
     "google_email_unverified": "Deine Google-E-Mail-Adresse ist noch nicht verifiziert.",
     "link_required": "Mit dieser E-Mail-Adresse existiert bereits ein Konto. Melde dich mit deinem Passwort an und verknüpfe diesen Anbieter dann in den Einstellungen.",
-    "provider_disabled": "Diese Anmeldemethode ist derzeit nicht verfügbar."
+    "provider_disabled": "Diese Anmeldemethode ist derzeit nicht verfügbar.",
+    "not_anonymous": "Dieses Konto ist bereits gespeichert. Melde dich normal an."
   },
   "daily_log": {
     "duplicate": "Du hast heute bereits einen Eintrag gemacht.",

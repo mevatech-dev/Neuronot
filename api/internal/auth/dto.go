@@ -39,6 +39,25 @@ type GoogleRequest struct {
 	Consents          []ConsentInput `json:"consents"`
 }
 
+// UpgradeEmailRequest is the body for /v1/auth/upgrade/email — the caller
+// must already hold an anonymous-account JWT. Consents are not collected
+// here since ToS+Privacy were already granted at the anonymous-create step.
+type UpgradeEmailRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+// UpgradeAppleRequest mirrors AppleRequest minus the consent block (the
+// anon user already accepted ToS+Privacy when the account was created).
+type UpgradeAppleRequest struct {
+	IdentityToken string `json:"identity_token"`
+	Nonce         string `json:"nonce"`
+}
+
+type UpgradeGoogleRequest struct {
+	IDToken string `json:"id_token"`
+}
+
 type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`

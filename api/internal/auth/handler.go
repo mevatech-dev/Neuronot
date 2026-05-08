@@ -6,7 +6,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+
 	httpx "github.com/neuronot/api/internal/http"
+	"github.com/neuronot/api/internal/http/middleware"
 )
 
 type Handler struct {
@@ -25,6 +27,14 @@ func (h *Handler) Mount(r chi.Router) {
 	r.Post("/anonymous", h.anonymous)
 	r.Post("/apple", h.apple)
 	r.Post("/google", h.google)
+}
+
+// MountUpgrade mounts the authenticated upgrade routes. Wired separately
+// from Mount so router.go can place these inside the JWT-required group.
+func (h *Handler) MountUpgrade(r chi.Router) {
+	r.Post("/email", h.upgradeEmail)
+	r.Post("/apple", h.upgradeApple)
+	r.Post("/google", h.upgradeGoogle)
 }
 
 func (h *Handler) register(w http.ResponseWriter, r *http.Request) {
@@ -133,6 +143,59 @@ func (h *Handler) google(w http.ResponseWriter, r *http.Request) {
 	httpx.WriteJSON(w, http.StatusOK, resp)
 }
 
+func (h *Handler) upgradeEmail(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	var req UpgradeEmailRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httpx.ValidationFailed(w, "invalid json body")
+		return
+	}
+	resp, err := h.svc.UpgradeToEmail(r.Context(), uid, req)
+	if err != nil {
+		writeAuthError(w, err)
+		return
+	}
+	httpx.WriteJSON(w, http.StatusOK, resp)
+}
+
+func (h *Handler) upgradeApple(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	var req UpgradeAppleRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httpx.ValidationFailed(w, "invalid json body")
+		return
+	}
+	if req.IdentityToken == "" {
+		httpx.ValidationFailed(w, "identity_token is required")
+		return
+	}
+	resp, err := h.svc.UpgradeToApple(r.Context(), uid, req)
+	if err != nil {
+		writeAuthError(w, err)
+		return
+	}
+	httpx.WriteJSON(w, http.StatusOK, resp)
+}
+
+func (h *Handler) upgradeGoogle(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	var req UpgradeGoogleRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httpx.ValidationFailed(w, "invalid json body")
+		return
+	}
+	if req.IDToken == "" {
+		httpx.ValidationFailed(w, "id_token is required")
+		return
+	}
+	resp, err := h.svc.UpgradeToGoogle(r.Context(), uid, req)
+	if err != nil {
+		writeAuthError(w, err)
+		return
+	}
+	httpx.WriteJSON(w, http.StatusOK, resp)
+}
+
 func (h *Handler) logout(w http.ResponseWriter, r *http.Request) {
 	var req LogoutRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -176,6 +239,8 @@ func writeAuthError(w http.ResponseWriter, err error) {
 		httpx.WriteError(w, http.StatusConflict, "AUTH_LINK_REQUIRED", "errors.auth.link_required", "An account already exists for this email; sign in with password to link")
 	case errors.Is(err, ErrProviderDisabled):
 		httpx.WriteError(w, http.StatusServiceUnavailable, "AUTH_PROVIDER_DISABLED", "errors.auth.provider_disabled", "This sign-in method is not configured")
+	case errors.Is(err, ErrNotAnonymous):
+		httpx.WriteError(w, http.StatusConflict, "AUTH_NOT_ANONYMOUS", "errors.auth.not_anonymous", "This account is not anonymous and cannot be upgraded")
 	default:
 		httpx.InternalError(w)
 	}

@@ -9,6 +9,9 @@ import {
   signInAnonymous as apiSignInAnonymous,
   signInWithApple as apiSignInWithApple,
   signInWithGoogle as apiSignInWithGoogle,
+  upgradeWithEmail as apiUpgradeEmail,
+  upgradeWithApple as apiUpgradeApple,
+  upgradeWithGoogle as apiUpgradeGoogle,
 } from '@/services/api/auth';
 import type { RegisterConsentInput, TokenResponse } from '@/services/api/auth';
 
@@ -52,6 +55,9 @@ type AuthState = {
     preferredLanguage: string | undefined,
     consents: RegisterConsentInput[],
   ) => Promise<void>;
+  upgradeWithEmail: (email: string, password: string) => Promise<void>;
+  upgradeWithApple: (identityToken: string, rawNonce: string) => Promise<void>;
+  upgradeWithGoogle: (idToken: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshTokens: () => Promise<string | null>;
 };
@@ -143,6 +149,36 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signInWithGoogle: async (idToken, preferredLanguage, consents) => {
     const tokens = await apiSignInWithGoogle(idToken, preferredLanguage, consents);
+    await persistTokens(tokens);
+    set({
+      accessToken: tokens.access_token,
+      refreshToken: tokens.refresh_token,
+      user: userFromTokens(tokens),
+    });
+  },
+
+  upgradeWithEmail: async (email, password) => {
+    const tokens = await apiUpgradeEmail(email, password);
+    await persistTokens(tokens);
+    set({
+      accessToken: tokens.access_token,
+      refreshToken: tokens.refresh_token,
+      user: userFromTokens(tokens),
+    });
+  },
+
+  upgradeWithApple: async (identityToken, rawNonce) => {
+    const tokens = await apiUpgradeApple(identityToken, rawNonce);
+    await persistTokens(tokens);
+    set({
+      accessToken: tokens.access_token,
+      refreshToken: tokens.refresh_token,
+      user: userFromTokens(tokens),
+    });
+  },
+
+  upgradeWithGoogle: async (idToken) => {
+    const tokens = await apiUpgradeGoogle(idToken);
     await persistTokens(tokens);
     set({
       accessToken: tokens.access_token,

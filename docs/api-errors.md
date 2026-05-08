@@ -39,6 +39,7 @@ Client `code` veya `message_key` üzerinden kendi locale'inden çeviri yapar. `m
 | `AUTH_GOOGLE_EMAIL_UNVERIFIED` | 401 | `errors.auth.google_email_unverified` | Google `email_verified=false` döndü |
 | `AUTH_LINK_REQUIRED` | 409 | `errors.auth.link_required` | Bu email ile zaten password hesabı var; sosyal login bağlanmadan önce email ile giriş gerek |
 | `AUTH_PROVIDER_DISABLED` | 503 | `errors.auth.provider_disabled` | İlgili sosyal sağlayıcı sunucuda config'lenmemiş |
+| `AUTH_NOT_ANONYMOUS` | 409 | `errors.auth.not_anonymous` | Hesap zaten kalıcı (email/sosyal); upgrade endpoint'i yalnızca anon hesaplar için |
 
 ---
 
