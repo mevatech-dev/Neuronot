@@ -1,4 +1,9 @@
 {
+  "getStarted": {
+    "brand": "Neuronot",
+    "tagline": "Örüntülerini fark et. Sakin kal.",
+    "cta": "Başla"
+  },
   "title": "Tanışalım",
   "subtitle": "Birkaç hızlı soru — neyi takip edeceğimizi belirlemek için.",
   "skip": "Geç",

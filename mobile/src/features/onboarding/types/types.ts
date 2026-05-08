@@ -15,4 +15,5 @@ export type OnboardingState = {
   caffeineDaily?: boolean;
   reminderEnabled?: boolean;
   reminderHour?: number;
+  timezone?: string;
 };

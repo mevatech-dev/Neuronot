@@ -1,4 +1,9 @@
 {
+  "getStarted": {
+    "brand": "Neuronot",
+    "tagline": "Notice your patterns. Stay calm.",
+    "cta": "Let's start"
+  },
   "title": "Let's get to know you",
   "subtitle": "A few quick questions to tailor what we follow.",
   "skip": "Skip",
