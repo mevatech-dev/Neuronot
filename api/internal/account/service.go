@@ -69,7 +69,15 @@ func (s *Service) DeleteSelf(ctx context.Context, userID uuid.UUID, confirmEmail
 	if err != nil {
 		return err
 	}
-	if !emailMatches(storedEmail, confirmEmail) {
+	// Anonymous accounts have no email to retype — accept an empty
+	// confirm_email as the explicit "yes I want to delete this anon
+	// account" signal. Any non-empty confirm against an empty stored
+	// email is treated as a mismatch (refuses the silent EqualFold
+	// "" == "" backdoor).
+	switch {
+	case storedEmail == "" && confirmEmail != "":
+		return ErrEmailMismatch
+	case storedEmail != "" && !emailMatches(storedEmail, confirmEmail):
 		return ErrEmailMismatch
 	}
 	// Capture locale before the delete cascades the row.

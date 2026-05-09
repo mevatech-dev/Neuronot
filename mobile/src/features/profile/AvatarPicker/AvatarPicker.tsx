@@ -83,9 +83,16 @@ export function AvatarPicker({ avatarUrl, size = AVATAR_DEFAULT_SIZE }: Props) {
             accessibilityIgnoresInvertColors
           />
         ) : (
-          <Text style={{ ...theme.typography.title, color: theme.colors.text.muted }}>
-            {'?'}
-          </Text>
+          // Empty circle is the placeholder; a literal "?" reads weirdly
+          // in RTL/CJK and tripping markup-only i18n lint isn't worth it.
+          <View
+            style={{
+              width: size * 0.45,
+              height: size * 0.45,
+              borderRadius: 9999,
+              backgroundColor: theme.colors.border.subtle,
+            }}
+          />
         )}
         {busy && (
           <View
