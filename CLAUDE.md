@@ -74,7 +74,7 @@ worker/  ─── README only, deferred (batch insight, queue)
 web/     ─── README only, deferred (Next.js dashboard)
 ```
 
-\* Hafta 3+ scope. Worker, web, Redis, object storage (Cloudflare R2), and email (Cloudflare Email) are intentionally absent — their folders carry only a README explaining the trigger that would resurrect them. **Do not scaffold worker or web code without an ADR justifying the trigger.** See `docs/adr/0001-modular-monolith.md`.
+\* Hafta 3+ scope. Worker, web, Redis, object storage (Cloudflare R2), and email (Resend) are intentionally absent — their folders carry only a README explaining the trigger that would resurrect them. **Do not scaffold worker or web code without an ADR justifying the trigger.** See `docs/adr/0001-modular-monolith.md`.
 
 ## The vertical-slice + three-layer rule
 
@@ -216,7 +216,7 @@ These are intentionally absent. Adding any of them needs a justification (ADR or
 | Worker process | Insight generation >10s, batch jobs, push notification scheduling |
 | Redis | API p95 latency consistently >200ms, or queue/pubsub need |
 | Cloudflare R2 (object storage) | First feature requiring user-uploaded files or off-DB export artifacts. **The self-hosted target VM does not run MinIO** — R2 is the chosen backend; we use the AWS S3 SDK against the R2 S3-compatible endpoint (`<account>.r2.cloudflarestorage.com`). Required env: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`. |
-| Cloudflare Email (transactional email) | First feature requiring outbound mail (password-reset link, account-deletion confirmation, "your export is ready"). **Cloudflare's email-sending product is the chosen provider** — we do not run an SMTP server. Inbound (Email Routing) is configured only when `support@` aliasing is needed. |
+| Resend (transactional email) | First feature requiring outbound mail (password-reset link, account-deletion confirmation, "your export is ready"). **Resend is the chosen ESP** — we do not run an SMTP server. SPF/DKIM records live on Cloudflare DNS; inbound (Cloudflare Email Routing) is a separate concern, only set up when `support@` aliasing is needed. Required env: `RESEND_API_KEY`, `EMAIL_FROM` (e.g. `noreply@<domain>`). |
 | Web dashboard | First customer asking for web access |
 | Admin panel | Operations that can no longer be done with SQL |
 | Subscription / RevenueCat | Revenue scope for v2 |

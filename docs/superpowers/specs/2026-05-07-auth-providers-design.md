@@ -228,7 +228,7 @@ Response: standart `TokenResponse`. İlk girişte ek alan: `is_new_user: bool`.
 
 - **Bundle ID** Apple Developer Console'da Sign-In with Apple capability açık olmalı.
 - **Service ID** sadece web/cross-platform için gerekli; iOS native akışında bundle id audience yeterli.
-- **Email Relay:** Apple kullanıcısı "Hide my email" seçerse `email` field'ı `xyz@privaterelay.appleid.com` formunda gelir. Bu adres'e mail göndermek için Apple'ın "Communication Email" allowlist'ine `noreply@<domain>` eklenmeli (Cloudflare Email tarafında SPF/DKIM zaten hizalı). MVP'de mail göndermiyoruz; sadece DB'de depolarız.
+- **Email Relay:** Apple kullanıcısı "Hide my email" seçerse `email` field'ı `xyz@privaterelay.appleid.com` formunda gelir. Bu adres'e mail göndermek için Apple'ın "Communication Email" allowlist'ine `noreply@<domain>` eklenmeli (SPF/DKIM Resend için Cloudflare DNS'te hizalanır). MVP'de mail göndermiyoruz; sadece DB'de depolarız.
 - **`name` claim:** sadece ilk girişte; mobile bunu `display_name` olarak server'a göndermek isteyebilir. MVP'de profile.display_name yok, gerek yok.
 
 ## Google özellikleri
@@ -293,7 +293,7 @@ Bu kasıtlı sürtüşme; hesap ele geçirme'yi (henüz email verification yok) 
    - `expo-auth-session/providers/google` (managed Expo, native build gerek YOK)
    - `@react-native-google-signin/google-signin` (native build gerekir, daha pürüzsüz UX)
    Hangi yol?
-7. **Mail gönderimi:** Apple/Google bazen email yollar; MVP'de bunlara mail göndermiyoruz (Cloudflare Email tetiği gelene kadar). Onay?
+7. **Mail gönderimi:** Apple/Google bazen email yollar; MVP'de bunlara mail göndermiyoruz (Resend tetiği gelene kadar). Onay?
 
 Bu yedi karar netleşmeden kod yazılmaz. Karar verildiğinde:
 

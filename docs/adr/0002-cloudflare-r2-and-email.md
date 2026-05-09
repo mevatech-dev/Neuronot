@@ -1,8 +1,9 @@
-# ADR 0002: Cloudflare R2 (Storage) ve Cloudflare Email (Transactional Mail)
+# ADR 0002: Cloudflare R2 (Storage) ve Resend (Transactional Mail)
 
-**Status:** Accepted
+**Status:** Accepted (Revised 2026-05-09)
 **Date:** 2026-05-07
-**Supersedes (partially):** ARCHITECTURE.md §3 deferred satırı "MinIO". Email için yeni karar.
+**Revised:** 2026-05-09 — email sağlayıcısı **Resend** olarak güncellendi (önceki taslakta Cloudflare Email idi, hiç implement edilmedi). Storage kararı (R2) değişmedi.
+**Supersedes (partially):** ARCHITECTURE.md §3 deferred satırı "MinIO".
 
 ## Context
 
@@ -15,7 +16,7 @@ Kriterler her iki karar için aynı:
 - Düşük operasyonel yük (managed servis).
 - Dakikalar içinde DNS + token ile devreye alınabilir.
 - Maliyet: MVP trafiğinde sıfıra yakın.
-- Mevcut Cloudflare kullanım yüzeyiyle hizalı (DNS, edge, zone). Tek faturalı sağlayıcı.
+- Storage tarafında mevcut Cloudflare kullanım yüzeyiyle hizalı (DNS, edge, zone). Email tarafında olgun bir transactional ESP — observability ve template tooling MVP'den itibaren güvenilir.
 
 ## Decision
 
@@ -30,11 +31,13 @@ Kriterler her iki karar için aynı:
   - DB'de tutmak istemediğimiz ilk export artifact (mevcut `/v1/me/export` JSON inline döner — büyüyene kadar gerek yok).
   - Insight için görsel/grafik artifact üretimi (yine yok).
 
-### Email: Cloudflare Email
+### Email: Resend
 
-- Sağlayıcı: **Cloudflare'in transactional e-posta gönderim ürünü**.
-- Wire: HTTP API ile çağrı (SMTP açmıyoruz).
-- DNS: domain'in MX/SPF/DKIM/DMARC kayıtları Cloudflare üzerinden yönetilir; `From` adresi `noreply@<domain>` (transactional) ve `support@<domain>` (alias, Email Routing ile inbox'a yönlenir).
+- Sağlayıcı: **Resend** (`https://api.resend.com`).
+- Wire: HTTP API (SMTP açmıyoruz). Go istemcisi `github.com/resend/resend-go/v2`; SDK ağır gelirse düz `net/http` ile aynı endpoint'e konuşulur.
+- Auth: tek `RESEND_API_KEY` env değişkeni; per-domain bağlama Resend dashboard üzerinden yapılır. Gönderim adresi `EMAIL_FROM` env'inden okunur (örn. `noreply@<domain>`).
+- DNS: domain'in SPF + DKIM kayıtları Resend'in verdiği değerlerle **Cloudflare DNS** üzerinde tutulur (zone yönetimi hâlâ Cloudflare'de). DMARC zaten Cloudflare DNS'te.
+- Inbound: Resend inbound email desteklemiyor — `support@<domain>` aliasing gerekirse **Cloudflare Email Routing** ayrı (sadece routing, gönderim değil) entegrasyon olarak kalır.
 - Şablonlar: server-side i18n kullanıcının `preferred_language` değerine göre seçer; içerik kullanıcı diline çevrilmiş olarak gönderilir. Template dosyaları feature'a ait klasörde (`api/internal/<feature>/email_templates/<lang>/...`) kalır — ortak `email/` paketi yok.
 - Tetik koşulları:
   - Parola sıfırlama linki (forgot-password feature'ı eklenince).
@@ -45,15 +48,15 @@ Kriterler her iki karar için aynı:
 ## Consequences
 
 **Pozitif:**
-- Tek vendor (Cloudflare) DNS, edge, storage, email — operasyonel sürtünme düşük.
+- Cloudflare storage + DNS + edge yüzeyimiz değişmez; R2 entegrasyonu tek panele bağlı kalır.
 - R2: egress ücretsiz; periyodik export indirme maliyetimizi ısırmaz.
 - S3 SDK kullandığımız için lock-in marjinal; ileride başka bir S3-uyumlu provider'a (Backblaze B2, Wasabi) taşıma maliyet düşük.
-- Email gönderimini Cloudflare üzerinden yapmak SPF/DKIM align'ı kolay; teslim oranı yönetimi vendor'a düşer.
+- Resend transactional email için olgun bir ürün: webhook tabanlı delivery/bounce eventleri, dashboard logs, structured tagging. MVP'de "deliverability sorununu daha sonra düşünürüm" demeyi göze alabiliriz.
 
 **Negatif:**
-- Cloudflare'in transactional email ürünü yeni; kullanım kotaları, throttle, başarısız teslim retry semantiği üretimde gözlenmeli. Tetik geldiğinde önce küçük bir spike test gerekir.
+- Vendor sayısı 1'den 2'ye çıktı (Cloudflare + Resend); fatura ve secret yönetimi iki yerde.
+- Inbound (`support@`) routing Resend kapsamında değil — gerekirse Cloudflare Email Routing ayrı integration.
 - R2 region `auto`: latency ve replikasyon detayları AWS S3 multi-region deployment'a göre opaque. MVP'de problem değil.
-- "Tek vendor" → vendor outage tek çuval. Banking-grade availability hedefimiz yok; kabul edilir risk.
 
 ## Alternatives Considered
 
@@ -63,14 +66,15 @@ Kriterler her iki karar için aynı:
 - **Local disk + nginx static** — Reddedildi. Backup, çoklu instance, signed URL desteği yok.
 
 **Email:**
-- **Resend / Postmark / SendGrid** — Tercih edilebilirdi; Cloudflare zaten DNS yüzeyimizi yönetiyor olduğundan tek panele toplamak yerel optimum.
-- **SMTP relay (Mailgun SMTP, Amazon SES SMTP)** — Reddedildi. SMTP yerine HTTP API tercih ediliyor (tooling, gözlemlenebilirlik, retry).
+- **Cloudflare Email** — Reddedildi. Cloudflare'in transactional gönderim ürünü hâlâ erken; observability ve template tooling Resend kadar olgun değil. Tek panele toplamak için ilk taslakta seçilmişti, fakat hiç implement edilmediği için maliyet yok.
+- **Postmark / SendGrid / Amazon SES** — Reddedildi. Resend'in DX'i (basit API, webhooks, dashboard logs) MVP için daha rahat; SES'in domain warmup süreci, SendGrid'in fiyatlama eğrisi MVP'ye fazla.
+- **SMTP relay (Mailgun SMTP, SES SMTP)** — Reddedildi. SMTP yerine HTTP API tercih ediliyor (tooling, gözlemlenebilirlik, retry).
 - **Self-hosted Postfix** — Asla. IP reputation yönetmek istemiyoruz.
 
 ## Triggers for Revisit
 
 - R2 egress veya request fiyatlaması ürünü etkileyecek seviyeye gelirse → ikinci provider'a portable kalmak için S3 SDK soyutlamasını koru.
-- Cloudflare email gönderim ürünü deliverability sorunu yaşatırsa → Resend'a düş, template'lar zaten i18n dosyalarında.
+- Resend deliverability/uptime/fiyat sorun çıkarırsa → Postmark veya SES'e portable kalmak için template katmanını sağlayıcı-özgül kod dışında tut; provider çağrısı tek bir `internal/email` paketinde izole olsun.
 - Multi-region storage gerektiren bir yasal kısıtlama çıkarsa (KVKK lokasyonu, AB residency) → R2'nin location hint'leri ya da farklı provider değerlendirilir.
 
 Bu tetiklerden biri çıkmadıkça karar bozulmaz; her iki entegrasyonun **kodu da yazılmaz** (deferred).
