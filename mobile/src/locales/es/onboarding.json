@@ -34,8 +34,9 @@
   },
   "step4": {
     "title": "¿Cafeína diaria?",
-    "caffeine_label": "Sí, todos los días",
-    "hint": "La cafeína no cambia lo que registras; solo ayuda a leer mejor los patrones."
+    "hint": "La cafeína no cambia lo que registras; solo ayuda a leer mejor los patrones.",
+    "yes": "Sí",
+    "no": "No"
   },
   "step5": {
     "title": "¿Un recordatorio suave cada día?",

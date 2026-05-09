@@ -39,8 +39,9 @@
   },
   "step4": {
     "title": "Günlük kafein?",
-    "caffeine_label": "Evet, her gün",
-    "hint": "Kafein neyi kaydedeceğini değiştirmez; örüntüleri daha iyi okumama yardım eder."
+    "hint": "Kafein neyi kaydedeceğini değiştirmez; örüntüleri daha iyi okumama yardım eder.",
+    "yes": "Evet",
+    "no": "Hayır"
   },
   "step5": {
     "title": "Her gün küçük bir hatırlatma?",

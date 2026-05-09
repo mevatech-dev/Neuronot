@@ -34,8 +34,9 @@
   },
   "step4": {
     "title": "Caféine quotidienne?",
-    "caffeine_label": "Oui, tous les jours",
-    "hint": "La caféine ne change pas ce que tu enregistres; elle aide à lire les schémas."
+    "hint": "La caféine ne change pas ce que tu enregistres; elle aide à lire les schémas.",
+    "yes": "Oui",
+    "no": "Non"
   },
   "step5": {
     "title": "Un petit rappel chaque jour?",
