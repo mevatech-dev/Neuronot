@@ -8,6 +8,16 @@ export type ExportPayloadWire = {
   insights: Record<string, unknown>[];
 };
 
-export function fetchExport(): Promise<ExportPayloadWire> {
-  return request<ExportPayloadWire>({ method: 'GET', url: '/v1/me/export' });
+// ExportResponseWire matches api/internal/dataexport/dto.go. When R2 is
+// configured, download_url + expires_at are present and payload is null.
+// In dev (no R2 creds), the API embeds the data inline as `payload`.
+export type ExportResponseWire = {
+  download_url?: string;
+  expires_at?: string;
+  size_bytes?: number;
+  payload?: ExportPayloadWire;
+};
+
+export function fetchExport(): Promise<ExportResponseWire> {
+  return request<ExportResponseWire>({ method: 'GET', url: '/v1/me/export' });
 }

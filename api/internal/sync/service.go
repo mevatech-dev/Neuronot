@@ -304,7 +304,9 @@ func ToPullResponse(delta *PullDelta) PullResponse {
 	}
 
 	if delta.Profile != nil {
-		p := profile.ToResponse(delta.Profile)
+		// Sync deltas don't carry presigned avatar URLs — clients refresh
+		// the avatar via GET /v1/me/profile when they render it.
+		p := profile.ToResponse(delta.Profile, nil)
 		resp.Profile = &p
 	}
 	return resp

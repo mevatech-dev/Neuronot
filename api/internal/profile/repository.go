@@ -21,13 +21,13 @@ func NewRepository(pool *pgxpool.Pool) *Repository {
 
 const profileColumns = `user_id, focus_problem, intensity_level, avg_sleep_hours,
 	caffeine_daily, onboarding_completed_at, timezone, reminder_hour, reminder_enabled,
-	created_at, updated_at`
+	avatar_key, created_at, updated_at`
 
 func scanProfile(row pgx.Row, p *Profile) error {
 	return row.Scan(
 		&p.UserID, &p.FocusProblem, &p.IntensityLevel, &p.AvgSleepHours,
 		&p.CaffeineDaily, &p.OnboardingCompletedAt, &p.Timezone, &p.ReminderHour, &p.ReminderEnabled,
-		&p.CreatedAt, &p.UpdatedAt,
+		&p.AvatarKey, &p.CreatedAt, &p.UpdatedAt,
 	)
 }
 
@@ -81,11 +81,12 @@ func (r *Repository) Patch(ctx context.Context, userID uuid.UUID, p PatchRequest
 			timezone                = COALESCE($7, timezone),
 			reminder_hour           = COALESCE($8, reminder_hour),
 			reminder_enabled        = COALESCE($9, reminder_enabled),
+			avatar_key              = COALESCE($10, avatar_key),
 			updated_at              = now()
 		WHERE user_id = $1
 		RETURNING `+profileColumns+`
 	`, userID, p.FocusProblem, p.IntensityLevel, p.AvgSleepHours, p.CaffeineDaily,
-		completeOnboarding, p.Timezone, p.ReminderHour, p.ReminderEnabled,
+		completeOnboarding, p.Timezone, p.ReminderHour, p.ReminderEnabled, p.AvatarKey,
 	), &prof)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {

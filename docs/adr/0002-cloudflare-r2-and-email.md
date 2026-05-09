@@ -1,8 +1,9 @@
 # ADR 0002: Cloudflare R2 (Storage) ve Resend (Transactional Mail)
 
-**Status:** Accepted (Revised 2026-05-09)
+**Status:** Accepted, **Active 2026-05-09**
 **Date:** 2026-05-07
 **Revised:** 2026-05-09 — email sağlayıcısı **Resend** olarak güncellendi (önceki taslakta Cloudflare Email idi, hiç implement edilmedi). Storage kararı (R2) değişmedi.
+**Activated:** 2026-05-09 — `internal/storage/` (R2: dataexport + avatar) ve `internal/email/` (Resend: account-deleted + export-ready) entegrasyonları yazıldı; ikisi de env yokken graceful disable olur.
 **Supersedes (partially):** ARCHITECTURE.md §3 deferred satırı "MinIO".
 
 ## Context

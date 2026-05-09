@@ -22,11 +22,13 @@ import (
 	"github.com/neuronot/api/internal/dailylog"
 	"github.com/neuronot/api/internal/dataexport"
 	"github.com/neuronot/api/internal/db"
+	"github.com/neuronot/api/internal/email"
 	"github.com/neuronot/api/internal/events"
 	httpx "github.com/neuronot/api/internal/http"
 	"github.com/neuronot/api/internal/insights"
 	"github.com/neuronot/api/internal/profile"
 	"github.com/neuronot/api/internal/stats"
+	"github.com/neuronot/api/internal/storage"
 	"github.com/neuronot/api/internal/summary"
 	syncpkg "github.com/neuronot/api/internal/sync"
 	"github.com/neuronot/api/internal/timeline"
@@ -76,6 +78,36 @@ func main() {
 
 	jwtSecret := []byte(cfg.JWTSecret)
 
+	// Optional R2 storage. When env is incomplete, dependent features
+	// (dataexport URL response, avatar upload) gracefully disable.
+	var storageSvc *storage.Service
+	if cfg.R2.Enabled() {
+		s3Client, err := storage.NewClient(ctx, storage.Config(cfg.R2))
+		if err != nil {
+			slog.Error("storage init", "err", err)
+			os.Exit(1)
+		}
+		storageSvc = storage.NewService(s3Client, cfg.R2.Bucket)
+		slog.Info("storage enabled", "bucket", cfg.R2.Bucket)
+	} else {
+		slog.Info("storage disabled — R2 env vars missing")
+	}
+
+	// Optional Resend email. When unset, account-deletion + export-ready
+	// notifications skip silently; primary flows still succeed.
+	var emailSvc *email.Service
+	if cfg.Resend.Enabled() {
+		resendClient, err := email.NewClient(email.Config(cfg.Resend))
+		if err != nil {
+			slog.Error("email init", "err", err)
+			os.Exit(1)
+		}
+		emailSvc = email.NewService(resendClient, cfg.Resend.From)
+		slog.Info("email enabled", "from", cfg.Resend.From)
+	} else {
+		slog.Info("email disabled — RESEND_API_KEY/EMAIL_FROM missing")
+	}
+
 	consentsRepo := consents.NewRepository(pool, cfg.ConsentKEK)
 	consentsSvc := consents.NewService(consentsRepo)
 	consentsHandler := consents.NewHandler(consentsSvc)
@@ -102,7 +134,7 @@ func main() {
 	authHandler := auth.NewHandler(authSvc)
 
 	profileRepo := profile.NewRepository(pool)
-	profileSvc := profile.NewService(profileRepo)
+	profileSvc := profile.NewService(profileRepo, storageSvc)
 	profileHandler := profile.NewHandler(profileSvc)
 
 	dailyLogRepo := dailylog.NewRepository(pool)
@@ -133,11 +165,11 @@ func main() {
 	syncHandler := syncpkg.NewHandler(syncSvc)
 
 	accountRepo := account.NewRepository(pool)
-	accountSvc := account.NewService(accountRepo, &accountTokenRevoker{repo: authRepo})
+	accountSvc := account.NewService(accountRepo, &accountTokenRevoker{repo: authRepo}, emailSvc)
 	accountHandler := account.NewHandler(accountSvc)
 
 	exportRepo := dataexport.NewRepository(pool)
-	exportSvc := dataexport.NewService(exportRepo)
+	exportSvc := dataexport.NewService(exportRepo, storageSvc, emailSvc)
 	exportHandler := dataexport.NewHandler(exportSvc)
 
 	router := httpx.NewRouter(httpx.Deps{

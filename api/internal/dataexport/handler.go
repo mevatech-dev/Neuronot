@@ -24,10 +24,10 @@ func (h *Handler) Mount(r chi.Router) {
 
 func (h *Handler) export(w http.ResponseWriter, r *http.Request) {
 	uid := middleware.UserID(r.Context())
-	payload, err := h.svc.Build(r.Context(), uid)
+	resp, err := h.svc.Build(r.Context(), uid)
 	if err != nil {
 		httpx.WriteError(w, http.StatusInternalServerError, "EXPORT_FAILED", "errors.export.failed", "Could not build export")
 		return
 	}
-	httpx.WriteJSON(w, http.StatusOK, payload)
+	httpx.WriteJSON(w, http.StatusOK, resp)
 }

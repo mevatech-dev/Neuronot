@@ -3,34 +3,68 @@ package profile
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+
+	"github.com/neuronot/api/internal/storage"
 )
 
 var (
-	ErrInvalidFocusProblem    = errors.New("invalid focus_problem")
-	ErrInvalidIntensity       = errors.New("intensity must be 1-5")
-	ErrInvalidSleepHours      = errors.New("avg_sleep_hours must be 0-24")
-	ErrInvalidTimezone        = errors.New("invalid timezone")
-	ErrReminderHourRequired   = errors.New("reminder_hour required when reminder_enabled is true")
-	ErrInvalidReminderHour    = errors.New("reminder_hour must be 0-23")
+	ErrInvalidFocusProblem  = errors.New("invalid focus_problem")
+	ErrInvalidIntensity     = errors.New("intensity must be 1-5")
+	ErrInvalidSleepHours    = errors.New("avg_sleep_hours must be 0-24")
+	ErrInvalidTimezone      = errors.New("invalid timezone")
+	ErrReminderHourRequired = errors.New("reminder_hour required when reminder_enabled is true")
+	ErrInvalidReminderHour  = errors.New("reminder_hour must be 0-23")
+	ErrInvalidContentType   = errors.New("avatar content_type must be image/jpeg or image/png")
+	ErrAvatarUnavailable    = errors.New("avatar storage unavailable")
 )
 
 var validFocusProblems = map[string]bool{
 	"focus": true, "energy": true, "headache": true, "sleep": true, "forgetfulness": true,
 }
 
-type Service struct {
-	repo *Repository
+var validAvatarContentTypes = map[string]string{
+	"image/jpeg": "jpg",
+	"image/png":  "png",
 }
 
-func NewService(repo *Repository) *Service {
-	return &Service{repo: repo}
+const avatarPresignTTL = 15 * time.Minute
+
+type Service struct {
+	repo    *Repository
+	storage *storage.Service
+	newKey  func() string
+}
+
+// NewService composes the profile slice. storageSvc may be nil — the
+// avatar endpoints return ErrAvatarUnavailable, but the rest of the
+// profile flows still work.
+func NewService(repo *Repository, storageSvc *storage.Service) *Service {
+	return &Service{
+		repo:    repo,
+		storage: storageSvc,
+		newKey:  func() string { return uuid.NewString() },
+	}
 }
 
 func (s *Service) Get(ctx context.Context, userID uuid.UUID) (*Profile, error) {
 	return s.repo.Get(ctx, userID)
+}
+
+// AvatarURL returns a fresh pre-signed GET URL for the user's stored
+// avatar key, or (nil, nil) if there is no avatar / storage is off.
+func (s *Service) AvatarURL(ctx context.Context, p *Profile) (*storage.PresignedURL, error) {
+	if s.storage == nil || p == nil || p.AvatarKey == nil || *p.AvatarKey == "" {
+		return nil, nil
+	}
+	signed, err := s.storage.PresignGet(ctx, *p.AvatarKey, avatarPresignTTL)
+	if err != nil {
+		return nil, err
+	}
+	return &signed, nil
 }
 
 func (s *Service) Patch(ctx context.Context, userID uuid.UUID, p PatchRequest) (*Profile, error) {
@@ -73,8 +107,35 @@ func (s *Service) Patch(ctx context.Context, userID uuid.UUID, p PatchRequest) (
 	return s.repo.Patch(ctx, userID, p)
 }
 
-func ToResponse(p *Profile) ProfileResponse {
-	return ProfileResponse{
+// RequestAvatarUpload returns a pre-signed PUT URL the mobile client can
+// upload bytes to. Mobile is expected to PATCH /v1/me/profile with the
+// returned key once the upload completes; until then, the object lives
+// orphaned at the key (cleaned up by R2 lifecycle policy out-of-band).
+func (s *Service) RequestAvatarUpload(ctx context.Context, userID uuid.UUID, contentType string) (AvatarUploadResponse, error) {
+	if s.storage == nil {
+		return AvatarUploadResponse{}, ErrAvatarUnavailable
+	}
+	ext, ok := validAvatarContentTypes[contentType]
+	if !ok {
+		return AvatarUploadResponse{}, ErrInvalidContentType
+	}
+	key := fmt.Sprintf("avatars/%s/%s.%s", userID, s.newKey(), ext)
+	signed, err := s.storage.PresignPut(ctx, key, contentType, avatarPresignTTL)
+	if err != nil {
+		return AvatarUploadResponse{}, err
+	}
+	return AvatarUploadResponse{
+		UploadURL: signed.URL,
+		Key:       key,
+		ExpiresAt: signed.ExpiresAt,
+	}, nil
+}
+
+// ToResponse renders the profile, optionally enriching with a freshly
+// signed avatar URL when storage is configured. Caller passes the URL
+// (or nil) so the function stays pure on the *Profile pointer.
+func ToResponse(p *Profile, avatar *storage.PresignedURL) ProfileResponse {
+	resp := ProfileResponse{
 		UserID:                p.UserID.String(),
 		FocusProblem:          p.FocusProblem,
 		IntensityLevel:        p.IntensityLevel,
@@ -86,4 +147,9 @@ func ToResponse(p *Profile) ProfileResponse {
 		ReminderEnabled:       p.ReminderEnabled,
 		UpdatedAt:             p.UpdatedAt,
 	}
+	if avatar != nil {
+		resp.AvatarURL = &avatar.URL
+		resp.AvatarExpiresAt = &avatar.ExpiresAt
+	}
+	return resp
 }

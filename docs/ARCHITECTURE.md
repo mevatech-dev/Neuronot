@@ -42,8 +42,8 @@ Neuronot bir tanı veya tedavi sistemi değildir. Sistem yalnızca kullanıcın�
 |---|---|
 | Worker | Günlük/haftalık batch insight ihtiyacı çıkınca |
 | Redis | API response süresi sürekli >200ms olunca veya queue gerekince |
-| Cloudflare R2 (object storage) | İlk dosya yükleme veya DB-dışı export artifact ihtiyacı çıkınca. Hedef self-hosted VM'de MinIO çalışmaz; depolama backend'i **Cloudflare R2**. AWS S3 SDK, R2'nin S3-uyumlu endpoint'ine (`<account>.r2.cloudflarestorage.com`) konuşur. Bucket region `auto`. |
-| Resend (transactional email) | İlk outbound mail ihtiyacı çıkınca (parola sıfırlama linki, hesap silme onayı, export hazır bildirimi vb.). SMTP sunucusu işletilmez; sağlayıcı **Resend**, SPF/DKIM kayıtları Cloudflare DNS üzerinde tutulur. Inbound aliasing gerekirse Cloudflare Email Routing ayrı entegrasyon olarak eklenir. |
+| Cloudflare R2 (object storage) | **Aktif**. `/v1/me/export` JSON'u R2'ye yazıp pre-signed URL döner; `/v1/profile/avatar` upload için pre-signed PUT URL üretir. Env eksikse dataexport inline JSON'a düşer, avatar 503 döner. `internal/storage/` paketinde AWS S3 SDK, region `auto`, path-style. |
+| Resend (transactional email) | **Aktif**. Hesap silme onayı (`account_deleted` şablonu) ve "export'unuz hazır" (`export_ready` şablonu) için dispatch eder. Env eksikse her iki gönderim sessizce atlanır; primary akışlar etkilenmez. `internal/email/` paketi resend-go SDK'sını kullanır. |
 | Web (Next.js) | İlk paying customer "web'den de bakabileyim" deyince |
 | Admin panel | Operasyon SQL ile yapılamaz hale gelince |
 | Traefik/Caddy | İkinci public servis çıktığında |
@@ -392,8 +392,8 @@ Kullanıcının `preferred_language` değeri sistem prompt'a enjekte edilir, Ope
 - Worker process ve Redis queue
 - Web dashboard
 - Admin panel
-- Object storage (Cloudflare R2) / dosya yükleme — tetik gelene kadar yok
-- Transactional email (Resend) — tetik gelene kadar yok
+- ~~Object storage (Cloudflare R2) / dosya yükleme~~ — aktif (dataexport + avatar)
+- ~~Transactional email (Resend)~~ — aktif (account-deletion + export-ready)
 - Reverse proxy
 - E2E encryption
 - Offline queue
@@ -422,6 +422,6 @@ Kullanıcının `preferred_language` değeri sistem prompt'a enjekte edilir, Ope
 
 **Modular Monolith + Vertical Slice + Three-Layer + DTO + Repository + Centralized Theme + Multilingual i18n + scaffolded structure.**
 
-Tam Onion yok. Tam CQRS yok. Worker/Redis/Web yok (klasör var, kod yok). Object storage (Cloudflare R2) ve transactional email (Resend) yok — tetik gelene kadar entegrasyon eklenmez. Microservice asla yok.
+Tam Onion yok. Tam CQRS yok. Worker/Redis/Web yok (klasör var, kod yok). Object storage (Cloudflare R2) + transactional email (Resend) aktif — `internal/storage/` ve `internal/email/`; dataexport, profile avatar ve account deletion akışlarında kullanılır. Microservice asla yok.
 
 Theme ve i18n MVP'de full setup — sonradan retrofit etmek imkansıza yakın.

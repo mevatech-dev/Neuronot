@@ -21,6 +21,7 @@ func NewHandler(svc *Service) *Handler {
 func (h *Handler) Mount(r chi.Router) {
 	r.Get("/", h.get)
 	r.Patch("/", h.patch)
+	r.Post("/avatar", h.requestAvatarUpload)
 }
 
 func (h *Handler) get(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +31,8 @@ func (h *Handler) get(w http.ResponseWriter, r *http.Request) {
 		httpx.InternalError(w)
 		return
 	}
-	httpx.WriteJSON(w, http.StatusOK, ToResponse(p))
+	avatar, _ := h.svc.AvatarURL(r.Context(), p)
+	httpx.WriteJSON(w, http.StatusOK, ToResponse(p, avatar))
 }
 
 func (h *Handler) patch(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +47,30 @@ func (h *Handler) patch(w http.ResponseWriter, r *http.Request) {
 		writeProfileError(w, err)
 		return
 	}
-	httpx.WriteJSON(w, http.StatusOK, ToResponse(p))
+	avatar, _ := h.svc.AvatarURL(r.Context(), p)
+	httpx.WriteJSON(w, http.StatusOK, ToResponse(p, avatar))
+}
+
+func (h *Handler) requestAvatarUpload(w http.ResponseWriter, r *http.Request) {
+	uid := middleware.UserID(r.Context())
+	var req AvatarUploadRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		httpx.ValidationFailed(w, "invalid json body")
+		return
+	}
+	resp, err := h.svc.RequestAvatarUpload(r.Context(), uid, req.ContentType)
+	switch {
+	case errors.Is(err, ErrAvatarUnavailable):
+		httpx.WriteError(w, http.StatusServiceUnavailable, "AVATAR_UNAVAILABLE", "errors.profile.avatar_unavailable", "Avatar uploads are not configured")
+		return
+	case errors.Is(err, ErrInvalidContentType):
+		httpx.WriteError(w, http.StatusUnprocessableEntity, "AVATAR_INVALID_CONTENT_TYPE", "errors.profile.avatar_invalid_content_type", "content_type must be image/jpeg or image/png")
+		return
+	case err != nil:
+		httpx.InternalError(w)
+		return
+	}
+	httpx.WriteJSON(w, http.StatusOK, resp)
 }
 
 func writeProfileError(w http.ResponseWriter, err error) {

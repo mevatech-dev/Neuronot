@@ -96,3 +96,21 @@ func (r *Repository) FetchInsights(ctx context.Context, userID uuid.UUID) ([]map
 	defer rows.Close()
 	return rowsAsMaps(rows)
 }
+
+// GetUserContact returns the user's email + preferred_language so the
+// service can dispatch an export-ready notification. Anonymous users
+// have email NULL — caller must skip the send.
+func (r *Repository) GetUserContact(ctx context.Context, userID uuid.UUID) (email, locale string, err error) {
+	var emailPtr *string
+	row := r.pool.QueryRow(ctx,
+		`SELECT email, preferred_language FROM users WHERE id = $1`,
+		userID,
+	)
+	if err := row.Scan(&emailPtr, &locale); err != nil {
+		return "", "", err
+	}
+	if emailPtr != nil {
+		email = *emailPtr
+	}
+	return email, locale, nil
+}
