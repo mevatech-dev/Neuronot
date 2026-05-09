@@ -91,6 +91,8 @@
       "sleep": "Sonno",
       "forgetfulness": "Smemoraggine"
     },
-    "open": "Modifica profilo"
+    "open": "Modifica profilo",
+    "change_avatar": "Cambia foto",
+    "avatar_saved": "Foto aggiornata"
   }
 }

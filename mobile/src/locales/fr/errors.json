@@ -42,5 +42,11 @@
     "unauthorized": "Veuillez vous connecter pour continuer.",
     "forbidden": "Vous n’avez pas accès à cet élément.",
     "network": "Nous ne pouvons pas joindre le serveur. Vérifiez votre connexion."
+  },
+  "profile": {
+    "avatar_upload_failed": "Impossible d'envoyer la photo. Réessaie.",
+    "avatar_permission_denied": "L'accès aux photos est nécessaire pour choisir une image.",
+    "avatar_unavailable": "L'envoi de photo n'est pas disponible pour l'instant.",
+    "avatar_invalid_content_type": "Choisis une image JPG ou PNG."
   }
 }

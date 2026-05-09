@@ -42,5 +42,11 @@
     "unauthorized": "Devam etmek için giriş yap.",
     "forbidden": "Bu içeriğe erişimin yok.",
     "network": "Sunucuya ulaşamıyoruz. Bağlantını kontrol et."
+  },
+  "profile": {
+    "avatar_upload_failed": "Fotoğraf yüklenemedi. Lütfen tekrar dene.",
+    "avatar_permission_denied": "Fotoğraf seçebilmek için izin gerekli.",
+    "avatar_unavailable": "Fotoğraf yükleme şu an kullanılamıyor.",
+    "avatar_invalid_content_type": "JPG veya PNG bir görsel seç."
   }
 }

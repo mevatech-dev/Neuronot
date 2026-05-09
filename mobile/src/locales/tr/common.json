@@ -91,6 +91,8 @@
       "sleep": "Uyku",
       "forgetfulness": "Unutkanlık"
     },
-    "open": "Profili düzenle"
+    "open": "Profili düzenle",
+    "change_avatar": "Fotoğrafı değiştir",
+    "avatar_saved": "Fotoğraf güncellendi"
   }
 }

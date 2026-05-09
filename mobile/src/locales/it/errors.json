@@ -42,5 +42,11 @@
     "unauthorized": "Accedi per continuare.",
     "forbidden": "Non hai accesso a questo contenuto.",
     "network": "Non riusciamo a raggiungere il server. Controlla la connessione."
+  },
+  "profile": {
+    "avatar_upload_failed": "Impossibile caricare la foto. Riprova.",
+    "avatar_permission_denied": "Serve l'accesso alle foto per scegliere un'immagine.",
+    "avatar_unavailable": "Il caricamento foto non è disponibile al momento.",
+    "avatar_invalid_content_type": "Scegli un'immagine JPG o PNG."
   }
 }

@@ -91,6 +91,8 @@
       "sleep": "النوم",
       "forgetfulness": "النسيان"
     },
-    "open": "تعديل الملف"
+    "open": "تعديل الملف",
+    "change_avatar": "تغيير الصورة",
+    "avatar_saved": "تم تحديث الصورة"
   }
 }

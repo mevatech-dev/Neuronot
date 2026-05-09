@@ -42,5 +42,11 @@
     "unauthorized": "Entre para continuar.",
     "forbidden": "Você não tem acesso a isto.",
     "network": "Não conseguimos acessar o servidor. Verifique sua conexão."
+  },
+  "profile": {
+    "avatar_upload_failed": "Não foi possível enviar a foto. Tenta de novo.",
+    "avatar_permission_denied": "Permissão de fotos é necessária para escolher uma imagem.",
+    "avatar_unavailable": "O envio de fotos não está disponível agora.",
+    "avatar_invalid_content_type": "Escolhe uma imagem JPG ou PNG."
   }
 }
