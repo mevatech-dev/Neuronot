@@ -34,8 +34,9 @@
   },
   "step4": {
     "title": "Caffeina ogni giorno?",
-    "caffeine_label": "Sì, ogni giorno",
-    "hint": "La caffeina non cambia ciò che registri; aiuta a leggere meglio gli schemi."
+    "hint": "La caffeina non cambia ciò che registri; aiuta a leggere meglio gli schemi.",
+    "yes": "Sì",
+    "no": "No"
   },
   "step5": {
     "title": "Un piccolo promemoria ogni giorno?",

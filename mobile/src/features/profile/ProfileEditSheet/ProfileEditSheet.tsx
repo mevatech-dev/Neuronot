@@ -13,6 +13,7 @@ import { ApiError } from '@/services/api/client';
 import { useAuthStore } from '@/store/auth';
 import { useTheme } from '@/theme';
 
+import { AvatarPicker } from '../AvatarPicker';
 import { usePatchProfile } from '../mutations';
 import { profileQuery } from '../queries';
 
@@ -106,6 +107,8 @@ export function ProfileEditSheet({ visible, onClose }: Props) {
               </View>
             ) : (
               <>
+                <AvatarPicker avatarUrl={profile.avatar_url ?? null} />
+
                 <Field label={t('profile_edit.focus_problem')}>
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.space[2] }}>
                     {FOCUS_PROBLEMS.map((p) => {

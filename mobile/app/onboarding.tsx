@@ -221,9 +221,9 @@ export default function OnboardingScreen() {
               paddingVertical: theme.space[4],
               borderRadius: theme.radius.md,
               alignItems: 'center',
-              backgroundColor: theme.colors.accent.muted,
-              borderWidth: 1.5,
-              borderColor: theme.colors.border.strong,
+              backgroundColor: theme.colors.surface.elevated,
+              borderWidth: 1,
+              borderColor: theme.colors.border.subtle,
             }}
           >
             <Text style={{ ...theme.typography.bodyMedium, color: theme.colors.text.primary }}>

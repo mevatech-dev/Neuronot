@@ -42,5 +42,11 @@
     "unauthorized": "Bitte melde dich an, um fortzufahren.",
     "forbidden": "Du hast keinen Zugriff darauf.",
     "network": "Wir erreichen den Server nicht. Prüfe deine Verbindung."
+  },
+  "profile": {
+    "avatar_upload_failed": "Foto konnte nicht hochgeladen werden. Versuch es erneut.",
+    "avatar_permission_denied": "Fotozugriff wird benötigt, um ein Bild auszuwählen.",
+    "avatar_unavailable": "Foto-Uploads sind gerade nicht verfügbar.",
+    "avatar_invalid_content_type": "Wähle ein JPG- oder PNG-Bild."
   }
 }

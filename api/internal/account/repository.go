@@ -19,14 +19,35 @@ func NewRepository(pool *pgxpool.Pool) *Repository {
 }
 
 func (r *Repository) GetEmailAndHash(ctx context.Context, userID uuid.UUID) (email, passwordHash string, err error) {
+	var emailPtr, hashPtr *string
 	row := r.pool.QueryRow(ctx, `SELECT email, password_hash FROM users WHERE id = $1`, userID)
-	if err := row.Scan(&email, &passwordHash); err != nil {
+	if err := row.Scan(&emailPtr, &hashPtr); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return "", "", ErrUserNotFound
 		}
 		return "", "", err
 	}
+	if emailPtr != nil {
+		email = *emailPtr
+	}
+	if hashPtr != nil {
+		passwordHash = *hashPtr
+	}
 	return email, passwordHash, nil
+}
+
+// GetPreferredLanguage reads the user's locale so callers (e.g. email
+// dispatch) can pick the matching template.
+func (r *Repository) GetPreferredLanguage(ctx context.Context, userID uuid.UUID) (string, error) {
+	var locale string
+	row := r.pool.QueryRow(ctx, `SELECT preferred_language FROM users WHERE id = $1`, userID)
+	if err := row.Scan(&locale); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return "", ErrUserNotFound
+		}
+		return "", err
+	}
+	return locale, nil
 }
 
 func (r *Repository) UpdatePassword(ctx context.Context, userID uuid.UUID, newHash string) error {

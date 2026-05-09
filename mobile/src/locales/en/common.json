@@ -91,6 +91,8 @@
       "sleep": "Sleep",
       "forgetfulness": "Forgetfulness"
     },
-    "open": "Edit profile"
+    "open": "Edit profile",
+    "change_avatar": "Change photo",
+    "avatar_saved": "Photo updated"
   }
 }

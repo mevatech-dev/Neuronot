@@ -19,7 +19,8 @@
       "buildNumber": "1",
       "usesAppleSignIn": true,
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryUsageDescription": "Neuronot needs photo library access so you can choose a profile picture."
       }
     },
     "android": {
@@ -44,7 +45,13 @@
       ],
       "expo-font",
       "expo-sqlite",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Neuronot needs photo library access so you can choose a profile picture."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

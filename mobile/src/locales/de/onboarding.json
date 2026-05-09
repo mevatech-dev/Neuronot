@@ -34,8 +34,9 @@
   },
   "step4": {
     "title": "Täglich Koffein?",
-    "caffeine_label": "Ja, jeden Tag",
-    "hint": "Koffein ändert nichts an dem, was du protokollierst; es hilft beim Lesen der Muster."
+    "hint": "Koffein ändert nichts an dem, was du protokollierst; es hilft beim Lesen der Muster.",
+    "yes": "Ja",
+    "no": "Nein"
   },
   "step5": {
     "title": "Eine sanfte Erinnerung jeden Tag?",

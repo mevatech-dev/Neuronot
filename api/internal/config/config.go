@@ -20,6 +20,37 @@ type Config struct {
 	// the corresponding /v1/auth/{apple,google} endpoint will return 503.
 	AppleBundleID   string
 	GoogleAudiences []string
+
+	// Optional Cloudflare R2 (object storage). Empty fields disable the
+	// storage service; dataexport falls back to inline JSON and the
+	// avatar endpoint returns 503. See ADR 0002.
+	R2 R2Config
+
+	// Optional Resend (transactional email). Empty fields disable the
+	// service; account-deletion + export-ready paths skip silently.
+	Resend ResendConfig
+}
+
+type R2Config struct {
+	AccountID       string
+	AccessKeyID     string
+	SecretAccessKey string
+	Bucket          string
+}
+
+// Enabled is true only when every R2 credential is set. The storage
+// package's NewClient enforces the same invariant.
+func (c R2Config) Enabled() bool {
+	return c.AccountID != "" && c.AccessKeyID != "" && c.SecretAccessKey != "" && c.Bucket != ""
+}
+
+type ResendConfig struct {
+	APIKey string
+	From   string
+}
+
+func (c ResendConfig) Enabled() bool {
+	return c.APIKey != "" && c.From != ""
 }
 
 func Load() (*Config, error) {
@@ -64,6 +95,17 @@ func Load() (*Config, error) {
 				cfg.GoogleAudiences = append(cfg.GoogleAudiences, v)
 			}
 		}
+	}
+
+	cfg.R2 = R2Config{
+		AccountID:       os.Getenv("R2_ACCOUNT_ID"),
+		AccessKeyID:     os.Getenv("R2_ACCESS_KEY_ID"),
+		SecretAccessKey: os.Getenv("R2_SECRET_ACCESS_KEY"),
+		Bucket:          os.Getenv("R2_BUCKET"),
+	}
+	cfg.Resend = ResendConfig{
+		APIKey: os.Getenv("RESEND_API_KEY"),
+		From:   os.Getenv("EMAIL_FROM"),
 	}
 
 	return cfg, nil

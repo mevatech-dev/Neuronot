@@ -73,7 +73,7 @@ Yetim anon hesapları nightly silen cron yok — Worker scope'u (deferred). MVP'
 
 ### 8. Sosyal sağlayıcının verdiği e-postaya mail göndermek: yok (MVP)
 
-Cloudflare Email tetiği gelene kadar (ADR 0002) hiçbir email gönderilmez. Apple Private Relay adresi DB'de saklanır ama unutulur.
+Resend tetiği gelene kadar (ADR 0002) hiçbir email gönderilmez. Apple Private Relay adresi DB'de saklanır ama unutulur.
 
 ## Consequences
 
@@ -102,4 +102,4 @@ Cloudflare Email tetiği gelene kadar (ADR 0002) hiçbir email gönderilmez. App
 - "Birden çok Google hesabıyla bağlanmak istiyorum" senaryosu çıkarsa → `auth_providers` tablosuna migrate et.
 - Anon hesap sayısı DB'yi şişirirse → Worker'da nightly cleanup job aç.
 - Sign-In sheet UX şikayeti gelirse → `@react-native-google-signin/google-signin`'a geç (native build).
-- Cloudflare Email tetiği gelirse (ADR 0002) → password reset, account deletion confirmation, "your export is ready" bildirimleri açılır.
+- Resend tetiği gelirse (ADR 0002) → password reset, account deletion confirmation, "your export is ready" bildirimleri açılır.

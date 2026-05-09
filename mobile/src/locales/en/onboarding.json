@@ -39,8 +39,9 @@
   },
   "step4": {
     "title": "Daily caffeine?",
-    "caffeine_label": "Yes, every day",
-    "hint": "Caffeine does not change what you log; it just helps read patterns."
+    "hint": "Caffeine does not change what you log; it just helps read patterns.",
+    "yes": "Yes",
+    "no": "No"
   },
   "step5": {
     "title": "A gentle nudge each day?",

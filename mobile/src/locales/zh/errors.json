@@ -42,5 +42,11 @@
     "unauthorized": "请登录后继续。",
     "forbidden": "你无权访问此内容。",
     "network": "无法连接服务器，请检查网络。"
+  },
+  "profile": {
+    "avatar_upload_failed": "无法上传照片。请再试一次。",
+    "avatar_permission_denied": "需要相册访问权限才能选择图片。",
+    "avatar_unavailable": "当前无法上传照片。",
+    "avatar_invalid_content_type": "请选择 JPG 或 PNG 图片。"
   }
 }

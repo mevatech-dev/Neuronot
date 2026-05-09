@@ -91,6 +91,8 @@
       "sleep": "睡眠",
       "forgetfulness": "健忘"
     },
-    "open": "编辑资料"
+    "open": "编辑资料",
+    "change_avatar": "更换头像",
+    "avatar_saved": "头像已更新"
   }
 }

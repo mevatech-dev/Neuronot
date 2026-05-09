@@ -91,6 +91,8 @@
       "sleep": "睡眠",
       "forgetfulness": "物忘れ"
     },
-    "open": "プロフィールを編集"
+    "open": "プロフィールを編集",
+    "change_avatar": "写真を変更",
+    "avatar_saved": "写真を更新しました"
   }
 }

@@ -13,6 +13,7 @@ import (
 type fakeRepo struct {
 	email     string
 	hash      string
+	locale    string
 	getErr    error
 	updateErr error
 	deleteErr error
@@ -23,6 +24,12 @@ type fakeRepo struct {
 
 func (f *fakeRepo) GetEmailAndHash(_ context.Context, _ uuid.UUID) (string, string, error) {
 	return f.email, f.hash, f.getErr
+}
+func (f *fakeRepo) GetPreferredLanguage(_ context.Context, _ uuid.UUID) (string, error) {
+	if f.locale == "" {
+		return "en", nil
+	}
+	return f.locale, nil
 }
 func (f *fakeRepo) UpdatePassword(_ context.Context, _ uuid.UUID, h string) error {
 	f.updatedHash = h
@@ -52,7 +59,7 @@ func mustHash(t *testing.T, pw string) string {
 func TestChangePassword_Success(t *testing.T) {
 	repo := &fakeRepo{email: "a@b.com", hash: mustHash(t, "current8x")}
 	tokens := &fakeTokens{}
-	svc := NewService(repo, tokens)
+	svc := NewService(repo, tokens, nil)
 	if err := svc.ChangePassword(context.Background(), uuid.New(), "current8x", "newpass8x"); err != nil {
 		t.Fatal(err)
 	}
@@ -66,7 +73,7 @@ func TestChangePassword_Success(t *testing.T) {
 
 func TestChangePassword_WrongCurrent(t *testing.T) {
 	repo := &fakeRepo{email: "a@b.com", hash: mustHash(t, "current8x")}
-	svc := NewService(repo, &fakeTokens{})
+	svc := NewService(repo, &fakeTokens{}, nil)
 	err := svc.ChangePassword(context.Background(), uuid.New(), "wrong8888", "newpass8x")
 	if !errors.Is(err, ErrPasswordIncorrect) {
 		t.Fatalf("got %v, want ErrPasswordIncorrect", err)
@@ -74,7 +81,7 @@ func TestChangePassword_WrongCurrent(t *testing.T) {
 }
 
 func TestChangePassword_WeakNew(t *testing.T) {
-	svc := NewService(&fakeRepo{hash: mustHash(t, "current8x")}, &fakeTokens{})
+	svc := NewService(&fakeRepo{hash: mustHash(t, "current8x")}, &fakeTokens{}, nil)
 	err := svc.ChangePassword(context.Background(), uuid.New(), "current8x", "short")
 	if !errors.Is(err, ErrPasswordWeak) {
 		t.Fatalf("got %v, want ErrPasswordWeak", err)
@@ -83,7 +90,7 @@ func TestChangePassword_WeakNew(t *testing.T) {
 
 func TestDeleteSelf_EmailMatch(t *testing.T) {
 	repo := &fakeRepo{email: "Ada@example.com", hash: "x"}
-	svc := NewService(repo, &fakeTokens{})
+	svc := NewService(repo, &fakeTokens{}, nil)
 	if err := svc.DeleteSelf(context.Background(), uuid.New(), "ada@example.com"); err != nil {
 		t.Fatal(err)
 	}
@@ -94,9 +101,50 @@ func TestDeleteSelf_EmailMatch(t *testing.T) {
 
 func TestDeleteSelf_EmailMismatch(t *testing.T) {
 	repo := &fakeRepo{email: "ada@example.com", hash: "x"}
-	svc := NewService(repo, &fakeTokens{})
+	svc := NewService(repo, &fakeTokens{}, nil)
 	err := svc.DeleteSelf(context.Background(), uuid.New(), "wrong@example.com")
 	if !errors.Is(err, ErrEmailMismatch) {
 		t.Fatalf("got %v, want ErrEmailMismatch", err)
+	}
+}
+
+// Anonymous accounts have NULL email — the repo returns "". The user
+// confirms by sending an empty confirm_email; the delete must succeed.
+func TestDeleteSelf_Anonymous_EmptyConfirm(t *testing.T) {
+	repo := &fakeRepo{email: "", hash: ""}
+	svc := NewService(repo, &fakeTokens{}, nil)
+	if err := svc.DeleteSelf(context.Background(), uuid.New(), ""); err != nil {
+		t.Fatalf("got %v, want nil", err)
+	}
+	if !repo.deleted {
+		t.Fatal("user not deleted")
+	}
+}
+
+// Refuse a non-empty confirm against an anonymous account — defends
+// against the silent EqualFold("","") backdoor and forces clients to
+// match the actual stored shape.
+func TestDeleteSelf_Anonymous_NonEmptyConfirmRejected(t *testing.T) {
+	repo := &fakeRepo{email: "", hash: ""}
+	svc := NewService(repo, &fakeTokens{}, nil)
+	err := svc.DeleteSelf(context.Background(), uuid.New(), "anything@example.com")
+	if !errors.Is(err, ErrEmailMismatch) {
+		t.Fatalf("got %v, want ErrEmailMismatch", err)
+	}
+	if repo.deleted {
+		t.Fatal("user should not have been deleted")
+	}
+}
+
+// Refuse an empty confirm against a real (non-anonymous) account.
+func TestDeleteSelf_NonAnonymous_EmptyConfirmRejected(t *testing.T) {
+	repo := &fakeRepo{email: "ada@example.com", hash: "x"}
+	svc := NewService(repo, &fakeTokens{}, nil)
+	err := svc.DeleteSelf(context.Background(), uuid.New(), "")
+	if !errors.Is(err, ErrEmailMismatch) {
+		t.Fatalf("got %v, want ErrEmailMismatch", err)
+	}
+	if repo.deleted {
+		t.Fatal("user should not have been deleted")
 	}
 }

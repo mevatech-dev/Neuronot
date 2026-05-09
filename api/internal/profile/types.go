@@ -16,6 +16,7 @@ type Profile struct {
 	Timezone              string
 	ReminderHour          *int
 	ReminderEnabled       bool
+	AvatarKey             *string
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 }

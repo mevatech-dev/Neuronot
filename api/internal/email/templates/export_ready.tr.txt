@@ -1,0 +1,12 @@
+Subject: Neuronot veri export'un hazır
+
+Merhaba,
+
+Veri export'un hazır. Buradan indirebilirsin:
+
+{{.DownloadURL}}
+
+Bu link {{.ExpiresAt}} tarihinde geçersiz olacak. Sonrasında uygulamadan
+yeni bir export iste.
+
+Neuro

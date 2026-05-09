@@ -1,0 +1,12 @@
+Subject: Your Neuronot data export is ready
+
+Hi,
+
+Your data export is ready. You can download it here:
+
+{{.DownloadURL}}
+
+The link expires at {{.ExpiresAt}}. After that, request a new export
+from inside the app.
+
+Neuro

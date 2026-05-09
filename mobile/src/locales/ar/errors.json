@@ -42,5 +42,11 @@
     "unauthorized": "سجل الدخول للمتابعة.",
     "forbidden": "ليس لديك وصول إلى هذا.",
     "network": "لا يمكننا الوصول إلى الخادم. تحقق من اتصالك."
+  },
+  "profile": {
+    "avatar_upload_failed": "تعذّر رفع صورتك. حاول مرة أخرى.",
+    "avatar_permission_denied": "يلزم إذن الصور لاختيار صورة.",
+    "avatar_unavailable": "رفع الصور غير متاح حاليًا.",
+    "avatar_invalid_content_type": "اختر صورة JPG أو PNG."
   }
 }

@@ -12,6 +12,8 @@ type ProfileResponse struct {
 	Timezone              string     `json:"timezone"`
 	ReminderHour          *int       `json:"reminder_hour"`
 	ReminderEnabled       bool       `json:"reminder_enabled"`
+	AvatarURL             *string    `json:"avatar_url,omitempty"`
+	AvatarExpiresAt       *time.Time `json:"avatar_expires_at,omitempty"`
 	UpdatedAt             time.Time  `json:"updated_at"`
 }
 
@@ -26,4 +28,20 @@ type PatchRequest struct {
 	Timezone           *string  `json:"timezone"`
 	ReminderHour       *int     `json:"reminder_hour"`
 	ReminderEnabled    *bool    `json:"reminder_enabled"`
+	AvatarKey          *string  `json:"avatar_key"`
+}
+
+// AvatarUploadRequest is the body of POST /v1/me/avatar — mobile sends
+// the content_type it intends to PUT (image/jpeg or image/png) so the
+// signed URL pins a matching Content-Type header.
+type AvatarUploadRequest struct {
+	ContentType string `json:"content_type"`
+}
+
+// AvatarUploadResponse hands mobile a single-use upload URL plus the
+// object key it should patch back into the profile once upload succeeds.
+type AvatarUploadResponse struct {
+	UploadURL string    `json:"upload_url"`
+	Key       string    `json:"key"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
